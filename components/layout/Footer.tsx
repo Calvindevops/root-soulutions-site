@@ -14,7 +14,7 @@ export function Footer() {
               alt="Root Soulutions"
               width={200}
               height={42}
-              className="h-[38px] w-auto mb-2 brightness-0 invert opacity-90"
+              className="h-[38px] w-auto mb-2"
             />
             <p className="font-[family-name:var(--font-dm-sans)] text-sm mb-6 max-w-[250px]">
               Whole-food, low-sodium seasonings crafted with SOUL.
