@@ -40,9 +40,9 @@ export function WelcomePopup() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    // Check if user has already seen the popup
-    const seen = document.cookie.includes(COOKIE_NAME);
-    if (seen) return;
+    // TODO: Re-enable cookie check before launch
+    // const seen = document.cookie.includes(COOKIE_NAME);
+    // if (seen) return;
 
     const timer = setTimeout(() => {
       setIsOpen(true);
@@ -125,19 +125,21 @@ export function WelcomePopup() {
               />
               <div className="flex items-center justify-center gap-2 mt-3">
                 <Image
-                  src="/brand/sunburst-bg.png"
+                  src="/brand/chili-pepper.png"
                   alt=""
-                  width={28}
-                  height={28}
+                  width={24}
+                  height={24}
+                  className="object-contain"
                 />
                 <span className="text-[#F5C542] text-sm font-bold tracking-wider uppercase font-[family-name:var(--font-dm-sans)]">
                   FREE SHIPPING ON YOUR FIRST ORDER
                 </span>
                 <Image
-                  src="/brand/sunburst-bg.png"
+                  src="/brand/garlic-illustration.png"
                   alt=""
                   width={28}
-                  height={28}
+                  height={22}
+                  className="object-contain"
                 />
               </div>
             </div>

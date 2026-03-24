@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react";
-import { fadeInUp } from "@/lib/animations";
 
 const faqItems = [
   {
@@ -14,47 +14,37 @@ const faqItems = [
   {
     question: "What kind of salt does Root Soulutions use?",
     answer:
-      "We use Celtic sea salt — an unrefined salt naturally rich in trace minerals like magnesium, potassium, and calcium. Unlike processed table salt, Celtic sea salt supports hydration and electrolyte balance.",
+      "We use Celtic sea salt — an unrefined salt naturally rich in trace minerals like magnesium, potassium, and calcium.",
   },
   {
     question: "Is Root Soulutions low-sodium?",
     answer:
-      "Yes. Every blend is intentionally formulated to be low-sodium without sacrificing flavor. We use Celtic sea salt in measured amounts so you get rich taste with significantly less sodium than conventional seasonings.",
+      "Yes. Every blend is intentionally formulated to be low-sodium without sacrificing flavor.",
   },
   {
     question: "Are your seasonings Non-GMO?",
     answer:
-      "Yes. All our ingredients are sourced as whole-food, Non-GMO herbs and spices. No genetically modified ingredients, fillers, or synthetic additives of any kind.",
+      "Yes. All our ingredients are sourced as whole-food, Non-GMO herbs and spices. No genetically modified ingredients or synthetic additives.",
   },
   {
     question: "Is Root Soulutions Black-owned?",
     answer:
-      "Yes. Root Soulutions is a Black-owned, wellness-forward flavor brand founded by Collin Alexander. Born from lived experience with Type 2 diabetes, our mission is to provide clean, culturally rooted seasonings.",
-  },
-  {
-    question: "Can these seasonings support a diabetes-friendly diet?",
-    answer:
-      "While not medicine, our blends are crafted with low sodium and whole-food spices traditionally associated with metabolic balance — including turmeric, cumin, garlic, and Celtic sea salt. Always consult your healthcare provider.",
+      "Yes. Root Soulutions is a Black-owned, wellness-forward flavor brand founded by Collin Alexander.",
   },
   {
     question: "What's the difference between the three blends?",
     answer:
-      "Simple SZN is your everyday go-to — bright, golden, turmeric-forward. Smokey Cajun SZN brings deep, smoky Louisiana heat. Garlicky SZN is a pure, savory garlic bomb with just 5 clean ingredients.",
+      "Simple SZN is bright, golden, turmeric-forward. Smokey Cajun SZN brings deep, smoky Louisiana heat. Garlicky SZN is a pure garlic bomb with just 5 clean ingredients.",
   },
   {
     question: "Do you offer wholesale pricing?",
     answer:
-      "Yes. We partner with health food stores, restaurants, specialty grocers, and community co-ops. Visit our Wholesale page to submit an inquiry.",
+      "Yes. We partner with health food stores, restaurants, and co-ops. Visit our Wholesale page to submit an inquiry.",
   },
   {
     question: "Where do you ship?",
     answer:
       "We ship anywhere within the continental United States. Free shipping on all orders over $50.",
-  },
-  {
-    question: "What does 'Crafted with SOUL' mean?",
-    answer:
-      "SOUL stands for Simplicity, Organic alignment, Uncompromised quality, and Lifestyle-forward flavor. Every blend is made with intention, purity, and purpose.",
   },
 ];
 
@@ -62,23 +52,30 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="bg-[#FFF8F0] py-24 px-6">
-      <div className="max-w-[900px] mx-auto">
-        <motion.div
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          variants={fadeInUp}
-          className="text-center mb-16"
-        >
-          <h2 className="heading-section text-[#2D5A27]">
+    <section id="faq" className="bg-[#F5C542] py-20 px-6 relative overflow-hidden">
+      {/* Floating grocery illustrations */}
+      <div className="absolute top-8 left-8 opacity-20 hidden lg:block">
+        <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="object-contain" />
+      </div>
+      <div className="absolute bottom-12 right-12 opacity-20 hidden lg:block">
+        <Image src="/brand/garlic-illustration.png" alt="" width={90} height={70} className="object-contain" />
+      </div>
+      <div className="absolute top-1/3 right-8 opacity-15 hidden xl:block">
+        <Image src="/brand/beetroot.png" alt="" width={70} height={50} className="object-contain" />
+      </div>
+
+      <div className="max-w-[900px] mx-auto relative z-10">
+        <div className="text-center mb-12">
+          <h2
+            className="text-[#2D5A27] text-5xl md:text-6xl text-center mb-3"
+            style={{ fontFamily: "var(--font-bebas)" }}
+          >
             FREQUENTLY ASKED QUESTIONS
           </h2>
-          <p className="text-[#1A1A1A]/60 text-lg mt-4 font-[family-name:var(--font-dm-sans)]">
-            Everything you need to know about our ingredients, wellness approach,
-            and how we craft with SOUL.
+          <p className="text-[#2D5A27]/60 text-base font-[family-name:var(--font-dm-sans)]">
+            Everything you need to know about Root Soulutions.
           </p>
-        </motion.div>
+        </div>
 
         <div>
           {faqItems.map((item, idx) => {
@@ -91,7 +88,7 @@ export function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.03 }}
-                className="border-b border-[#2D5A27]/10 py-5"
+                className="border-b border-[#2D5A27]/15 py-4"
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
@@ -116,7 +113,7 @@ export function FAQSection() {
                       transition={{ duration: 0.3 }}
                       className="overflow-hidden"
                     >
-                      <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/70 pt-4 pb-2 leading-relaxed">
+                      <p className="font-[family-name:var(--font-dm-sans)] text-[#2D5A27]/70 pt-3 pb-1 leading-relaxed">
                         {item.answer}
                       </p>
                     </motion.div>

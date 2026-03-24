@@ -41,9 +41,9 @@ export default function HomePage() {
         icons={ingredientIcons}
       />
       <RecipePreview />
-      <SectionDivider topColor="#e85c2a" bottomColor="#FFF8F0" variant="root-pattern" />
+      <SectionDivider topColor="#e85c2a" bottomColor="#F5C542" variant="root-pattern" />
       <FAQSection />
-      <SectionDivider topColor="#FFF8F0" bottomColor="#F5C542" variant="leaf-wave" />
+      <SectionDivider topColor="#F5C542" bottomColor="#1A1A1A" variant="root-pattern" />
       <NewsletterSignup />
     </>
   );

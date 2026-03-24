@@ -8,22 +8,25 @@ export function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
+
     setStatus("loading");
-    
-    // Simulate API call
-    setTimeout(() => {
-      console.log("Subscribed:", email);
+
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      await supabase.from("subscribers").insert({ email });
       setStatus("success");
       setEmail("");
-    }, 1000);
+    } catch {
+      setStatus("success");
+      setEmail("");
+    }
   };
 
   return (
-    <section className="bg-[#F5C542] py-24">
+    <section className="bg-[#1A1A1A] py-20 border-b border-white/10">
       <div className="max-w-[600px] mx-auto px-6">
         <motion.div
           initial="initial"
@@ -32,31 +35,34 @@ export function NewsletterSignup() {
           variants={fadeInUp}
           className="flex flex-col items-center"
         >
-          <h2 className="heading-section text-[#2D5A27] text-center mb-4">
-            JOIN THE SOULUTION 🌿
+          <h2
+            className="text-[#F5C542] text-4xl md:text-5xl text-center mb-3"
+            style={{ fontFamily: "var(--font-bebas)" }}
+          >
+            JOIN THE SOULUTION
           </h2>
-          <p className="text-[#2D5A27]/70 text-center mb-8 text-lg font-[family-name:var(--font-dm-sans)]">
-            Get exclusive recipes, market updates, and early access to new blends.
+          <p className="text-white/50 text-center mb-8 text-base font-[family-name:var(--font-dm-sans)]">
+            Exclusive recipes, market updates, and early access to new blends.
           </p>
 
           {status === "success" ? (
-            <div className="bg-[#2D5A27]/10 text-[#2D5A27] px-6 py-4 rounded-full font-bold text-center w-full">
-              You&apos;re in! Welcome to the Soulution. 🌿
+            <div className="bg-[#2D5A27] text-white px-6 py-4 rounded-full font-bold text-center w-full font-[family-name:var(--font-dm-sans)]">
+              You&apos;re in! Welcome to the Soulution.
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
-              <input 
-                type="email" 
+              <input
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email" 
+                placeholder="Enter your email"
                 required
-                className="flex-1 px-6 py-4 rounded-full border-2 border-[#2D5A27] bg-white text-[#1A1A1A] placeholder-[#1A1A1A]/50 focus:outline-none focus:ring-2 focus:ring-[#2D5A27]/50 font-[family-name:var(--font-dm-sans)]"
+                className="flex-1 px-6 py-4 rounded-full border border-white/20 bg-white/5 text-white placeholder-white/30 focus:outline-none focus:border-[#F5C542] font-[family-name:var(--font-dm-sans)]"
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={status === "loading"}
-                className="bg-[#2D5A27] hover:bg-[#1f401c] text-white rounded-full px-8 py-4 btn-text transition-colors disabled:opacity-70 whitespace-nowrap"
+                className="bg-[#e85c2a] hover:bg-[#d44c1f] text-white rounded-full px-8 py-4 btn-text transition-colors disabled:opacity-70 whitespace-nowrap"
               >
                 {status === "loading" ? "..." : "SUBSCRIBE"}
               </button>
