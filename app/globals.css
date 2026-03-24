@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* === RS Colors === */
+  --color-rs-earth-green: #2D5A27;
+  --color-rs-orange: #e85c2a;
+  --color-rs-cream: #FFF8F0;
+  --color-rs-black: #1A1A1A;
+  --color-rs-gold: #F5C542;
+  --color-rs-beet-pink: #D94F8A;
+  --color-rs-turmeric: #E8A317;
+  --color-rs-garlic-purple: #6B3FA0;
+  --color-rs-simple-orange: #F5A623;
+  --color-rs-cajun-blue: #4A90D9;
+  --color-rs-cajun-pink: #E84B8A;
+  --color-rs-garlic-amber: #E8890C;
+
+  /* === Fonts === */
+  --font-heading: var(--font-playfair);
+  --font-body: var(--font-dm-sans);
+  --font-accent: var(--font-bebas);
+
+  /* === Border Radius === */
+  --radius-card: 2rem;
+  --radius-pill: 9999px;
+
+  /* === Max Width === */
+  --container-site: 1400px;
+}
+
+/* === Base === */
+body {
+  background: var(--color-rs-cream);
+  color: var(--color-rs-black);
+  font-family: var(--font-body), sans-serif;
+}
+
+/* === Scrolling Marquee === */
+@keyframes scrolling-items {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: scrolling-items 25s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* === Typography Classes === */
+.heading-hero {
+  font-family: var(--font-accent), sans-serif;
+  font-size: clamp(3rem, 2rem + 5vw, 5.5rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.85;
+}
+
+.heading-section {
+  font-family: var(--font-accent), sans-serif;
+  font-size: clamp(2.5rem, 1.5rem + 4vw, 4rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 0.9;
+}
+
+.heading-card {
+  font-family: var(--font-accent), sans-serif;
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1.0;
+}
+
+.heading-sub {
+  font-family: var(--font-heading), serif;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.body-text {
+  font-family: var(--font-body), sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.nav-link {
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.0;
+}
+
+.btn-text {
+  font-family: var(--font-accent), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1.0;
+}
