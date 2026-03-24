@@ -1,37 +1,63 @@
 import React from "react";
+import Image from "next/image";
+
+interface MarqueeIcon {
+  src: string;
+  alt: string;
+}
 
 interface ScrollingMarqueeProps {
   text: string;
   bgColor: string;
   textColor: string;
   speed?: number;
+  icons?: MarqueeIcon[];
 }
 
-export function ScrollingMarquee({ text, bgColor, textColor, speed = 25 }: ScrollingMarqueeProps) {
-  // Duplicate text 4 times for seamless loop
-  const content = `${text} • ${text} • ${text} • ${text} • `;
-  
+export function ScrollingMarquee({ text, bgColor, textColor, speed = 25, icons }: ScrollingMarqueeProps) {
+  // Build a single repeating unit with icon separators
+  const segments = text.split("•").map((s) => s.trim()).filter(Boolean);
+
+  const renderUnit = (keyPrefix: string) => (
+    <div
+      className="flex items-center gap-2 text-2xl uppercase tracking-widest font-[family-name:var(--font-bebas)] px-4 shrink-0"
+      style={{ color: textColor }}
+      key={keyPrefix}
+    >
+      {segments.map((segment, i) => (
+        <React.Fragment key={`${keyPrefix}-${i}`}>
+          <span className="whitespace-nowrap">{segment}</span>
+          {icons && icons.length > 0 ? (
+            <span className="inline-flex items-center mx-2 shrink-0">
+              <Image
+                src={icons[i % icons.length].src}
+                alt={icons[i % icons.length].alt}
+                width={28}
+                height={28}
+                className="object-contain"
+              />
+            </span>
+          ) : (
+            <span className="mx-2">•</span>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+
   return (
-    <div 
+    <div
       className="py-4 overflow-hidden relative w-full"
       style={{ backgroundColor: bgColor }}
     >
-      <div 
+      <div
         className="marquee-track flex whitespace-nowrap"
         style={{ animationDuration: `${speed}s` }}
       >
-        <div 
-          className="text-2xl uppercase tracking-widest font-[family-name:var(--font-bebas)] px-4"
-          style={{ color: textColor }}
-        >
-          {content}
-        </div>
-        <div 
-          className="text-2xl uppercase tracking-widest font-[family-name:var(--font-bebas)] px-4"
-          style={{ color: textColor }}
-        >
-          {content}
-        </div>
+        {renderUnit("a")}
+        {renderUnit("b")}
+        {renderUnit("c")}
+        {renderUnit("d")}
       </div>
     </div>
   );

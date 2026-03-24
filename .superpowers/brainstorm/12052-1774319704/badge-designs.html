@@ -1,0 +1,238 @@
+<h2>Value Badge Redesign</h2>
+<p class="subtitle">Sun-burst seal badges inspired by Fly By Jing — pick the style that fits Root Soulutions</p>
+
+<style>
+  .badge-section { margin: 2rem 0; padding: 2rem; border-radius: 16px; }
+
+  /* Shared badge base */
+  .badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; padding: 2rem 0; }
+
+  /* === OPTION A: Sunburst Seal Badges === */
+  .seal-badge {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .seal-badge .sun-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: spin-slow 20s linear infinite;
+  }
+  .seal-badge .badge-text {
+    position: relative;
+    z-index: 1;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    color: #2D5A27;
+    max-width: 80px;
+  }
+  @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes float-badge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .seal-badge:nth-child(odd) { animation: float-badge 3s ease-in-out infinite; }
+  .seal-badge:nth-child(even) { animation: float-badge 3.5s ease-in-out infinite 0.5s; }
+
+  /* === OPTION B: Stamp Badges (dark circle + sun accent) === */
+  .stamp-badge {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #2D5A27;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 3px dashed rgba(255,255,255,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .stamp-badge .badge-text {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    color: #fff;
+    max-width: 75px;
+  }
+  .stamp-badge::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid #F5C16C;
+    opacity: 0.4;
+  }
+  .stamp-row .stamp-badge:nth-child(odd) { animation: float-badge 3s ease-in-out infinite; }
+  .stamp-row .stamp-badge:nth-child(even) { animation: float-badge 3.5s ease-in-out infinite 0.3s; }
+
+  /* === OPTION C: Hybrid — Sun bg with dark overlay text circle === */
+  .hybrid-badge {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hybrid-badge .sun-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.6;
+  }
+  .hybrid-badge .inner-circle {
+    position: relative;
+    z-index: 1;
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background: #2D5A27;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .hybrid-badge .badge-text {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+    color: #fff;
+    max-width: 65px;
+  }
+  .hybrid-row .hybrid-badge:nth-child(odd) { animation: float-badge 3s ease-in-out infinite; }
+  .hybrid-row .hybrid-badge:nth-child(even) { animation: float-badge 3.5s ease-in-out infinite 0.4s; }
+
+  /* Section backgrounds */
+  .bg-warm { background: #FFF8F0; }
+  .bg-dark { background: #1a1a1a; }
+  .bg-dark .stamp-badge { background: #F5C16C; }
+  .bg-dark .stamp-badge .badge-text { color: #1a1a1a; }
+  .bg-dark .stamp-badge::before { border-color: rgba(255,255,255,0.2); }
+
+  .option-label {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+    color: #666;
+  }
+  .option-desc {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 1rem;
+  }
+</style>
+
+<!-- OPTION A -->
+<div class="option" data-choice="a" onclick="toggleSelect(this)">
+  <div class="letter">A</div>
+  <div class="content">
+    <h3>Sunburst Seal</h3>
+    <p>Your sun PNG as the full badge background — text overlaid directly. The sun slowly rotates. Organic, artisan, hand-crafted feel.</p>
+  </div>
+</div>
+<div class="badge-section bg-warm" style="border-radius:12px; margin-bottom:1rem;">
+  <div class="badge-row">
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">Black Owned</span>
+    </div>
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">Non-GMO</span>
+    </div>
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">Low Sodium</span>
+    </div>
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">All Natural</span>
+    </div>
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">Small Batch</span>
+    </div>
+    <div class="seal-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <span class="badge-text">Gluten Free</span>
+    </div>
+  </div>
+</div>
+
+<!-- OPTION B -->
+<div class="option" data-choice="b" onclick="toggleSelect(this)">
+  <div class="letter">B</div>
+  <div class="content">
+    <h3>Artisan Stamp</h3>
+    <p>Dark green circles with dashed border + golden ring accent. No sun image — clean typographic stamps. Bold and readable.</p>
+  </div>
+</div>
+<div class="badge-section bg-warm" style="border-radius:12px; margin-bottom:1rem;">
+  <div class="badge-row stamp-row">
+    <div class="stamp-badge"><span class="badge-text">Black Owned</span></div>
+    <div class="stamp-badge"><span class="badge-text">Non-GMO</span></div>
+    <div class="stamp-badge"><span class="badge-text">Low Sodium</span></div>
+    <div class="stamp-badge"><span class="badge-text">All Natural</span></div>
+    <div class="stamp-badge"><span class="badge-text">Small Batch</span></div>
+    <div class="stamp-badge"><span class="badge-text">Gluten Free</span></div>
+  </div>
+</div>
+
+<!-- OPTION C -->
+<div class="option" data-choice="c" onclick="toggleSelect(this)">
+  <div class="letter">C</div>
+  <div class="content">
+    <h3>Hybrid — Sun Halo + Dark Circle</h3>
+    <p>Sun PNG as a glowing halo behind a dark green circle. Best of both — uses your sun asset AND keeps text crisp on solid background. My recommendation.</p>
+  </div>
+</div>
+<div class="badge-section bg-warm" style="border-radius:12px;">
+  <div class="badge-row hybrid-row">
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">Black Owned</span></div>
+    </div>
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">Non-GMO</span></div>
+    </div>
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">Low Sodium</span></div>
+    </div>
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">All Natural</span></div>
+    </div>
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">Small Batch</span></div>
+    </div>
+    <div class="hybrid-badge">
+      <img class="sun-bg" src="/brand/sunburst-bg.png" alt="">
+      <div class="inner-circle"><span class="badge-text">Gluten Free</span></div>
+    </div>
+  </div>
+</div>

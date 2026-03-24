@@ -6,19 +6,8 @@ import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { recipes } from "@/lib/recipes";
 
-// Curated 6 best food photos for homepage
-const FEATURED_SLUGS = [
-  "cajun-fried-chicken-poboys",
-  "creamy-salmon-lasagna-rollups",
-  "crawfish-deviled-eggs-on-kale",
-  "jerk-chicken-rasta-pasta",
-  "naan-bowl-crispy-chickpeas",
-  "lump-cornbread-crabcakes",
-];
-
-const featuredRecipes = FEATURED_SLUGS.map(
-  (slug) => recipes.find((r) => r.slug === slug)!
-).filter(Boolean);
+// Only recipes that have actual recipe cards
+const recipeCardRecipes = recipes.filter((r) => r.hasRecipeCard).slice(0, 6);
 
 export function RecipePreview() {
   return (
@@ -32,7 +21,7 @@ export function RecipePreview() {
         >
           <h2 className="heading-section text-white text-center mb-4">SOUL KITCHEN</h2>
           <p className="text-white/70 text-center mb-16 text-lg max-w-2xl mx-auto font-[family-name:var(--font-dm-sans)]">
-            Recipes that nourish, powered by Root Soulutions blends.
+            Full recipes with step-by-step cards, powered by Root Soulutions blends.
           </p>
         </motion.div>
 
@@ -43,7 +32,7 @@ export function RecipePreview() {
           viewport={{ once: true, amount: 0.1 }}
           variants={staggerContainer}
         >
-          {featuredRecipes.map((recipe) => (
+          {recipeCardRecipes.map((recipe) => (
             <motion.div
               key={recipe.slug}
               variants={fadeInUp}
