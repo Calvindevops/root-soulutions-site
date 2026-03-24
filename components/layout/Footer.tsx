@@ -84,7 +84,12 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-6 mt-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#F5C542]/50 font-[family-name:var(--font-dm-sans)]">
           <p>&copy; 2026 Root Soulutions. Craft Eatery Food Genius Company L.L.C.</p>
-          <p>Visa &bull; Mastercard &bull; Amex &bull; Apple Pay</p>
+          <div className="flex items-center gap-4">
+            <p>Visa &bull; Mastercard &bull; Amex &bull; Apple Pay</p>
+            <Link href="/admin/login" aria-label="Admin">
+              <Image src="/brand/beetroot-small.png" alt="" width={18} height={18} className="opacity-30 hover:opacity-70 transition-opacity" />
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
