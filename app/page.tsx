@@ -1,5 +1,4 @@
 import { HeroBanner } from "@/components/home/HeroBanner";
-import { ProductCards } from "@/components/home/ProductCards";
 import { ValueBadges } from "@/components/home/ValueBadges";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 import { FounderStory } from "@/components/home/FounderStory";
@@ -20,9 +19,9 @@ export default function HomePage() {
   return (
     <>
       <HeroBanner />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#e85c2a" variant="leaf-wave" />
-      <ProductCards />
-      <SectionDivider topColor="#e85c2a" bottomColor="#FFF8F0" variant="root-pattern" />
+      <SectionDivider topColor="#1A1A1A" bottomColor="#1A1A1A" variant="leaf-wave" />
+      <BundleCTA />
+      <SectionDivider topColor="#1A1A1A" bottomColor="#FFF8F0" variant="root-pattern" />
       <ValueBadges />
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL 🌿"
@@ -31,11 +30,9 @@ export default function HomePage() {
         icons={ingredientIcons}
       />
       <FounderStory />
-      <SectionDivider topColor="#6B3FA0" bottomColor="#1A1A1A" variant="root-pattern" />
-      <Testimonials />
-      <BundleCTA />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#e85c2a" variant="root-pattern" />
+      <SectionDivider topColor="#6B3FA0" bottomColor="#e85c2a" variant="root-pattern" />
       <FoodShowcase />
+      <Testimonials />
       <ScrollingMarquee
         text="COOK WITH SOUL"
         bgColor="#1A1A1A"
