@@ -42,7 +42,7 @@ export function Testimonials() {
   };
 
   return (
-    <section className="bg-[#1A1A1A] py-20 overflow-hidden">
+    <section className="bg-[#e85c2a] py-20 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 mb-12">
         <motion.div
           initial="initial"

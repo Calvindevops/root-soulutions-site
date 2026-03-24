@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import * as motion from "framer-motion/client";
 
 export default function ContactPage() {
@@ -25,7 +26,9 @@ export default function ContactPage() {
   return (
     <main className="w-full">
       {/* Header */}
-      <section className="bg-[#2D5A27] py-20 px-6 text-center">
+      <section className="relative bg-[#2D5A27] py-20 px-6 text-center overflow-hidden">
+        <Image src="/brand/chili-pepper.png" alt="" width={70} height={70} className="absolute top-6 right-[10%] opacity-15 rotate-12 hidden md:block" />
+        <Image src="/brand/garlic-illustration.png" alt="" width={60} height={60} className="absolute bottom-6 left-[8%] opacity-15 -rotate-12 hidden md:block" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

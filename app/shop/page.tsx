@@ -7,7 +7,6 @@ import { useCart } from "@/lib/cart-context";
 import { products } from "@/lib/products";
 import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
-import { SectionDivider } from "@/components/ui/SectionDivider";
 
 const productImage: Record<string, string> = {
   "simple-szn": "/brand/simple-label.png",
@@ -24,78 +23,89 @@ export default function ShopPage() {
   return (
     <main className="min-h-screen flex flex-col">
       {/* Hero Header */}
-      <section className="relative bg-[#2D5A27] py-24 text-center overflow-hidden">
-        {/* Floating illustrations */}
-        <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="absolute top-8 left-[10%] opacity-20 rotate-12 hidden md:block" />
-        <Image src="/brand/garlic-illustration.png" alt="" width={70} height={70} className="absolute bottom-8 right-[12%] opacity-20 -rotate-12 hidden md:block" />
+      <section className="relative bg-[#1A1A1A] py-24 text-center overflow-hidden">
+        <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="absolute top-8 left-[10%] opacity-15 rotate-12 hidden md:block" />
+        <Image src="/brand/garlic-illustration.png" alt="" width={70} height={70} className="absolute bottom-8 right-[12%] opacity-15 -rotate-12 hidden md:block" />
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <h1 className="heading-hero text-white mb-4">SHOP ALL BLENDS</h1>
-          <p className="text-white/70 text-lg font-[family-name:var(--font-dm-sans)]">Whole-food flavor. Crafted with SOUL.</p>
+          <p className="text-white/60 text-lg font-[family-name:var(--font-dm-sans)]">Whole-food flavor. Crafted with SOUL.</p>
         </motion.div>
       </section>
 
-      <SectionDivider topColor="#2D5A27" bottomColor="#1A1A1A" variant="leaf-wave" />
-
-      {/* Starter Kit Feature */}
+      {/* Starter Kit Feature — Orange */}
       {starterKit && (
-        <section className="bg-[#1A1A1A] py-20">
-          <div className="max-w-[1400px] mx-auto px-6">
-            <motion.div
-              initial="initial"
-              whileInView="whileInView"
-              viewport={{ once: true }}
-              variants={fadeInUp}
-              className="text-center mb-12"
-            >
-              <h2 className="heading-section text-[#F5C542] mb-3">THE SOULUTION STARTER KIT</h2>
-              <p className="text-white/60 text-lg font-[family-name:var(--font-dm-sans)]">All 3 blends. One kit. Save 10%.</p>
-            </motion.div>
+        <section className="bg-[#e85c2a] py-20 relative overflow-hidden">
+          <Image src="/brand/onion-turmeric-illustration.png" alt="" width={120} height={120} className="absolute top-8 right-[5%] opacity-15 rotate-6 hidden md:block" />
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="max-w-[500px] mx-auto"
-            >
-              <div className="rounded-[2rem] overflow-hidden p-8 flex flex-col items-center relative"
-                style={{ background: `linear-gradient(135deg, ${starterKit.gradient_from}, ${starterKit.gradient_to})` }}
+          <div className="max-w-[1400px] mx-auto px-6">
+            <div className="md:grid md:grid-cols-2 gap-12 items-center">
+              {/* Left Content */}
+              <motion.div
+                className="flex flex-col items-start gap-6 z-10"
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
               >
-                <div className="absolute top-4 right-4 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold">SAVE 10%</div>
-                <div className="w-[250px] h-[250px] rounded-full overflow-hidden relative mb-6 border-4 border-[#F5C542]">
-                  <Image src={starterKit.images[0]} alt={starterKit.title} fill className="object-cover scale-[1.8]" style={{ objectPosition: "50% 85%" }} sizes="250px" />
-                </div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-white text-3xl font-bold">${starterKit.price.toFixed(2)}</span>
-                  {starterKit.compare_at_price && <span className="text-white/40 text-xl line-through">${starterKit.compare_at_price.toFixed(2)}</span>}
+                <h2 className="heading-section text-white">THE SOULUTION STARTER KIT</h2>
+                <p className="text-white/80 text-lg font-[family-name:var(--font-dm-sans)]">
+                  Get all three Root Soulutions blends in one bundle. The complete toolkit for seasoning your whole kitchen with SOUL.
+                </p>
+                <div className="flex items-center gap-4 mt-2">
+                  <span className="text-white text-4xl font-bold">${starterKit.price.toFixed(2)}</span>
+                  {starterKit.compare_at_price && (
+                    <span className="line-through text-white/40 text-xl">${starterKit.compare_at_price.toFixed(2)}</span>
+                  )}
+                  <span className="bg-white text-[#e85c2a] rounded-full px-4 py-1 text-sm font-bold tracking-wide">
+                    SAVE 10%
+                  </span>
                 </div>
                 <button
                   onClick={() => addToCart(starterKit)}
-                  className="w-full bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+                  className="w-full md:w-auto bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg mt-2"
                 >
                   ADD BUNDLE TO CART
                 </button>
-              </div>
-            </motion.div>
+              </motion.div>
+
+              {/* Right Image */}
+              <motion.div
+                className="w-full flex justify-center mt-12 md:mt-0"
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="w-full max-w-[500px] aspect-square rounded-[2rem] relative overflow-hidden shadow-2xl">
+                  <Image
+                    src="/products/lineup-all-3-bottles-graffiti-1.png"
+                    alt="All 3 Root Soulutions seasoning bottles"
+                    fill
+                    className="object-cover scale-[1.8]"
+                    style={{ objectPosition: "50% 85%" }}
+                    sizes="(max-width: 768px) 100vw, 500px"
+                  />
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
       )}
 
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL"
-        bgColor="#e85c2a"
-        textColor="white"
+        bgColor="#1A1A1A"
+        textColor="#F5C542"
       />
 
-      {/* Individual Blends */}
-      <section className="bg-[#FFF8F0] py-20 relative overflow-hidden">
-        <Image src="/brand/onion-turmeric-illustration.png" alt="" width={120} height={120} className="absolute top-12 right-[5%] opacity-10 rotate-6 hidden md:block" />
-        <Image src="/brand/beetroot.png" alt="" width={80} height={80} className="absolute bottom-12 left-[5%] opacity-10 -rotate-12 hidden md:block" />
+      {/* Individual Blends — Dark */}
+      <section className="bg-[#1A1A1A] py-20 relative overflow-hidden">
+        <Image src="/brand/beetroot-small.png" alt="" width={60} height={60} className="absolute bottom-12 left-[5%] opacity-10 -rotate-12 hidden md:block" />
 
         <div className="max-w-[1400px] mx-auto px-6">
           <motion.h2
-            className="heading-section text-[#2D5A27] text-center mb-16"
+            className="heading-section text-[#F5C542] text-center mb-16"
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: true }}
@@ -125,7 +135,7 @@ export default function ShopPage() {
               >
                 <Link href={`/products/${product.handle}`} className="flex-1 flex flex-col items-center">
                   <div
-                    className="w-[200px] h-[200px] rounded-full border-4 flex items-center justify-center mb-8 overflow-hidden relative"
+                    className="w-[200px] h-[200px] rounded-full border-4 overflow-hidden relative mb-8"
                     style={{ borderColor: product.accent_color }}
                   >
                     <Image
@@ -167,8 +177,8 @@ export default function ShopPage() {
 
       <ScrollingMarquee
         text="YOU WILL FIND YOURSELF PUTTING THIS ON EVERYTHING"
-        bgColor="#1A1A1A"
-        textColor="#F5C542"
+        bgColor="#F5C542"
+        textColor="#1A1A1A"
       />
     </main>
   );

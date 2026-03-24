@@ -27,7 +27,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
 
   return (
     <main>
-      <section className="bg-[#2D5A27] py-16">
+      <section className="relative bg-[#2D5A27] py-16 overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-6 md:grid md:grid-cols-2 gap-12 items-start">
           <div 
             className="aspect-square rounded-[2rem] flex items-center justify-center relative overflow-hidden mb-8 md:mb-0"

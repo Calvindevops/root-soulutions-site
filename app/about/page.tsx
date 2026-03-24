@@ -8,8 +8,10 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <main className="w-full">
-      {/* Section 1: Hero Banner */}
-      <section className="min-h-[60vh] bg-[#2D5A27] flex items-center justify-center px-6 py-20">
+      {/* Header — compact */}
+      <section className="relative bg-[#2D5A27] px-6 pt-10 pb-8 overflow-hidden">
+        <Image src="/brand/chili-pepper.png" alt="" width={50} height={50} className="absolute top-4 left-[8%] opacity-15 rotate-12 hidden md:block" />
+        <Image src="/brand/beetroot-small.png" alt="" width={40} height={40} className="absolute bottom-4 right-[10%] opacity-15 -rotate-6 hidden md:block" />
         <motion.div
           variants={fadeIn}
           initial="initial"
@@ -21,15 +23,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Section 2: Marquee */}
-      <ScrollingMarquee 
-        text="CRAFTED WITH SOUL 🌿 ROOTED IN PURPOSE 🌱" 
-        bgColor="#e85c2a" 
-        textColor="white" 
-      />
-
-      {/* Section 3: Founder Story */}
-      <section className="bg-[#2D5A27] py-24 px-6">
+      {/* Founder Story */}
+      <section className="bg-[#2D5A27] py-16 px-6">
         <div className="max-w-[1200px] mx-auto md:grid md:grid-cols-5 gap-12 items-start">
           {/* Photo */}
           <motion.div
@@ -85,10 +80,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 4: SOUL Philosophy */}
+      {/* Marquee — breaker between story and SOUL philosophy */}
+      <ScrollingMarquee
+        text="CRAFTED WITH SOUL • ROOTED IN PURPOSE"
+        bgColor="#e85c2a"
+        textColor="white"
+      />
+
+      {/* SOUL Philosophy */}
       <section className="bg-[#6B3FA0] py-24 px-6">
         <div className="max-w-[800px] mx-auto">
-          <motion.h2 
+          <motion.h2
             variants={fadeIn}
             initial="initial"
             whileInView="whileInView"
@@ -97,8 +99,8 @@ export default function AboutPage() {
           >
             CRAFTED WITH SOUL
           </motion.h2>
-          
-          <motion.div 
+
+          <motion.div
             variants={staggerContainer}
             initial="initial"
             whileInView="whileInView"
@@ -123,7 +125,7 @@ export default function AboutPage() {
                 desc: "Seasoning that nourishes your whole life."
               }
             ].map((card, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 variants={fadeInUp}
                 className="bg-[#FFF8F0] rounded-[2rem] p-8"
@@ -138,7 +140,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 5: Craft Eatery — Parent Brand */}
+      {/* Craft Eatery — Parent Brand */}
       <section className="bg-[#1A1A1A] py-20 px-6">
         <motion.div
           variants={staggerContainer}
@@ -164,10 +166,10 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* Section 6: Clean Label Badges */}
+      {/* Clean Label Badges */}
       <section className="bg-[#FFF8F0] py-16 px-6">
         <div className="max-w-[1000px] mx-auto text-center">
-          <motion.h2 
+          <motion.h2
             variants={fadeInUp}
             initial="initial"
             whileInView="whileInView"
@@ -176,7 +178,7 @@ export default function AboutPage() {
           >
             WHAT WE VALUE
           </motion.h2>
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="initial"
             whileInView="whileInView"
@@ -184,7 +186,7 @@ export default function AboutPage() {
             className="flex flex-wrap justify-center gap-4"
           >
             {["Low Sodium", "Chemical-Free", "Preservative-Free", "Gluten-Free", "Whole-Food Based", "Wellness-Aligned"].map((badge, idx) => (
-              <motion.span 
+              <motion.span
                 key={idx}
                 variants={fadeInUp}
                 className="bg-[#2D5A27] text-white rounded-full px-6 py-3 font-[family-name:var(--font-dm-sans)] font-bold uppercase text-sm tracking-wider"
@@ -196,7 +198,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 6: CTA */}
+      {/* CTA */}
       <section className="bg-[#1A1A1A] py-24 px-6 text-center">
         <motion.div
           variants={fadeInUp}
@@ -205,7 +207,7 @@ export default function AboutPage() {
           viewport={{ once: true }}
         >
           <h2 className="heading-section text-[#F5C542]">TASTE THE SOULUTION</h2>
-          <Link 
+          <Link
             href="/shop"
             className="bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text inline-block mt-8 hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
           >

@@ -18,31 +18,52 @@ const ingredientIcons = [
 export default function HomePage() {
   return (
     <>
+      {/* 1. HERO — dark */}
       <HeroBanner />
       <SectionDivider topColor="#1A1A1A" bottomColor="#2D5A27" variant="leaf-wave" />
+
+      {/* 2. STARTER KIT — green */}
       <BundleCTA />
       <SectionDivider topColor="#2D5A27" bottomColor="#FFF8F0" variant="root-pattern" />
+
+      {/* 3. VALUE BADGES — cream */}
       <ValueBadges />
+
+      {/* 4. MARQUEE — orange bridge (cream → purple) */}
       <ScrollingMarquee
-        text="FLAVOR • WELLNESS • CULTURE • SOUL 🌿"
-        bgColor="#1A1A1A"
-        textColor="#F5C542"
+        text="FLAVOR • WELLNESS • CULTURE • SOUL"
+        bgColor="#e85c2a"
+        textColor="white"
         icons={ingredientIcons}
       />
+
+      {/* 5. FOUNDER STORY — purple */}
       <FounderStory />
       <SectionDivider topColor="#6B3FA0" bottomColor="#1A1A1A" variant="root-pattern" />
+
+      {/* 6. MADE WITH SOUL — dark */}
       <FoodShowcase />
+
+      {/* 7. TESTIMONIALS — orange (breaks up dark) */}
       <Testimonials />
+
+      {/* 8. MARQUEE — green bridge (orange → cream) */}
       <ScrollingMarquee
         text="COOK WITH SOUL"
-        bgColor="#1A1A1A"
-        textColor="#F5C542"
+        bgColor="#2D5A27"
+        textColor="white"
         icons={ingredientIcons}
       />
+
+      {/* 9. RECIPE PREVIEW — cream */}
       <RecipePreview />
       <SectionDivider topColor="#FFF8F0" bottomColor="#F5C542" variant="root-pattern" />
+
+      {/* 10. FAQ — gold */}
       <FAQSection />
       <SectionDivider topColor="#F5C542" bottomColor="#1A1A1A" variant="root-pattern" />
+
+      {/* 11. NEWSLETTER — dark */}
       <NewsletterSignup />
     </>
   );

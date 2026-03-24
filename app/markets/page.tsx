@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import * as motion from "framer-motion/client";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import Link from "next/link";
@@ -25,7 +26,9 @@ export default function MarketsPage() {
   return (
     <main className="w-full">
       {/* Header */}
-      <section className="bg-[#2D5A27] py-20 px-6 text-center">
+      <section className="relative bg-[#2D5A27] py-20 px-6 text-center overflow-hidden">
+        <Image src="/brand/chili-pepper.png" alt="" width={70} height={70} className="absolute top-8 left-[8%] opacity-15 rotate-12 hidden md:block" />
+        <Image src="/brand/garlic-illustration.png" alt="" width={60} height={60} className="absolute bottom-8 right-[10%] opacity-15 -rotate-6 hidden md:block" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,21 +79,21 @@ export default function MarketsPage() {
         </motion.div>
       </section>
 
-      {/* QR CTA */}
-      <section className="bg-[#e85c2a] py-16 px-6 text-center">
+      {/* CTA */}
+      <section className="bg-[#FFF8F0] py-16 px-6 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="heading-section text-white mb-6">SAW US AT THE MARKET?</h2>
-          <p className="font-[family-name:var(--font-dm-sans)] text-white/90 text-lg mb-8 max-w-xl mx-auto">
+          <h2 className="heading-section text-[#2D5A27] mb-6">SAW US AT THE MARKET?</h2>
+          <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/70 text-lg mb-8 max-w-xl mx-auto">
             Missed grabbing your favorite blend? You can shop our full collection online and have it shipped directly to your kitchen.
           </p>
-          <Link 
+          <Link
             href="/shop"
-            className="bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text inline-block hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-black/20"
+            className="bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text inline-block hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
           >
             SHOP NOW
           </Link>

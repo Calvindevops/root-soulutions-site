@@ -5,6 +5,7 @@ import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { CaretDown } from "@phosphor-icons/react";
 import { FAQCategory } from "@/lib/types";
+import Image from "next/image";
 import Script from "next/script";
 
 const faqData: FAQCategory[] = [
@@ -204,7 +205,9 @@ export default function FAQPage() {
       />
 
       {/* Header */}
-      <section className="bg-[#2D5A27] py-20 px-6 text-center">
+      <section className="relative bg-[#2D5A27] py-20 px-6 text-center overflow-hidden">
+        <Image src="/brand/onion-turmeric-illustration.png" alt="" width={100} height={100} className="absolute top-6 right-[8%] opacity-15 rotate-12 hidden md:block" />
+        <Image src="/brand/beetroot-small.png" alt="" width={50} height={50} className="absolute bottom-6 left-[10%] opacity-15 -rotate-6 hidden md:block" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
