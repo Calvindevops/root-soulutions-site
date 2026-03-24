@@ -19,7 +19,9 @@ export function FoodShowcase() {
   };
 
   return (
-    <section className="bg-[#1A1A1A] py-24 overflow-hidden">
+    <section className="bg-[#1A1A1A] py-24 overflow-hidden relative">
+        <Image src="/brand/chili-pepper.png" alt="" width={60} height={60} className="absolute top-10 left-[3%] opacity-10 rotate-12 hidden md:block" />
+        <Image src="/brand/garlic-illustration.png" alt="" width={50} height={50} className="absolute bottom-10 right-[4%] opacity-10 -rotate-6 hidden md:block" />
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
           initial="initial"

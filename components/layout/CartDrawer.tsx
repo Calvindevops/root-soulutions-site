@@ -115,9 +115,19 @@ export function CartDrawer() {
                 <p className="font-[family-name:var(--font-dm-sans)] text-xs text-white/70 text-center">
                   Shipping & taxes calculated at checkout
                 </p>
+                {/* Free shipping celebration */}
+                {amountToFreeShipping === 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center text-[#F5C542] text-sm font-bold font-[family-name:var(--font-dm-sans)] uppercase tracking-wider"
+                  >
+                    FREE SHIPPING UNLOCKED!
+                  </motion.div>
+                )}
                 <button
                   onClick={checkout}
-                  className="w-full bg-[#e85c2a] text-white rounded-full py-4 font-[family-name:var(--font-bebas)] text-xl tracking-wider hover:opacity-90 transition"
+                  className="w-full bg-[#e85c2a] text-white rounded-full py-4 font-[family-name:var(--font-bebas)] text-xl tracking-wider hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
                 >
                   CHECKOUT
                 </button>

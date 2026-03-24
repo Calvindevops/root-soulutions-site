@@ -133,6 +133,20 @@ export default function ShopPage() {
                 whileHover={cardHover.whileHover}
                 transition={cardHover.transition}
               >
+                {/* Most Popular badge */}
+                {product.handle === "garlicky-szn" && (
+                  <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold tracking-wider">
+                    MOST POPULAR
+                  </div>
+                )}
+
+                {/* Ingredient count */}
+                {product.ingredients && product.ingredients.length > 0 && (
+                  <div className="absolute top-4 left-4 z-10 bg-white/15 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-bold tracking-wider font-[family-name:var(--font-dm-sans)]">
+                    {product.ingredients.length} INGREDIENTS
+                  </div>
+                )}
+
                 <Link href={`/products/${product.handle}`} className="flex-1 flex flex-col items-center">
                   <div
                     className="w-[200px] h-[200px] rounded-full border-4 overflow-hidden relative mb-8"

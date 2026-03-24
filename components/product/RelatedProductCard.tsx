@@ -50,7 +50,7 @@ export function RelatedProductCard({ product }: { product: Product }) {
             e.preventDefault();
             addToCart(product);
           }}
-          className="w-full bg-white/20 hover:bg-white/30 text-white rounded-full px-6 py-2 btn-text text-sm transition-colors text-center"
+          className="w-full bg-white/20 text-white rounded-full px-6 py-2 btn-text text-sm hover:scale-105 hover:brightness-110 transition-all text-center"
         >
           ADD TO CART
         </button>

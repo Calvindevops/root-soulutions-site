@@ -1,5 +1,6 @@
 import { HeroBanner } from "@/components/home/HeroBanner";
 import { ValueBadges } from "@/components/home/ValueBadges";
+import { SocialProofStrip } from "@/components/home/SocialProofStrip";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 import { FounderStory } from "@/components/home/FounderStory";
 import { BundleCTA } from "@/components/home/BundleCTA";
@@ -29,7 +30,10 @@ export default function HomePage() {
       {/* 3. VALUE BADGES — cream */}
       <ValueBadges />
 
-      {/* 4. MARQUEE — orange bridge (cream → purple) */}
+      {/* 3.5 SOCIAL PROOF — dark strip */}
+      <SocialProofStrip />
+
+      {/* 4. MARQUEE — orange bridge (dark → purple) */}
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL"
         bgColor="#e85c2a"

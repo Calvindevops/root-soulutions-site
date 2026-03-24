@@ -16,7 +16,9 @@ const badges = [
 
 export function ValueBadges() {
   return (
-    <section className="bg-[#FFF8F0] py-20">
+    <section className="bg-[#FFF8F0] py-20 relative overflow-hidden">
+      <Image src="/brand/onion-turmeric-illustration.png" alt="" width={100} height={100} className="absolute top-8 right-[4%] opacity-10 rotate-6 hidden md:block" />
+      <Image src="/brand/beetroot-small.png" alt="" width={60} height={60} className="absolute bottom-8 left-[4%] opacity-10 -rotate-12 hidden md:block" />
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
           className="flex flex-wrap justify-center gap-6 md:gap-8"

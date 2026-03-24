@@ -68,3 +68,22 @@ export const scaleIn = {
   transition: { duration: 0.5, ease: "easeOut" },
   viewport: { once: true },
 };
+
+// Spring presets for natural motion
+export const springFast = { type: "spring" as const, stiffness: 400, damping: 25 };
+export const springMedium = { type: "spring" as const, stiffness: 300, damping: 20 };
+export const springBounce = { type: "spring" as const, stiffness: 500, damping: 15 };
+
+// Button press feedback
+export const buttonPress = {
+  whileTap: { scale: 0.95 },
+};
+
+// Card hover with spring + tap
+export const cardHoverSpring = {
+  whileHover: {
+    y: -8,
+    boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+  },
+  whileTap: { scale: 0.98 },
+};

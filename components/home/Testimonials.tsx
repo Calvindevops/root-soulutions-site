@@ -3,31 +3,42 @@
 import { motion } from "framer-motion";
 import { fadeInUp } from "@/lib/animations";
 import Image from "next/image";
+import { Star } from "@phosphor-icons/react";
 
 const testimonials = [
   {
     quote:
       "So I tried both on some turkey burgers last night and babaayyyyyyy! Okay, the Cajun is my favorite! So I can't wait for that garlic to come on out, replace all my other seasonings pleaseeee!",
     blend: "Smokey Cajun SZN",
+    context: "Turkey burger taste test",
   },
   {
     quote:
       "I'm in love with the Garlicky one man, that has to be my favorite. You gonna be coming out with some new heat soon?",
     blend: "Garlicky SZN",
+    context: "Repeat customer",
   },
   {
     quote:
       "If I could mail you one I would bruh! They taste sooooo amazing. Thank you!",
+    context: "First-time buyer",
   },
   {
     quote:
       "Good Morning, is it possible to preorder the garlicky szn?",
     blend: "Garlicky SZN",
+    context: "Pre-order request",
   },
   {
     quote:
       "I got into meal preps & counting my calories since ima be cutting. So I'm weighin everything too. I'm in love with the Garlicky one man, that has to be my favorite.",
     blend: "Garlicky SZN",
+    context: "Meal prep enthusiast",
+  },
+  {
+    quote:
+      "I'm very proud of my former student who has always been talented in the culinary world! It's hard to find seasonings that are not loaded with salt — finally here they are, cannot wait to try them!",
+    context: "Former teacher",
   },
 ];
 
@@ -63,27 +74,40 @@ export function Testimonials() {
           {scrollItems.map((t, idx) => (
             <div
               key={`testimonial-${idx}`}
-              className="flex-none w-[340px] md:w-[400px] bg-white/10 border border-white/20 rounded-[1.5rem] p-7 flex flex-col gap-5 hover:bg-white/15 transition-colors"
+              className="flex-none w-[340px] md:w-[400px] bg-white/10 border border-white/20 rounded-[1.5rem] p-7 flex flex-col gap-4 hover:bg-white/15 transition-colors"
             >
+              {/* Stars */}
+              <div className="flex gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} size={16} weight="fill" className="text-[#F5C542]" />
+                ))}
+              </div>
+
+              {/* Context label */}
+              {t.context && (
+                <span className="text-[#F5C542] text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-dm-sans)]">
+                  {t.context}
+                </span>
+              )}
+
               {/* Quote */}
               <div className="flex-1">
-                <div className="text-[#F5C542] text-3xl leading-none mb-3">&ldquo;</div>
                 <p className="text-white/90 text-base leading-relaxed font-[family-name:var(--font-dm-sans)]">
-                  {t.quote}
+                  &ldquo;{t.quote}&rdquo;
                 </p>
               </div>
 
               {/* Blend tag */}
               {t.blend && (
-                <div className="flex items-center gap-2 pt-4 border-t border-white/20">
+                <div className="flex items-center gap-2 pt-3 border-t border-white/15">
                   <Image
                     src="/brand/sunburst-bg.png"
                     alt=""
-                    width={20}
-                    height={20}
+                    width={18}
+                    height={18}
                     className="opacity-70"
                   />
-                  <span className="text-[#F5C542] text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-dm-sans)]">
+                  <span className="text-white/70 text-xs font-bold uppercase tracking-wider font-[family-name:var(--font-dm-sans)]">
                     {t.blend}
                   </span>
                 </div>

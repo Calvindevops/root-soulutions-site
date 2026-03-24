@@ -9,18 +9,24 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4">
           {/* Col 1 */}
           <div>
-            <h2 className="font-[family-name:var(--font-bebas)] text-3xl tracking-wider mb-2">ROOT SOULUTIONS</h2>
+            <Image
+              src="/brand/rs-logo-text.png"
+              alt="Root Soulutions"
+              width={200}
+              height={42}
+              className="h-[38px] w-auto mb-2 brightness-0 invert opacity-90"
+            />
             <p className="font-[family-name:var(--font-dm-sans)] text-sm mb-6 max-w-[250px]">
               Whole-food, low-sodium seasonings crafted with SOUL.
             </p>
             <div className="flex gap-4">
-              <a href="#" aria-label="Instagram" className="hover:opacity-80 transition flex items-center">
+              <a href="https://instagram.com/loverootsoulutions" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:opacity-80 transition flex items-center">
                 <InstagramLogo size={24} weight="fill" />
               </a>
               <a href="#" aria-label="TikTok" className="hover:opacity-80 transition flex items-center">
                 <TiktokLogo size={24} weight="fill" />
               </a>
-              <a href="#" aria-label="Facebook" className="hover:opacity-80 transition flex items-center">
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:opacity-80 transition flex items-center">
                 <FacebookLogo size={24} weight="fill" />
               </a>
             </div>
