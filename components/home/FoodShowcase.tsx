@@ -19,7 +19,7 @@ export function FoodShowcase() {
   };
 
   return (
-    <section className="bg-white py-24 overflow-hidden">
+    <section className="bg-[#FFF8F0] py-24 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
           initial="initial"

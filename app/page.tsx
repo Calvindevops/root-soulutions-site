@@ -32,12 +32,12 @@ export default function HomePage() {
       <FounderStory />
       <SectionDivider topColor="#6B3FA0" bottomColor="#1A1A1A" variant="root-pattern" />
       <BundleCTA />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#FFFFFF" variant="root-pattern" />
+      <SectionDivider topColor="#1A1A1A" bottomColor="#FFF8F0" variant="root-pattern" />
       <FoodShowcase />
       <ScrollingMarquee
         text="COOK WITH SOUL"
-        bgColor="#1A1A1A"
-        textColor="white"
+        bgColor="#e85c2a"
+        textColor="#F5C542"
         icons={ingredientIcons}
       />
       <RecipePreview />

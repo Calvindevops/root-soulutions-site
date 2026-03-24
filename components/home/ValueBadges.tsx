@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import { staggerContainer } from "@/lib/animations";
 
 const badges = [
-  "Black Owned",
-  "Non-GMO",
-  "Low Sodium",
-  "All Natural",
-  "Small Batch",
-  "Gluten Free",
-  "Celtic Sea Salt",
+  "BLACK OWNED",
+  "NON-GMO",
+  "LOW SODIUM",
+  "ALL NATURAL",
+  "SMALL BATCH",
+  "GLUTEN FREE",
+  "CELTIC SEA SALT",
 ];
 
 export function ValueBadges() {
@@ -19,7 +19,7 @@ export function ValueBadges() {
     <section className="bg-[#FFF8F0] py-20">
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
-          className="flex flex-wrap justify-center gap-8 md:gap-10"
+          className="flex flex-wrap justify-center gap-6 md:gap-8"
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true, amount: 0.3 }}
@@ -33,7 +33,7 @@ export function ValueBadges() {
                 whileInView: { opacity: 1, scale: 1, y: 0 },
               }}
               transition={{ duration: 0.5, ease: "easeOut" }}
-              className="relative w-[110px] h-[110px] md:w-[130px] md:h-[130px] flex items-center justify-center"
+              className="relative w-[120px] h-[120px] md:w-[150px] md:h-[150px] flex items-center justify-center"
               style={{
                 animation: `badge-float ${3 + (idx % 3) * 0.4}s ease-in-out infinite ${idx * 0.2}s`,
               }}
@@ -51,12 +51,21 @@ export function ValueBadges() {
                   alt=""
                   fill
                   className="object-contain"
-                  sizes="130px"
+                  sizes="150px"
                 />
               </div>
 
-              {/* Badge text */}
-              <span className="relative z-10 text-[12px] md:text-[14px] font-black uppercase tracking-wide leading-tight text-center text-[#2D5A27] max-w-[80px] md:max-w-[90px] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
+              {/* Badge text — FBJ style: big, bold, fills the shape */}
+              <span
+                className="relative z-10 text-[16px] md:text-[19px] leading-[1.1] text-center max-w-[90px] md:max-w-[110px]"
+                style={{
+                  fontFamily: "var(--font-bebas)",
+                  color: "#2D5A27",
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                }}
+              >
                 {label}
               </span>
             </motion.div>
