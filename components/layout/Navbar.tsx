@@ -13,7 +13,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-[34px] bg-[#1A3D1A] h-[70px] z-50 flex items-center justify-between px-4 md:px-8 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+      <nav className="sticky top-[34px] bg-[#2D5A27] h-[70px] z-50 flex items-center justify-between px-4 md:px-8 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
         {/* Mobile Left */}
         <div className="md:hidden flex-1">
           <button onClick={() => setIsMobileMenuOpen(true)} aria-label="Open Menu" className="flex items-center">
@@ -57,7 +57,7 @@ export function Navbar() {
         <div className="hidden md:flex flex-1 gap-6 items-center justify-end">
           <Link href="/recipes" className="text-white uppercase font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider hover:opacity-80 transition">RECIPES</Link>
           <Link href="/wholesale" className="text-white uppercase font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider hover:opacity-80 transition">WHOLESALE</Link>
-          <button onClick={openCart} className="rounded-full border border-white px-4 py-1.5 text-white flex items-center gap-2 hover:bg-white hover:text-[#1A3D1A] transition">
+          <button onClick={openCart} className="rounded-full border border-white px-4 py-1.5 text-white flex items-center gap-2 hover:bg-white hover:text-[#2D5A27] transition">
             <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider">CART ({itemCount})</span>
           </button>
         </div>

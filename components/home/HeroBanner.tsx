@@ -15,7 +15,7 @@ export function HeroBanner() {
       {/* Dark gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20" />
       {/* Subtle green tint overlay */}
-      <div className="absolute inset-0 bg-[#1A3D1A]/30 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[#2D5A27]/30 mix-blend-multiply" />
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full py-24">
