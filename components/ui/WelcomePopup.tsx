@@ -40,9 +40,8 @@ export function WelcomePopup() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    // TODO: Re-enable cookie check before launch
-    // const seen = document.cookie.includes(COOKIE_NAME);
-    // if (seen) return;
+    const seen = document.cookie.includes(COOKIE_NAME);
+    if (seen) return;
 
     const timer = setTimeout(() => {
       setIsOpen(true);
