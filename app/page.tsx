@@ -8,6 +8,7 @@ import { RecipePreview } from "@/components/home/RecipePreview";
 import { FoodShowcase } from "@/components/home/FoodShowcase";
 import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { FAQSection } from "@/components/home/FAQSection";
+import { Testimonials } from "@/components/home/Testimonials";
 import { SectionDivider } from "@/components/ui/SectionDivider";
 
 const ingredientIcons = [
@@ -31,6 +32,7 @@ export default function HomePage() {
       />
       <FounderStory />
       <SectionDivider topColor="#6B3FA0" bottomColor="#1A1A1A" variant="root-pattern" />
+      <Testimonials />
       <BundleCTA />
       <SectionDivider topColor="#1A1A1A" bottomColor="#e85c2a" variant="root-pattern" />
       <FoodShowcase />
