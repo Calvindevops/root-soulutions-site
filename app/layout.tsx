@@ -5,6 +5,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
+import { WelcomePopup } from "@/components/ui/WelcomePopup";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -67,6 +68,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <CartDrawer />
+          <WelcomePopup />
         </CartProvider>
       </body>
     </html>
