@@ -63,7 +63,7 @@ export function ProductDetailClient({ product }: Props) {
 
       <button 
         onClick={() => addToCart(product, quantity)}
-        className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:brightness-110 transition"
+        className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
       >
         ADD TO CART
       </button>

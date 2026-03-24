@@ -207,7 +207,7 @@ export default function AboutPage() {
           <h2 className="heading-section text-[#F5C542]">TASTE THE SOULUTION</h2>
           <Link 
             href="/shop"
-            className="bg-[#e85c2a] text-white rounded-full px-12 py-4 text-sm font-bold tracking-widest uppercase inline-block mt-8 hover:bg-[#e85c2a]/90 transition-colors"
+            className="bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text inline-block mt-8 hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
           >
             SHOP ROOT SOULUTIONS
           </Link>

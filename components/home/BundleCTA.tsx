@@ -43,7 +43,7 @@ export function BundleCTA() {
             <motion.div variants={fadeInUp} className="mt-4 w-full md:w-auto">
               <button 
                 onClick={() => starterKit && addToCart(starterKit)}
-                className="w-full md:w-auto bg-[#e85c2a] hover:bg-[#d44c1f] text-white rounded-full px-12 py-4 btn-text transition-colors"
+                className="w-full md:w-auto bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
               >
                 ADD BUNDLE TO CART
               </button>

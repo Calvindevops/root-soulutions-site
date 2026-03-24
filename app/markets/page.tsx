@@ -90,7 +90,7 @@ export default function MarketsPage() {
           </p>
           <Link 
             href="/shop"
-            className="bg-white text-[#e85c2a] rounded-full px-12 py-4 text-sm font-bold tracking-widest uppercase inline-block hover:bg-white/90 transition-colors"
+            className="bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text inline-block hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-black/20"
           >
             SHOP NOW
           </Link>

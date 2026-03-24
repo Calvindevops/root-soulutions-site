@@ -30,7 +30,7 @@ export default function HomePage() {
         icons={ingredientIcons}
       />
       <FounderStory />
-      <SectionDivider topColor="#6B3FA0" bottomColor="#e85c2a" variant="root-pattern" />
+      <SectionDivider topColor="#6B3FA0" bottomColor="#1A1A1A" variant="root-pattern" />
       <FoodShowcase />
       <Testimonials />
       <ScrollingMarquee
@@ -40,7 +40,7 @@ export default function HomePage() {
         icons={ingredientIcons}
       />
       <RecipePreview />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#F5C542" variant="root-pattern" />
+      <SectionDivider topColor="#FFF8F0" bottomColor="#F5C542" variant="root-pattern" />
       <FAQSection />
       <SectionDivider topColor="#F5C542" bottomColor="#1A1A1A" variant="root-pattern" />
       <NewsletterSignup />
