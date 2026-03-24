@@ -52,7 +52,6 @@ export function WelcomePopup() {
 
   const handleClose = () => {
     setIsOpen(false);
-    // Set cookie for 30 days
     document.cookie = `${COOKIE_NAME}=true; max-age=${30 * 24 * 60 * 60}; path=/`;
   };
 
@@ -65,18 +64,14 @@ export function WelcomePopup() {
     e.preventDefault();
     if (!email) return;
 
-    // Submit to Supabase subscribers table
     try {
       const { supabase } = await import("@/lib/supabase");
-      await supabase.from("subscribers").insert({
-        email,
-      });
+      await supabase.from("subscribers").insert({ email });
     } catch {
-      // Silent fail — don't block the UX
+      // Silent fail
     }
 
     setSubmitted(true);
-    // Close after 2 seconds
     setTimeout(() => {
       handleClose();
     }, 2000);
@@ -89,153 +84,162 @@ export function WelcomePopup() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[9999]"
         >
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={handleClose}
-          />
-
-          {/* Modal */}
+          {/* Full-screen takeover */}
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative bg-[#1A1A1A] rounded-[2rem] max-w-[500px] w-full overflow-hidden shadow-2xl"
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 200 }}
+            className="absolute inset-0 bg-[#1A1A1A] flex flex-col"
           >
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 z-10 text-white/50 hover:text-white transition-colors"
+              className="absolute top-6 right-6 z-10 text-white/50 hover:text-white transition-colors"
             >
-              <X size={24} weight="bold" />
+              <X size={28} weight="bold" />
             </button>
 
-            {/* Header with logo */}
-            <div className="bg-[#2D5A27] px-8 py-6 text-center">
+            {/* Top section — green with brand */}
+            <div className="bg-[#2D5A27] px-8 py-10 text-center relative overflow-hidden">
+              <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="absolute top-4 left-[5%] opacity-15 rotate-12 hidden md:block" />
+              <Image src="/brand/garlic-illustration.png" alt="" width={70} height={70} className="absolute bottom-4 right-[5%] opacity-15 -rotate-6 hidden md:block" />
+
               <Image
                 src="/brand/rs-logo-text.png"
                 alt="Root Soulutions"
-                width={180}
-                height={40}
-                className="mx-auto mb-2"
+                width={240}
+                height={50}
+                className="mx-auto mb-4"
               />
-              <div className="flex items-center justify-center gap-2 mt-3">
-                <Image
-                  src="/brand/chili-pepper.png"
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="object-contain"
-                />
-                <span className="text-[#F5C542] text-sm font-bold tracking-wider uppercase font-[family-name:var(--font-dm-sans)]">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-[#F5C542] text-sm md:text-base font-bold tracking-wider uppercase font-[family-name:var(--font-dm-sans)]">
                   FREE SHIPPING ON YOUR FIRST ORDER
                 </span>
-                <Image
-                  src="/brand/garlic-illustration.png"
-                  alt=""
-                  width={28}
-                  height={22}
-                  className="object-contain"
-                />
               </div>
             </div>
 
-            {/* Content */}
-            <div className="px-8 py-8">
-              {step === "quiz" && !submitted && (
-                <>
-                  <h2
-                    className="text-[#F5C542] text-3xl md:text-4xl text-center mb-2"
-                    style={{ fontFamily: "var(--font-bebas)" }}
-                  >
-                    WHAT FLAVORS ARE YOU INTO?
-                  </h2>
-                  <p className="text-white/60 text-center text-sm mb-8 font-[family-name:var(--font-dm-sans)]">
-                    Pick your vibe and we&apos;ll hook you up with free shipping.
-                  </p>
+            {/* Content — centered */}
+            <div className="flex-1 flex items-center justify-center px-6 py-12">
+              <div className="w-full max-w-[550px]">
+                {step === "quiz" && !submitted && (
+                  <>
+                    <h2
+                      className="text-[#F5C542] text-5xl md:text-6xl text-center mb-3"
+                      style={{ fontFamily: "var(--font-bebas)" }}
+                    >
+                      WHAT FLAVORS ARE YOU INTO?
+                    </h2>
+                    <p className="text-white/50 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
+                      Pick your vibe and we&apos;ll hook you up with free shipping.
+                    </p>
 
-                  <div className="flex flex-col gap-3">
-                    {flavors.map((flavor) => (
-                      <button
-                        key={flavor.id}
-                        onClick={() => handleFlavorSelect(flavor.id)}
-                        className="w-full text-left px-5 py-4 rounded-xl border-2 border-white/10 hover:border-[#F5C542] transition-all duration-200 group"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div
-                            className="w-3 h-3 rounded-full shrink-0"
-                            style={{ backgroundColor: flavor.color }}
-                          />
-                          <div>
+                    <div className="flex flex-col gap-4">
+                      {flavors.map((flavor) => (
+                        <motion.button
+                          key={flavor.id}
+                          onClick={() => handleFlavorSelect(flavor.id)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="w-full text-left px-6 py-5 rounded-2xl border-2 border-white/10 hover:border-[#F5C542] transition-all duration-200 group bg-white/5"
+                        >
+                          <div className="flex items-center gap-5">
                             <div
-                              className="text-white text-lg group-hover:text-[#F5C542] transition-colors"
-                              style={{ fontFamily: "var(--font-bebas)" }}
-                            >
-                              {flavor.label}
-                            </div>
-                            <div className="text-white/40 text-xs font-[family-name:var(--font-dm-sans)]">
-                              {flavor.description} — {flavor.blend}
+                              className="w-4 h-4 rounded-full shrink-0"
+                              style={{ backgroundColor: flavor.color }}
+                            />
+                            <div>
+                              <div
+                                className="text-white text-2xl group-hover:text-[#F5C542] transition-colors"
+                                style={{ fontFamily: "var(--font-bebas)" }}
+                              >
+                                {flavor.label}
+                              </div>
+                              <div className="text-white/40 text-sm font-[family-name:var(--font-dm-sans)]">
+                                {flavor.description} — {flavor.blend}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
+                        </motion.button>
+                      ))}
+                    </div>
 
-              {step === "capture" && !submitted && (
-                <>
-                  <h2
-                    className="text-[#F5C542] text-3xl text-center mb-2"
-                    style={{ fontFamily: "var(--font-bebas)" }}
-                  >
-                    GREAT TASTE.
-                  </h2>
-                  <p className="text-white/60 text-center text-sm mb-6 font-[family-name:var(--font-dm-sans)]">
-                    Enter your email to unlock free shipping on your first order.
-                  </p>
-
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      className="w-full px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
-                    />
                     <button
-                      type="submit"
-                      className="w-full bg-[#e85c2a] hover:bg-[#d44c1f] text-white rounded-full px-8 py-3.5 font-bold uppercase tracking-wider text-sm transition-colors font-[family-name:var(--font-dm-sans)]"
+                      onClick={handleClose}
+                      className="block mx-auto mt-8 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)]"
                     >
-                      UNLOCK FREE SHIPPING
+                      No thanks, just browsing
                     </button>
-                  </form>
+                  </>
+                )}
 
-                  <p className="text-white/30 text-[10px] text-center mt-4 font-[family-name:var(--font-dm-sans)]">
-                    By signing up, you agree to receive marketing emails. Unsubscribe anytime.
-                  </p>
-                </>
-              )}
-
-              {submitted && (
-                <div className="text-center py-4">
-                  <div className="text-4xl mb-3">🌿</div>
-                  <h2
-                    className="text-[#F5C542] text-3xl mb-2"
-                    style={{ fontFamily: "var(--font-bebas)" }}
+                {step === "capture" && !submitted && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    YOU&apos;RE IN.
-                  </h2>
-                  <p className="text-white/60 text-sm font-[family-name:var(--font-dm-sans)]">
-                    Free shipping is ready for your first order. Season with SOUL.
-                  </p>
-                </div>
-              )}
+                    <h2
+                      className="text-[#F5C542] text-5xl md:text-6xl text-center mb-3"
+                      style={{ fontFamily: "var(--font-bebas)" }}
+                    >
+                      GREAT TASTE.
+                    </h2>
+                    <p className="text-white/50 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
+                      Enter your email to unlock free shipping on your first order.
+                    </p>
+
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-[400px] mx-auto">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        required
+                        className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
+                      />
+                      <button
+                        type="submit"
+                        className="w-full bg-[#e85c2a] text-white rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+                      >
+                        UNLOCK FREE SHIPPING
+                      </button>
+                    </form>
+
+                    <button
+                      onClick={handleClose}
+                      className="block mx-auto mt-6 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)]"
+                    >
+                      No thanks
+                    </button>
+
+                    <p className="text-white/20 text-[10px] text-center mt-6 font-[family-name:var(--font-dm-sans)]">
+                      By signing up, you agree to receive marketing emails. Unsubscribe anytime.
+                    </p>
+                  </motion.div>
+                )}
+
+                {submitted && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-8"
+                  >
+                    <div className="text-6xl mb-4">🌿</div>
+                    <h2
+                      className="text-[#F5C542] text-5xl md:text-6xl mb-4"
+                      style={{ fontFamily: "var(--font-bebas)" }}
+                    >
+                      YOU&apos;RE IN.
+                    </h2>
+                    <p className="text-white/60 text-lg font-[family-name:var(--font-dm-sans)]">
+                      Free shipping is ready for your first order. Season with SOUL.
+                    </p>
+                  </motion.div>
+                )}
+              </div>
             </div>
           </motion.div>
         </motion.div>
