@@ -2,15 +2,7 @@ import { Recipe } from "./types";
 
 export const recipes: Recipe[] = [
   // === RECIPE CARD RECIPES (have full card graphics for popup) ===
-  {
-    slug: "creamy-southern-mac-and-cheese",
-    title: "Creamy Southern Baked Mac & Cheese",
-    blend: "garlicky-szn",
-    blendLabel: "Garlicky",
-    image: "/food/food-catering-spread.png",
-    recipeCards: ["/brand/recipe-card-mac-and-cheese.png"],
-    hasRecipeCard: true,
-  },
+  // mac-and-cheese removed — no full step card, was using wrong photo
   {
     slug: "lemon-butter-herb-lamb-chops",
     title: "Lemon Butter & Herb Baked Lamb Chops",
