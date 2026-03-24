@@ -8,8 +8,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Server client (for API routes / server components)
 export function createServerClient() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Fall back to anon key if service role not set (preview deploys)
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    serviceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 }

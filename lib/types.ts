@@ -46,8 +46,8 @@ export interface Order {
   customer_name: string;
   customer_email: string;
   customer_phone: string | null;
-  stripe_session_id: string | null;
-  stripe_payment_intent: string | null;
+  shopify_order_id: string | null;
+  payment_provider: "shopify" | "manual" | null;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
   subtotal: number;
   shipping: number;

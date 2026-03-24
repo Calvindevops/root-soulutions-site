@@ -26,8 +26,8 @@ create table if not exists orders (
   customer_name text not null,
   customer_email text not null,
   customer_phone text,
-  stripe_session_id text,
-  stripe_payment_intent text,
+  shopify_order_id text,
+  payment_provider text,
   status text default 'pending',
   subtotal decimal(10,2),
   shipping decimal(10,2) default 0,
@@ -115,6 +115,6 @@ create policy "Admin read subscribers" on subscribers for select using (auth.rol
 create policy "Admin read wholesale" on wholesale_inquiries for all using (auth.role() = 'authenticated');
 create policy "Admin read messages" on contact_messages for all using (auth.role() = 'authenticated');
 
--- Service role can insert orders (from Stripe webhook)
+-- Service role can insert orders (from Shopify webhook)
 create policy "Service role insert orders" on orders for insert with check (true);
 create policy "Service role manage customers" on customers for all using (true);
