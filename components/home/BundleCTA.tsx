@@ -13,7 +13,7 @@ export function BundleCTA() {
   const starterKit = products.find(p => p.handle === "soulution-starter-kit");
 
   return (
-    <section className="bg-[#1A1A1A] py-24 overflow-hidden">
+    <section className="bg-[#2D5A27] py-24 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="md:grid md:grid-cols-2 gap-12 items-center">
           {/* Left Content */}

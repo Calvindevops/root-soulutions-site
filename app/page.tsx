@@ -19,9 +19,9 @@ export default function HomePage() {
   return (
     <>
       <HeroBanner />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#1A1A1A" variant="leaf-wave" />
+      <SectionDivider topColor="#1A1A1A" bottomColor="#2D5A27" variant="leaf-wave" />
       <BundleCTA />
-      <SectionDivider topColor="#1A1A1A" bottomColor="#FFF8F0" variant="root-pattern" />
+      <SectionDivider topColor="#2D5A27" bottomColor="#FFF8F0" variant="root-pattern" />
       <ValueBadges />
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL 🌿"
@@ -40,7 +40,7 @@ export default function HomePage() {
         icons={ingredientIcons}
       />
       <RecipePreview />
-      <SectionDivider topColor="#e85c2a" bottomColor="#F5C542" variant="root-pattern" />
+      <SectionDivider topColor="#1A1A1A" bottomColor="#F5C542" variant="root-pattern" />
       <FAQSection />
       <SectionDivider topColor="#F5C542" bottomColor="#1A1A1A" variant="root-pattern" />
       <NewsletterSignup />

@@ -11,7 +11,7 @@ const recipeCardRecipes = recipes.filter((r) => r.hasRecipeCard).slice(0, 6);
 
 export function RecipePreview() {
   return (
-    <section className="bg-[#e85c2a] py-24">
+    <section className="bg-[#1A1A1A] py-24">
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
           initial="initial"
