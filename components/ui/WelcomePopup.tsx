@@ -88,17 +88,17 @@ export function WelcomePopup() {
             transition={{ type: "spring", damping: 30, stiffness: 200 }}
             className="absolute inset-0 bg-[#e85c2a] flex flex-col"
           >
-            {/* Falling seasoning particles */}
+            {/* Falling seasoning particles — deterministic positions to avoid hydration mismatch */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-              {Array.from({ length: 20 }).map((_, i) => (
+              {[5,12,20,28,35,42,50,58,65,72,80,88,95,8,18,30,45,55,70,85].map((left, i) => (
                 <div
                   key={i}
                   className="seasoning-particle absolute text-white/20"
                   style={{
-                    left: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 5}s`,
-                    animationDuration: `${4 + Math.random() * 4}s`,
-                    fontSize: `${8 + Math.random() * 12}px`,
+                    left: `${left}%`,
+                    animationDelay: `${(i * 0.25) % 5}s`,
+                    animationDuration: `${4 + (i % 5)}s`,
+                    fontSize: `${8 + (i % 4) * 3}px`,
                   }}
                 >
                   {["•", "·", "✦", "•", "·", "•"][i % 6]}
