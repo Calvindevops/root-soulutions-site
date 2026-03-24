@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@phosphor-icons/react";
 
 const COOKIE_NAME = "rs-welcome-seen";
-const POPUP_DELAY = 3000; // 3 seconds
+const POPUP_DELAY = 0; // Immediate
 
 const flavors = [
   {
@@ -33,7 +33,7 @@ const flavors = [
 ];
 
 export function WelcomePopup() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [step, setStep] = useState<"quiz" | "capture">("quiz");
   const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
   const [email, setEmail] = useState("");
@@ -41,13 +41,7 @@ export function WelcomePopup() {
 
   useEffect(() => {
     const seen = document.cookie.includes(COOKIE_NAME);
-    if (seen) return;
-
-    const timer = setTimeout(() => {
-      setIsOpen(true);
-    }, POPUP_DELAY);
-
-    return () => clearTimeout(timer);
+    if (seen) setIsOpen(false);
   }, []);
 
   const handleClose = () => {
@@ -92,8 +86,38 @@ export function WelcomePopup() {
             animate={{ y: 0 }}
             exit={{ y: "-100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 200 }}
-            className="absolute inset-0 bg-[#1A1A1A] flex flex-col"
+            className="absolute inset-0 bg-[#e85c2a] flex flex-col"
           >
+            {/* Falling seasoning particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="seasoning-particle absolute text-white/20"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 5}s`,
+                    animationDuration: `${4 + Math.random() * 4}s`,
+                    fontSize: `${8 + Math.random() * 12}px`,
+                  }}
+                >
+                  {["•", "·", "✦", "•", "·", "•"][i % 6]}
+                </div>
+              ))}
+            </div>
+
+            <style jsx>{`
+              .seasoning-particle {
+                animation: fall-seasoning linear infinite;
+              }
+              @keyframes fall-seasoning {
+                0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+              }
+            `}</style>
+
             {/* Close button */}
             <button
               onClick={handleClose}
@@ -132,7 +156,7 @@ export function WelcomePopup() {
                     >
                       WHAT FLAVORS ARE YOU INTO?
                     </h2>
-                    <p className="text-white/50 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
+                    <p className="text-white/80 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
                       Pick your vibe and we&apos;ll hook you up with free shipping.
                     </p>
 
@@ -143,7 +167,7 @@ export function WelcomePopup() {
                           onClick={() => handleFlavorSelect(flavor.id)}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full text-left px-6 py-5 rounded-2xl border-2 border-white/10 hover:border-[#F5C542] transition-all duration-200 group bg-white/5"
+                          className="w-full text-left px-6 py-5 rounded-2xl border-2 border-white/20 hover:scale-105 hover:brightness-110 transition-all duration-200 group bg-white/10 shadow-lg"
                         >
                           <div className="flex items-center gap-5">
                             <div
@@ -187,7 +211,7 @@ export function WelcomePopup() {
                     >
                       GREAT TASTE.
                     </h2>
-                    <p className="text-white/50 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
+                    <p className="text-white/80 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
                       Enter your email to unlock free shipping on your first order.
                     </p>
 
@@ -202,7 +226,7 @@ export function WelcomePopup() {
                       />
                       <button
                         type="submit"
-                        className="w-full bg-[#e85c2a] text-white rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+                        className="w-full bg-white text-[#e85c2a] rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg"
                       >
                         UNLOCK FREE SHIPPING
                       </button>
