@@ -56,7 +56,7 @@ export function ValueBadges() {
               </div>
 
               {/* Badge text */}
-              <span className="relative z-10 text-[10px] md:text-[11px] font-extrabold uppercase tracking-wider leading-tight text-center text-[#2D5A27] max-w-[75px] md:max-w-[85px]">
+              <span className="relative z-10 text-[12px] md:text-[14px] font-black uppercase tracking-wide leading-tight text-center text-[#2D5A27] max-w-[80px] md:max-w-[90px] drop-shadow-[0_1px_1px_rgba(255,255,255,0.5)]">
                 {label}
               </span>
             </motion.div>

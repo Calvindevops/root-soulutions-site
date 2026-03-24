@@ -124,14 +124,7 @@ export const recipes: Recipe[] = [
     image: "/food/food-crabcakes-grits-mango-slaw.png",
     hasRecipeCard: false,
   },
-  {
-    slug: "crispy-chicken-sub",
-    title: "Crispy Chicken Sub",
-    blend: "garlicky-simple-szn",
-    blendLabel: "Garlicky + Simple",
-    image: "/food/food-crispy-chicken-sub.png",
-    hasRecipeCard: false,
-  },
+  // crispy-chicken-sub removed — unedited photo, out of place
   {
     slug: "open-face-fried-chicken-poboy",
     title: "Open-Face Fried Chicken Po'Boy",
