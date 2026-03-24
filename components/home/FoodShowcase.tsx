@@ -19,7 +19,7 @@ export function FoodShowcase() {
   };
 
   return (
-    <section className="bg-[#FFF8F0] py-24 overflow-hidden">
+    <section className="bg-[#e85c2a] py-24 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6">
         <motion.div
           initial="initial"
@@ -28,10 +28,10 @@ export function FoodShowcase() {
           variants={fadeInUp}
           className="mb-12"
         >
-          <h2 className="heading-section text-[#1A1A1A] text-center mb-4">
+          <h2 className="heading-section text-white text-center mb-4">
             MADE WITH SOUL
           </h2>
-          <p className="text-[#666] text-center text-lg max-w-2xl mx-auto font-[family-name:var(--font-dm-sans)]">
+          <p className="text-white/70 text-center text-lg max-w-2xl mx-auto font-[family-name:var(--font-dm-sans)]">
             Real dishes made with Root Soulutions seasonings. Every plate tells a story.
           </p>
         </motion.div>

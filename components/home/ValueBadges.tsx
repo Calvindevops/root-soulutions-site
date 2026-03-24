@@ -57,12 +57,12 @@ export function ValueBadges() {
 
               {/* Badge text — FBJ style: big, bold, fills the shape */}
               <span
-                className="relative z-10 text-[16px] md:text-[19px] leading-[1.1] text-center max-w-[90px] md:max-w-[110px]"
+                className="relative z-10 text-[20px] md:text-[24px] leading-[1] text-center max-w-[95px] md:max-w-[120px]"
                 style={{
                   fontFamily: "var(--font-bebas)",
                   color: "#2D5A27",
                   fontWeight: 700,
-                  letterSpacing: "0.04em",
+                  letterSpacing: "0.02em",
                   textTransform: "uppercase",
                 }}
               >
