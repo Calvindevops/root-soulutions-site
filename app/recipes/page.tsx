@@ -30,7 +30,7 @@ export default function RecipesPage() {
   const [modalImages, setModalImages] = useState<string[]>([]);
   const [modalTitle, setModalTitle] = useState("");
 
-  const filtered = recipes.filter((r) => matchesFilter(r, activeFilter));
+  const filtered = recipes.filter((r) => r.hasRecipeCard && matchesFilter(r, activeFilter));
 
   function openModal(recipe: Recipe) {
     if (!recipe.hasRecipeCard || !recipe.recipeCards?.length) return;
