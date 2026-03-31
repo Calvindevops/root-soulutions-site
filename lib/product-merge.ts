@@ -50,10 +50,10 @@ export function mergeProducts(
     merged.push({
       id: local?.id ?? node.handle,
       handle: node.handle,
-      // Shopify wins for ecommerce fields
+      // Shopify wins for ecommerce fields (except description — local protects recipe)
       title: node.title,
-      description: node.description,
-      description_html: node.descriptionHtml,
+      description: local?.description ?? node.description,
+      description_html: local?.description_html ?? node.descriptionHtml,
       price,
       compare_at_price: compareAt > 0 && compareAt !== price ? compareAt : null,
       images: images.length > 0 ? images : local?.images ?? [],
