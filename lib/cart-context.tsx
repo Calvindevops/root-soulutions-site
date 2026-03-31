@@ -87,20 +87,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
-            product_id: item.product.id,
-            title: item.product.title,
-            price: item.product.price,
+            variantId: item.product.shopifyVariantId,
             quantity: item.quantity,
-            image: item.product.images[0] || "",
           })),
         }),
       });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
       }
     } catch (err) {
-      console.error("Checkout error:", err);
+      // Checkout failed — user stays on page
     }
   }, [items]);
 
