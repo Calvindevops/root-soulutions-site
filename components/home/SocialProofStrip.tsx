@@ -4,7 +4,7 @@ import { motion, useInView, useMotionValue, useTransform, animate } from "framer
 import { useRef, useEffect, useState } from "react";
 
 const stats = [
-  { value: 50, suffix: "+", label: "Happy Customers" },
+  { value: 50, suffix: "+", label: "Satiated Customers in 13 States" },
   { value: 3, suffix: "", label: "Signature Blends" },
   { value: 0, suffix: "", label: "Chemicals", prefix: "" },
   { value: 100, suffix: "%", label: "Whole-Food" },

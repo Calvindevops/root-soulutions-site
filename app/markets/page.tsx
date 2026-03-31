@@ -13,12 +13,19 @@ const marketsData: Market[] = [
     hours: "9am - 3pm",
     mapsUrl: "https://maps.google.com" 
   },
-  { 
-    name: "Hoboken Farmers Market", 
-    address: "Sinatra Dr, Hoboken, NJ", 
-    day: "Sundays", 
+  {
+    name: "Hoboken Farmers Market",
+    address: "Sinatra Dr, Hoboken, NJ",
+    day: "Sundays",
     hours: "10am - 4pm",
-    mapsUrl: "https://maps.google.com" 
+    mapsUrl: "https://maps.google.com"
+  },
+  {
+    name: "Riverview Park Farmers Market",
+    address: "Riverview Park, Union City, NJ",
+    day: "Saturdays",
+    hours: "9am - 3pm",
+    mapsUrl: "https://maps.google.com/?q=Riverview+Park+Union+City+NJ"
   }
 ];
 

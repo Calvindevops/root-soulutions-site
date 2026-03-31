@@ -10,6 +10,8 @@ export function AnnouncementBar() {
     <span key="3">
       <Link href="/markets" className="hover:underline">FIND US AT YOUR LOCAL FARMERS MARKET</Link>
     </span>,
+    <span key="4">CHEF CURATED AND FOUNDED</span>,
+    <span key="5">REAL FOOD. REAL INGREDIENTS. REALLLLGOOD TASTE 😋</span>,
   ];
 
   return (
