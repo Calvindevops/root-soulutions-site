@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local CLI symlinks
+stripe
+
+# Supabase temp
+supabase/.temp/
