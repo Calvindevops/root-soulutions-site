@@ -149,6 +149,50 @@ export default function ShopPage() {
         </section>
       ) : null}
 
+      {/* Eco-Friendly Sustainability Message */}
+      <section className="bg-[#2D5A27] py-16 md:py-20 relative overflow-hidden">
+        <div className="max-w-[800px] mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-4xl mb-6">🌿</p>
+            <h2 className="heading-section text-[#F5C542] mb-6">A Message From Our Hearts to Yours</h2>
+            <div className="text-white/80 text-base md:text-lg leading-relaxed font-[family-name:var(--font-dm-sans)] space-y-4">
+              <p>
+                As we grow, one thing never changes — our commitment to doing things the right way. Not just crafting blends you love, but caring deeply about the world we share.
+              </p>
+              <p>
+                We&apos;re making the move from plastic to stunning amber glass jars. 🫙✨ UV-protective, infinitely recyclable, and zero plastic leaching — better for your product and the planet.
+              </p>
+              <p>
+                Every small effort creates a <span className="text-[#F5C542] font-bold">HUGE</span> impact. With your support, we&apos;ll make the full switch by end of year.
+              </p>
+              <p className="text-white/60 text-sm">
+                💛 Sign up for our newsletter to be the first to know when glass pre-orders go live.
+              </p>
+            </div>
+
+            <div className="mt-10 border-t border-white/10 pt-8">
+              <p className="text-[#F5C542] text-xl md:text-2xl font-bold font-[family-name:var(--font-dm-sans)] mb-1">SAME DELICIOUS BLENDS.</p>
+              <p className="text-[#F5C542] text-xl md:text-2xl font-bold font-[family-name:var(--font-dm-sans)] mb-1">SAME EXPLOSIVE FLAVOR.</p>
+              <p className="text-white/90 text-lg md:text-xl font-[family-name:var(--font-dm-sans)]">A BRAND NEW ECO-FRIENDLY &amp; SUSTAINABLE LOOK. 🌎</p>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-white/50 text-sm font-[family-name:var(--font-dm-sans)] italic">
+                Thank you for growing with us — this one&apos;s for you and the planet
+              </p>
+              <p className="text-white/70 text-lg font-bold mt-4 font-[family-name:var(--font-dm-sans)]">
+                LOVEROOT 🩵
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL"
         bgColor="#1A1A1A"
