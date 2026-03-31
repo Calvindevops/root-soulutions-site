@@ -15,6 +15,10 @@ const SHOPIFY_PRODUCT_IDS: Record<string, string> = {
 const SHOPIFY_DOMAIN = "ahgadf-je.myshopify.com";
 const SHOPIFY_TOKEN = "5337eab045544526f549658b1a593267";
 
+export function hasBuyButton(handle: string): boolean {
+  return handle in SHOPIFY_PRODUCT_IDS;
+}
+
 interface ShopifyBuyButtonProps {
   productHandle: string;
 }

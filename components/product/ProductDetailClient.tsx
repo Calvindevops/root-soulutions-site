@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, CaretDown, Truck } from "@phosphor-icons/react";
 import { useCart } from "@/lib/cart-context";
-import { ShopifyBuyButton } from "./ShopifyBuyButton";
+import { ShopifyBuyButton, hasBuyButton } from "./ShopifyBuyButton";
 import type { Product } from "@/lib/types";
 
 interface Props {
@@ -35,16 +35,17 @@ export function ProductDetailClient({ product }: Props) {
         </button>
       </div>
 
-      {/* Shopify Buy Button — replaces custom cart for configured products */}
-      <ShopifyBuyButton productHandle={product.handle} />
-
-      {/* Fallback Add to Cart for products without Shopify Buy Button */}
-      <button
-        onClick={() => addToCart(product, quantity)}
-        className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30 shopify-fallback-btn"
-      >
-        ADD TO CART
-      </button>
+      {/* Shopify Buy Button — checkout via ahgadf-je store */}
+      {hasBuyButton(product.handle) ? (
+        <ShopifyBuyButton productHandle={product.handle} />
+      ) : (
+        <button
+          onClick={() => addToCart(product, quantity)}
+          className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+        >
+          ADD TO CART
+        </button>
+      )}
 
       {/* Shipping Info Toggle */}
       <div className="mt-8 border-t border-white/10 pt-4">
