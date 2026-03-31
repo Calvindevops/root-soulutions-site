@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, CaretDown, Truck } from "@phosphor-icons/react";
 import { useCart } from "@/lib/cart-context";
+import { ShopifyBuyButton } from "./ShopifyBuyButton";
 import type { Product } from "@/lib/types";
 
 interface Props {
@@ -34,10 +35,13 @@ export function ProductDetailClient({ product }: Props) {
         </button>
       </div>
 
-      {/* Add to Cart */}
+      {/* Shopify Buy Button — replaces custom cart for configured products */}
+      <ShopifyBuyButton productHandle={product.handle} />
+
+      {/* Fallback Add to Cart for products without Shopify Buy Button */}
       <button
         onClick={() => addToCart(product, quantity)}
-        className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+        className="w-full mt-6 bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30 shopify-fallback-btn"
       >
         ADD TO CART
       </button>
