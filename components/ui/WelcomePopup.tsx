@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@phosphor-icons/react";
 
 const COOKIE_NAME = "rs-welcome-seen";
-const POPUP_DELAY = 0; // Immediate
 
 const flavors = [
   {
@@ -33,15 +32,22 @@ const flavors = [
 ];
 
 export function WelcomePopup() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<"quiz" | "capture">("quiz");
   const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const seen = document.cookie.includes(COOKIE_NAME);
-    if (seen) setIsOpen(false);
+    if (seen) return;
+
+    const mobile = window.innerWidth < 768;
+    setIsMobile(mobile);
+    const delay = mobile ? 4000 : 1500;
+    const timer = setTimeout(() => setIsOpen(true), delay);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
@@ -80,15 +86,21 @@ export function WelcomePopup() {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[9999]"
         >
-          {/* Full-screen takeover */}
+          {/* Backdrop — click to dismiss on desktop */}
+          <div
+            className="absolute inset-0 bg-black/40 hidden md:block"
+            onClick={handleClose}
+          />
+
+          {/* Popup container — bottom sheet on mobile, centered overlay on desktop */}
           <motion.div
-            initial={{ y: "-100%" }}
+            initial={{ y: isMobile ? "100%" : "-100%" }}
             animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
+            exit={{ y: isMobile ? "100%" : "-100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 200 }}
-            className="absolute inset-0 bg-[#e85c2a] flex flex-col"
+            className="absolute inset-x-0 bottom-0 top-auto max-h-[90vh] overflow-y-auto rounded-t-3xl md:inset-0 md:top-0 md:max-h-full md:rounded-none bg-[#e85c2a] flex flex-col"
           >
-            {/* Falling seasoning particles — deterministic positions to avoid hydration mismatch */}
+            {/* Falling seasoning particles — deterministic positions */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
               {[5,12,20,28,35,42,50,58,65,72,80,88,95,8,18,30,45,55,70,85].map((left, i) => (
                 <div
@@ -118,70 +130,75 @@ export function WelcomePopup() {
               }
             `}</style>
 
+            {/* Mobile drag handle */}
+            <div className="flex justify-center pt-3 pb-1 md:hidden">
+              <div className="w-10 h-1 rounded-full bg-white/30" />
+            </div>
+
             {/* Close button */}
             <button
               onClick={handleClose}
-              className="absolute top-6 right-6 z-10 text-white/50 hover:text-white transition-colors"
+              className="absolute top-6 right-6 z-10 text-white/50 hover:text-white transition-colors w-11 h-11 flex items-center justify-center"
             >
               <X size={28} weight="bold" />
             </button>
 
             {/* Top section — green with brand */}
-            <div className="bg-[#2D5A27] px-8 py-10 text-center relative overflow-hidden">
+            <div className="bg-[#2D5A27] px-6 py-6 md:px-8 md:py-10 text-center relative overflow-hidden">
               <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="absolute top-4 left-[5%] opacity-15 rotate-12 hidden md:block" />
               <Image src="/brand/garlic-illustration.png" alt="" width={70} height={70} className="absolute bottom-4 right-[5%] opacity-15 -rotate-6 hidden md:block" />
 
               <Image
                 src="/brand/rs-logo-text.png"
                 alt="Root Soulutions"
-                width={240}
-                height={50}
-                className="mx-auto mb-4"
+                width={200}
+                height={40}
+                className="mx-auto mb-3 md:w-[240px]"
               />
               <div className="flex items-center justify-center gap-3">
                 <span className="text-[#F5C542] text-sm md:text-base font-bold tracking-wider uppercase font-[family-name:var(--font-dm-sans)]">
-                  FREE SHIPPING ON YOUR FIRST ORDER
+                  10% OFF YOUR NEXT ORDER
                 </span>
               </div>
             </div>
 
             {/* Content — centered */}
-            <div className="flex-1 flex items-center justify-center px-6 py-12">
+            <div className="flex-1 flex items-center justify-center px-6 py-8 md:py-12">
               <div className="w-full max-w-[550px]">
                 {step === "quiz" && !submitted && (
                   <>
                     <h2
-                      className="text-[#F5C542] text-5xl md:text-6xl text-center mb-3"
+                      className="text-[#F5C542] text-4xl md:text-6xl text-center mb-3"
                       style={{ fontFamily: "var(--font-bebas)" }}
                     >
                       WHAT FLAVORS ARE YOU INTO?
                     </h2>
-                    <p className="text-white/80 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
-                      Pick your vibe and we&apos;ll hook you up with free shipping.
+                    <p className="text-white/80 text-center text-sm md:text-base mb-8 md:mb-10 font-[family-name:var(--font-dm-sans)]">
+                      Pick your vibe and get 10% off your next order.
                     </p>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3 md:gap-4">
                       {flavors.map((flavor) => (
                         <motion.button
                           key={flavor.id}
                           onClick={() => handleFlavorSelect(flavor.id)}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="w-full text-left px-6 py-5 rounded-2xl border-2 border-white/20 hover:scale-105 hover:brightness-110 transition-all duration-200 group bg-white/10 shadow-lg"
+                          className="w-full text-left px-5 py-4 md:px-6 md:py-5 rounded-2xl border-2 border-white/20 hover:scale-105 hover:brightness-110 transition-all duration-200 group bg-white/10 shadow-lg"
                         >
-                          <div className="flex items-center gap-5">
+                          <div className="flex items-center gap-4 md:gap-5">
                             <div
                               className="w-4 h-4 rounded-full shrink-0"
                               style={{ backgroundColor: flavor.color }}
                             />
                             <div>
                               <div
-                                className="text-white text-2xl group-hover:text-[#F5C542] transition-colors"
+                                className="text-white text-xl md:text-2xl group-hover:text-[#F5C542] transition-colors"
                                 style={{ fontFamily: "var(--font-bebas)" }}
                               >
                                 {flavor.label}
                               </div>
-                              <div className="text-white/40 text-sm font-[family-name:var(--font-dm-sans)]">
+                              <div className="text-white/40 text-xs md:text-sm font-[family-name:var(--font-dm-sans)]">
                                 {flavor.description} — {flavor.blend}
                               </div>
                             </div>
@@ -192,7 +209,7 @@ export function WelcomePopup() {
 
                     <button
                       onClick={handleClose}
-                      className="block mx-auto mt-8 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)]"
+                      className="block mx-auto mt-6 md:mt-8 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)] min-h-[44px] flex items-center"
                     >
                       No thanks, just browsing
                     </button>
@@ -206,13 +223,13 @@ export function WelcomePopup() {
                     transition={{ duration: 0.3 }}
                   >
                     <h2
-                      className="text-[#F5C542] text-5xl md:text-6xl text-center mb-3"
+                      className="text-[#F5C542] text-4xl md:text-6xl text-center mb-3"
                       style={{ fontFamily: "var(--font-bebas)" }}
                     >
                       GREAT TASTE.
                     </h2>
-                    <p className="text-white/80 text-center text-base mb-10 font-[family-name:var(--font-dm-sans)]">
-                      Enter your email to unlock free shipping on your first order.
+                    <p className="text-white/80 text-center text-sm md:text-base mb-8 md:mb-10 font-[family-name:var(--font-dm-sans)]">
+                      Enter your email to unlock 10% off your next order.
                     </p>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-[400px] mx-auto">
@@ -228,18 +245,18 @@ export function WelcomePopup() {
                         type="submit"
                         className="w-full bg-white text-[#e85c2a] rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg"
                       >
-                        UNLOCK FREE SHIPPING
+                        GET 10% OFF
                       </button>
                     </form>
 
                     <button
                       onClick={handleClose}
-                      className="block mx-auto mt-6 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)]"
+                      className="block mx-auto mt-6 text-white/30 text-sm hover:text-white/60 transition-colors font-[family-name:var(--font-dm-sans)] min-h-[44px] flex items-center"
                     >
                       No thanks
                     </button>
 
-                    <p className="text-white/20 text-[10px] text-center mt-6 font-[family-name:var(--font-dm-sans)]">
+                    <p className="text-white/20 text-xs text-center mt-6 font-[family-name:var(--font-dm-sans)]">
                       By signing up, you agree to receive marketing emails. Unsubscribe anytime.
                     </p>
                   </motion.div>
@@ -253,13 +270,16 @@ export function WelcomePopup() {
                   >
                     <div className="text-6xl mb-4">🌿</div>
                     <h2
-                      className="text-[#F5C542] text-5xl md:text-6xl mb-4"
+                      className="text-[#F5C542] text-4xl md:text-6xl mb-4"
                       style={{ fontFamily: "var(--font-bebas)" }}
                     >
                       YOU&apos;RE IN.
                     </h2>
-                    <p className="text-white/60 text-lg font-[family-name:var(--font-dm-sans)]">
-                      Free shipping is ready for your first order. Season with SOUL.
+                    <p className="text-white/80 text-lg font-bold font-[family-name:var(--font-dm-sans)] mb-2">
+                      Use code <span className="text-[#F5C542]">SOUL10</span> at checkout for 10% off.
+                    </p>
+                    <p className="text-white/50 text-sm font-[family-name:var(--font-dm-sans)]">
+                      Season with SOUL.
                     </p>
                   </motion.div>
                 )}
