@@ -16,8 +16,10 @@ export interface Product {
   is_bundle: boolean;
   available: boolean;
   created_at: string;
-  // Shopify variant ID for checkout
+  // Shopify fields
   shopifyVariantId?: string;
+  shopify_variant_id?: string;
+  shopify_product_id?: string;
   // Extended fields (not in DB)
   ingredients?: string[];
   wellness_notes?: string[];

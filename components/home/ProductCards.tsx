@@ -3,20 +3,12 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
-import { products } from "@/lib/products";
+import { useProducts } from "@/lib/use-products";
 import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
-
-// Crop positions on bottle-4873.jpg to isolate each bottle
-// Order in image: Garlicky (left), Simple (center), Smokey Cajun (right)
-// Use individual label art or product shots per seasoning
-const productImage: Record<string, string> = {
-  "simple-szn": "/brand/simple-label.png",
-  "smokey-cajun-szn": "/products/label-smokey-cajun.png",
-  "garlicky-szn": "/products/label-garlicky.png",
-};
 
 export function ProductCards() {
   const { addToCart } = useCart();
+  const { products } = useProducts();
 
   const lineup = products.filter(p => !p.is_bundle);
 
@@ -47,7 +39,7 @@ export function ProductCards() {
                 className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col"
                 style={{
                   background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
-                  ...(product.handle === "garlicky-szn" ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
+                  ...(product.handle.includes("garlicky") ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
                 }}
                 variants={fadeInUp}
                 whileHover={cardHover.whileHover}
@@ -60,7 +52,7 @@ export function ProductCards() {
                     style={{ borderColor: product.accent_color }}
                   >
                     <Image
-                      src={productImage[product.handle] || product.images[0]}
+                      src={product.images[0]}
                       alt={product.title}
                       fill
                       className="object-cover"

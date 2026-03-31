@@ -87,7 +87,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
-            variantId: item.product.shopifyVariantId,
+            variantId: item.product.shopify_variant_id ?? item.product.shopifyVariantId,
             quantity: item.quantity,
           })),
         }),

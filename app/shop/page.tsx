@@ -4,21 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
-import { products } from "@/lib/products";
+import { useProducts } from "@/lib/use-products";
 import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 
-const productImage: Record<string, string> = {
-  "simple-szn": "/brand/simple-label.png",
-  "smokey-cajun-szn": "/products/label-smokey-cajun.png",
-  "garlicky-szn": "/products/label-garlicky.png",
-};
-
 export default function ShopPage() {
   const { addToCart } = useCart();
+  const { products, loading } = useProducts();
 
   const lineup = products.filter(p => !p.is_bundle);
-  const starterKit = products.find(p => p.handle === "soulution-starter-kit");
+  const starterKit = products.find(p => p.handle === "soulutions-starter-kit" || p.handle === "soulution-starter-kit");
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -127,14 +122,14 @@ export default function ShopPage() {
                 className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col relative"
                 style={{
                   background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
-                  ...(product.handle === "garlicky-szn" ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
+                  ...(product.handle.includes("garlicky") ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
                 }}
                 variants={fadeInUp}
                 whileHover={cardHover.whileHover}
                 transition={cardHover.transition}
               >
                 {/* Most Popular badge */}
-                {product.handle === "garlicky-szn" && (
+                {product.handle.includes("garlicky") && (
                   <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold tracking-wider">
                     MOST POPULAR
                   </div>
@@ -153,7 +148,7 @@ export default function ShopPage() {
                     style={{ borderColor: product.accent_color }}
                   >
                     <Image
-                      src={productImage[product.handle] || product.images[0]}
+                      src={product.images[0]}
                       alt={product.title}
                       fill
                       className="object-cover"
