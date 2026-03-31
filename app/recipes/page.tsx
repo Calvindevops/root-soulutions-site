@@ -115,14 +115,14 @@ export default function RecipesPage() {
 
                       {clickable && (
                         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="bg-white text-[#2D5A27] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow font-[family-name:var(--font-dm-sans)]">
+                          <span className="bg-white text-[#2D5A27] text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow font-[family-name:var(--font-dm-sans)]">
                             View Recipe
                           </span>
                         </div>
                       )}
 
                       <div className="absolute bottom-0 left-0 right-0 p-3">
-                        <span className="bg-white/20 text-white rounded-full px-2.5 py-0.5 text-[10px] uppercase font-bold tracking-wider inline-block mb-1.5 font-[family-name:var(--font-dm-sans)]">
+                        <span className="bg-white/20 text-white rounded-full px-2.5 py-0.5 text-xs uppercase font-bold tracking-wider inline-block mb-1.5 font-[family-name:var(--font-dm-sans)]">
                           {recipe.blendLabel}
                         </span>
                         <h3 className="font-[family-name:var(--font-dm-sans)] font-bold text-white text-sm md:text-base leading-tight">
