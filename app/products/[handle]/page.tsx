@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getMergedProductByHandle, getMergedRelatedProducts } from "@/lib/fetch-products";
 import { Star, Leaf } from "@phosphor-icons/react/dist/ssr";
 import { ProductDetailClient } from "@/components/product/ProductDetailClient";
+import { ProductImageCarousel } from "@/components/product/ProductImageCarousel";
 import { RelatedProductCard } from "@/components/product/RelatedProductCard";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 
@@ -37,26 +38,13 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
         <Image src="/brand/garlic-illustration.png" alt="" width={60} height={60} className="absolute bottom-10 right-[3%] opacity-10 -rotate-6 hidden lg:block" />
 
         <div className="max-w-[1400px] mx-auto px-6 md:grid md:grid-cols-2 gap-12 items-start">
-          <div
-            className="aspect-square rounded-[2rem] flex items-center justify-center relative overflow-hidden mb-8 md:mb-0 shadow-2xl"
-            style={{
-              background: `linear-gradient(to bottom, ${product.gradient_from}, ${product.gradient_to})`
-            }}
-          >
-            {product.images[0] ? (
-              <Image
-                src={product.images[0]}
-                alt={product.title}
-                fill
-                className="object-contain p-12"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            ) : (
-              <span className="text-4xl text-center px-4 font-bold" style={{ color: product.accent_color }}>
-                {product.title}
-              </span>
-            )}
-          </div>
+          <ProductImageCarousel
+            images={product.images}
+            title={product.title}
+            gradientFrom={product.gradient_from}
+            gradientTo={product.gradient_to}
+            accentColor={product.accent_color}
+          />
 
           <div>
             <h1 className="heading-hero text-white text-5xl">{product.title}</h1>
