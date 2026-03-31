@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { getProductByHandle, getRelatedProducts } from "@/lib/products";
+import { getMergedProductByHandle, getMergedRelatedProducts } from "@/lib/fetch-products";
 import { Star, Leaf } from "@phosphor-icons/react/dist/ssr";
 import { ProductDetailClient } from "@/components/product/ProductDetailClient";
 import { RelatedProductCard } from "@/components/product/RelatedProductCard";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
+
+// Revalidate every 60 seconds so Shopify images stay fresh
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return [
@@ -18,13 +21,13 @@ export function generateStaticParams() {
 export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
   const resolvedParams = await params;
   const handle = resolvedParams.handle;
-  const product = getProductByHandle(handle);
+  const product = await getMergedProductByHandle(handle);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = getRelatedProducts(handle);
+  const relatedProducts = await getMergedRelatedProducts(handle);
 
   return (
     <main>
