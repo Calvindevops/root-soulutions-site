@@ -6,8 +6,7 @@ import type { Product } from "./types";
 export const products: Product[] = [
   {
     id: "simple-szn",
-    handle: "simple-szn",
-    shopifyVariantId: "gid://shopify/ProductVariant/42332036595797",
+    handle: "low-sodium-simple-szn-complete-seasoning",
     title: "Simple SZN",
     subtitle: "Bright. Golden. Everyday.",
     description:
@@ -56,8 +55,7 @@ export const products: Product[] = [
   },
   {
     id: "smokey-cajun-szn",
-    handle: "smokey-cajun-szn",
-    shopifyVariantId: "gid://shopify/ProductVariant/42331763507285",
+    handle: "low-sodium-smokey-cajun-szn",
     title: "Smokey Cajun SZN",
     subtitle: "Deep. Smoky. Bold.",
     description:
@@ -104,8 +102,7 @@ export const products: Product[] = [
   },
   {
     id: "garlicky-szn",
-    handle: "garlicky-szn",
-    shopifyVariantId: "gid://shopify/ProductVariant/42331761311829",
+    handle: "low-sodium-garlicky-szn-blend",
     title: "Garlicky SZN",
     subtitle: "Savory. Aromatic. Pure.",
     description:
@@ -147,8 +144,7 @@ export const products: Product[] = [
   },
   {
     id: "soulution-starter-kit",
-    handle: "soulution-starter-kit",
-    shopifyVariantId: "gid://shopify/ProductVariant/42332036759637",
+    handle: "soulutions-starter-kit",
     title: "The Soulution Starter Kit",
     subtitle: "All 3 Blends. One Kit. Save 10%.",
     description:

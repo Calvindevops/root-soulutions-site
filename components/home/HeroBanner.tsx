@@ -10,7 +10,7 @@ export function HeroBanner() {
       {/* Full-bleed background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/products/lineup-jars-2.png')" }}
+        style={{ backgroundImage: "url('/brand/hero-picnic.jpg')" }}
       />
       {/* Dark gradient overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20" />

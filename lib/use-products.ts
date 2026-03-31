@@ -3,22 +3,15 @@
 import { useState, useEffect } from "react";
 import type { Product } from "./types";
 
-interface UseProductsResult {
-  products: Product[];
-  loading: boolean;
-  source: string;
-  error: string | null;
-}
-
-export function useProducts(): UseProductsResult {
+export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [source, setSource] = useState<string>("loading");
+  const [source, setSource] = useState<"shopify" | "local" | "loading">("loading");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/products")
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
         setProducts(data.products ?? []);
         setSource(data.source ?? "local");

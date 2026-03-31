@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -8,12 +9,72 @@ import { useProducts } from "@/lib/use-products";
 import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 
+
+function SkeletonCard() {
+  return (
+    <div className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col bg-white/5 animate-pulse">
+      <div className="w-[200px] h-[200px] rounded-full bg-white/10 mx-auto mb-8" />
+      <div className="h-6 bg-white/10 rounded w-2/3 mx-auto mb-2" />
+      <div className="h-4 bg-white/10 rounded w-1/2 mx-auto mb-6" />
+      <div className="mt-auto flex flex-col items-center gap-4">
+        <div className="h-8 bg-white/10 rounded w-20" />
+        <div className="h-12 bg-white/10 rounded-full w-full" />
+      </div>
+    </div>
+  );
+}
+
 export default function ShopPage() {
   const { addToCart } = useCart();
   const { products, loading } = useProducts();
 
+  const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
+
+  // Default to exploded seasoning image
+  useEffect(() => {
+    if (products.length === 0) return;
+    const indices: Record<string, number> = {};
+    products.forEach((p) => {
+      indices[p.handle] = getDefaultIndex(p.images);
+    });
+    setImageIndex(indices);
+  }, [products]);
+
+  const isBirdseye = (url: string) => {
+    const lower = url.toLowerCase();
+    return lower.includes("birdseye") || lower.includes("birds_eye");
+  };
+
+  // Default = exploded seasoning shot
+  // With birdseye: last non-birdseye (the generated exploded)
+  // Without birdseye: index 1 (second image = exploded)
+  const getDefaultIndex = (images: string[]) => {
+    const hasBE = images.some(isBirdseye);
+    if (hasBE) {
+      for (let i = images.length - 1; i >= 0; i--) {
+        if (!isBirdseye(images[i])) return i;
+      }
+    }
+    return images.length > 1 ? 1 : 0;
+  };
+
+  // Birdseye/alternate = overhead shot, or last image if no birdseye exists
+  const getBirdseyeIndex = (images: string[]) => {
+    const idx = images.findIndex(isBirdseye);
+    if (idx >= 0) return idx;
+    // No birdseye — use last image (e.g. instagram portrait for Simple SZN)
+    return images.length - 1;
+  };
+
+  const cycleImage = (handle: string, totalImages: number) => {
+    setImageIndex((prev) => ({
+      ...prev,
+      [handle]: ((prev[handle] ?? 0) + 1) % totalImages,
+    }));
+  };
+
   const lineup = products.filter(p => !p.is_bundle);
-  const starterKit = products.find(p => p.handle === "soulutions-starter-kit" || p.handle === "soulution-starter-kit");
+  const starterKit = products.find(p => p.handle === "soulutions-starter-kit");
 
   return (
     <main className="min-h-screen flex flex-col">
@@ -29,7 +90,14 @@ export default function ShopPage() {
       </section>
 
       {/* Starter Kit Feature — Orange */}
-      {starterKit && (
+      {loading ? (
+        <section className="bg-[#e85c2a] py-20">
+          <div className="max-w-[1400px] mx-auto px-6 animate-pulse">
+            <div className="h-10 bg-white/20 rounded w-1/2 mb-4" />
+            <div className="h-6 bg-white/20 rounded w-2/3" />
+          </div>
+        </section>
+      ) : starterKit ? (
         <section className="bg-[#e85c2a] py-20 relative overflow-hidden">
           <Image src="/brand/onion-turmeric-illustration.png" alt="" width={120} height={120} className="absolute top-8 right-[5%] opacity-15 rotate-6 hidden md:block" />
 
@@ -49,12 +117,6 @@ export default function ShopPage() {
                 </p>
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-white text-4xl font-bold">${starterKit.price.toFixed(2)}</span>
-                  {starterKit.compare_at_price && (
-                    <span className="line-through text-white/40 text-xl">${starterKit.compare_at_price.toFixed(2)}</span>
-                  )}
-                  <span className="bg-white text-[#e85c2a] rounded-full px-4 py-1 text-sm font-bold tracking-wide">
-                    SAVE 10%
-                  </span>
                 </div>
                 <button
                   onClick={() => addToCart(starterKit)}
@@ -74,11 +136,10 @@ export default function ShopPage() {
               >
                 <div className="w-full max-w-[500px] aspect-square rounded-[2rem] relative overflow-hidden shadow-2xl">
                   <Image
-                    src="/products/lineup-all-3-bottles-graffiti-1.png"
+                    src={starterKit.images[0] || "/products/lineup-all-3-bottles-graffiti-1.png"}
                     alt="All 3 Root Soulutions seasoning bottles"
                     fill
-                    className="object-cover scale-[1.8]"
-                    style={{ objectPosition: "50% 85%" }}
+                    className="object-contain p-4"
                     sizes="(max-width: 768px) 100vw, 500px"
                   />
                 </div>
@@ -86,7 +147,7 @@ export default function ShopPage() {
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
       <ScrollingMarquee
         text="FLAVOR • WELLNESS • CULTURE • SOUL"
@@ -109,78 +170,101 @@ export default function ShopPage() {
             THE LINEUP
           </motion.h2>
 
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={staggerContainer}
-          >
-            {lineup.map((product) => (
-              <motion.div
-                key={product.id}
-                className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col relative"
-                style={{
-                  background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
-                  ...(product.handle.includes("garlicky") ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
-                }}
-                variants={fadeInUp}
-                whileHover={cardHover.whileHover}
-                transition={cardHover.transition}
-              >
-                {/* Most Popular badge */}
-                {product.handle.includes("garlicky") && (
-                  <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold tracking-wider">
-                    MOST POPULAR
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </div>
+          ) : (
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true, amount: 0.1 }}
+              variants={staggerContainer}
+            >
+              {lineup.map((product) => (
+                <motion.div
+                  key={product.id}
+                  className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col relative"
+                  style={{
+                    background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
+                    ...(product.handle === "low-sodium-garlicky-szn-blend" ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
+                  }}
+                  variants={fadeInUp}
+                  whileHover={cardHover.whileHover}
+                  transition={cardHover.transition}
+                >
+                  {/* Most Popular badge */}
+                  {product.handle === "low-sodium-garlicky-szn-blend" && (
+                    <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold tracking-wider">
+                      MOST POPULAR
+                    </div>
+                  )}
+
+                  <Link href={`/products/${product.handle}`} className="flex-1 flex flex-col items-center">
+                    <div
+                      className="w-[200px] h-[200px] rounded-full border-4 overflow-hidden relative mb-8"
+                      style={{ borderColor: product.accent_color }}
+                      onMouseEnter={() => {
+                        if (product.images.length > 1) {
+                          setImageIndex((prev) => ({
+                            ...prev,
+                            [product.handle]: getBirdseyeIndex(product.images),
+                          }));
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        setImageIndex((prev) => ({
+                          ...prev,
+                          [product.handle]: getDefaultIndex(product.images),
+                        }));
+                      }}
+                    >
+                      {(() => {
+                        const currentIdx = imageIndex[product.handle] ?? getDefaultIndex(product.images);
+                        const currentUrl = product.images[currentIdx] ?? product.images[0];
+                        const isPortrait = currentUrl.toLowerCase().includes("portrait") || currentUrl.toLowerCase().includes("instagram");
+                        return (
+                          <Image
+                            src={currentUrl}
+                            alt={product.title}
+                            fill
+                            className={`object-cover transition-all duration-300 ${isPortrait ? "scale-150" : ""}`}
+                            style={isPortrait ? { objectPosition: "center 40%" } : undefined}
+                            sizes="200px"
+                          />
+                        );
+                      })()}
+                    </div>
+
+                    <h3 className="heading-card mb-2 text-center" style={{ color: product.accent_color }}>
+                      {product.title}
+                    </h3>
+                    <p className="text-white/70 text-sm text-center mb-6">
+                      {product.subtitle}
+                    </p>
+                  </Link>
+
+                  <div className="mt-auto flex flex-col items-center w-full gap-4 relative z-10">
+                    <span className="text-white text-2xl font-bold">
+                      ${product.price.toFixed(2)}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        addToCart(product);
+                      }}
+                      className="w-full bg-white/20 text-white rounded-full px-8 py-3 btn-text hover:scale-105 hover:brightness-110 transition-all"
+                    >
+                      ADD TO CART
+                    </button>
                   </div>
-                )}
-
-                {/* Ingredient count */}
-                {product.ingredients && product.ingredients.length > 0 && (
-                  <div className="absolute top-4 left-4 z-10 bg-white/15 backdrop-blur-sm text-white rounded-full px-3 py-1 text-xs font-bold tracking-wider font-[family-name:var(--font-dm-sans)]">
-                    {product.ingredients.length} INGREDIENTS
-                  </div>
-                )}
-
-                <Link href={`/products/${product.handle}`} className="flex-1 flex flex-col items-center">
-                  <div
-                    className="w-[200px] h-[200px] rounded-full border-4 overflow-hidden relative mb-8"
-                    style={{ borderColor: product.accent_color }}
-                  >
-                    <Image
-                      src={product.images[0]}
-                      alt={product.title}
-                      fill
-                      className="object-cover"
-                      sizes="200px"
-                    />
-                  </div>
-
-                  <h3 className="heading-card mb-2 text-center" style={{ color: product.accent_color }}>
-                    {product.title}
-                  </h3>
-                  <p className="text-white/70 text-sm text-center mb-6">
-                    {product.subtitle}
-                  </p>
-                </Link>
-
-                <div className="mt-auto flex flex-col items-center w-full gap-4 relative z-10">
-                  <span className="text-white text-2xl font-bold">
-                    ${product.price.toFixed(2)}
-                  </span>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      addToCart(product);
-                    }}
-                    className="w-full bg-white/20 text-white rounded-full px-8 py-3 btn-text hover:scale-105 hover:brightness-110 transition-all"
-                  >
-                    ADD TO CART
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
