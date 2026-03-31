@@ -16,7 +16,7 @@ export function Navbar() {
       <nav className="sticky top-[34px] bg-[#2D5A27] h-[70px] z-50 flex items-center justify-between px-4 md:px-8 shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
         {/* Mobile Left */}
         <div className="md:hidden flex-1">
-          <button onClick={() => setIsMobileMenuOpen(true)} aria-label="Open Menu" className="flex items-center">
+          <button onClick={() => setIsMobileMenuOpen(true)} aria-label="Open Menu" className="flex items-center justify-center w-11 h-11">
             <List size={28} color="white" weight="regular" />
           </button>
         </div>
@@ -45,7 +45,7 @@ export function Navbar() {
 
         {/* Mobile Right */}
         <div className="md:hidden flex-1 flex justify-end">
-          <button onClick={openCart} className="relative text-white flex items-center" aria-label="Cart">
+          <button onClick={openCart} className="relative text-white flex items-center justify-center w-11 h-11" aria-label="Cart">
             <ShoppingBag size={28} weight="regular" />
             {itemCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-[#e85c2a] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{itemCount}</span>

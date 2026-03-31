@@ -62,9 +62,9 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
             <h1 className="heading-hero text-white text-5xl">{product.title}</h1>
             <p className="text-white/60 text-lg mb-2 font-[family-name:var(--font-dm-sans)]">{product.subtitle}</p>
 
-            <div className="flex flex-row items-center gap-1">
+            <div className="flex flex-row items-center gap-1.5">
               {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} weight="fill" color="#F5C542" size={20} />
+                <Star key={star} weight="fill" color="#F5C542" size={24} />
               ))}
             </div>
 
@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
               {product.ingredients.map((ingredient, idx) => (
                 <div
                   key={idx}
-                  className="rounded-full px-5 py-2.5 text-sm font-bold uppercase tracking-wider border border-white/15 text-white/90 font-[family-name:var(--font-dm-sans)] hover:bg-white/5 transition-colors"
+                  className="rounded-full px-5 py-3 text-sm font-bold uppercase tracking-wider border border-white/15 text-white/90 font-[family-name:var(--font-dm-sans)] hover:bg-white/5 transition-colors"
                 >
                   {ingredient}
                 </div>
@@ -145,7 +145,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
               {product.use_cases.map((useCase, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#2D5A27] text-white rounded-full px-6 py-2.5 text-sm font-bold uppercase tracking-wider font-[family-name:var(--font-dm-sans)]"
+                  className="bg-[#2D5A27] text-white rounded-full px-6 py-3 text-sm font-bold uppercase tracking-wider font-[family-name:var(--font-dm-sans)]"
                 >
                   {useCase}
                 </div>

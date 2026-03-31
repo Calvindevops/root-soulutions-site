@@ -81,19 +81,19 @@ export function CartDrawer() {
                         <div className="flex-1 flex flex-col gap-1">
                           <div className="flex justify-between items-start">
                             <h3 className="font-[family-name:var(--font-dm-sans)] font-bold">{item.product.title}</h3>
-                            <button onClick={() => removeFromCart(item.product.id)} className="text-white/50 hover:text-white transition flex items-center">
-                              <Trash size={20} weight="regular" />
+                            <button onClick={() => removeFromCart(item.product.id)} className="text-white/50 hover:text-white transition flex items-center justify-center min-w-[44px] min-h-[44px]">
+                              <Trash size={22} weight="regular" />
                             </button>
                           </div>
                           <p className="font-[family-name:var(--font-dm-sans)] text-white/80">${item.product.price.toFixed(2)}</p>
                           <div className="flex items-center gap-4 mt-2">
-                            <div className="flex items-center gap-3 border border-white/20 rounded-full px-3 py-1">
-                              <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="hover:opacity-80 flex items-center">
-                                <Minus size={14} weight="regular" />
+                            <div className="flex items-center gap-3 border border-white/20 rounded-full px-4 py-2">
+                              <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="hover:opacity-80 flex items-center justify-center min-w-[44px] min-h-[44px] -my-2 -ml-2">
+                                <Minus size={18} weight="regular" />
                               </button>
                               <span className="font-[family-name:var(--font-dm-sans)] text-sm w-4 text-center">{item.quantity}</span>
-                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="hover:opacity-80 flex items-center">
-                                <Plus size={14} weight="regular" />
+                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="hover:opacity-80 flex items-center justify-center min-w-[44px] min-h-[44px] -my-2 -mr-2">
+                                <Plus size={18} weight="regular" />
                               </button>
                             </div>
                           </div>

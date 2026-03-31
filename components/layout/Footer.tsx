@@ -20,14 +20,14 @@ export function Footer() {
               Whole-food, low-sodium seasonings crafted with SOUL.
             </p>
             <div className="flex gap-4">
-              <a href="https://instagram.com/loverootsoulutions" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:opacity-80 transition flex items-center">
-                <InstagramLogo size={24} weight="fill" />
+              <a href="https://instagram.com/loverootsoulutions" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:opacity-80 transition flex items-center justify-center min-w-[44px] min-h-[44px]">
+                <InstagramLogo size={28} weight="fill" />
               </a>
-              <a href="#" aria-label="TikTok" className="hover:opacity-80 transition flex items-center">
-                <TiktokLogo size={24} weight="fill" />
+              <a href="#" aria-label="TikTok" className="hover:opacity-80 transition flex items-center justify-center min-w-[44px] min-h-[44px]">
+                <TiktokLogo size={28} weight="fill" />
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:opacity-80 transition flex items-center">
-                <FacebookLogo size={24} weight="fill" />
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:opacity-80 transition flex items-center justify-center min-w-[44px] min-h-[44px]">
+                <FacebookLogo size={28} weight="fill" />
               </a>
             </div>
           </div>
