@@ -5,11 +5,10 @@ import { useEffect, useRef } from "react";
 // Map product handles to Shopify product IDs
 // Domain: ahgadf-je.myshopify.com
 const SHOPIFY_PRODUCT_IDS: Record<string, string> = {
+  "low-sodium-simple-szn-complete-seasoning": "7353911115861",
+  "low-sodium-smokey-cajun-szn": "7353886277717",
+  "low-sodium-garlicky-szn-blend": "7353886015573",
   "soulutions-starter-kit": "7353911246933",
-  // TODO: Add remaining product IDs — Calvin will paste embed codes
-  // "low-sodium-simple-szn-complete-seasoning": "",
-  // "low-sodium-smokey-cajun-szn": "",
-  // "low-sodium-garlicky-szn-blend": "",
 };
 
 const SHOPIFY_DOMAIN = "ahgadf-je.myshopify.com";
