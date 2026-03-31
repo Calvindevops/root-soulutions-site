@@ -8,10 +8,10 @@ import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
 
 export function generateStaticParams() {
   return [
-    { handle: "simple-szn" },
-    { handle: "smokey-cajun-szn" },
-    { handle: "garlicky-szn" },
-    { handle: "soulution-starter-kit" },
+    { handle: "low-sodium-simple-szn-complete-seasoning" },
+    { handle: "low-sodium-smokey-cajun-szn" },
+    { handle: "low-sodium-garlicky-szn-blend" },
+    { handle: "soulutions-starter-kit" },
   ];
 }
 
@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
           <div className="max-w-[1400px] mx-auto px-6">
             <h2 className="heading-section text-[#F5C542] text-center mb-4">WHAT&apos;S INSIDE</h2>
             <p className="text-white/50 text-center mb-10 font-[family-name:var(--font-dm-sans)]">
-              {product.ingredients.length} whole-food ingredients. Nothing else.
+              Whole-food ingredients. Nothing artificial. Just SOUL.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               {product.ingredients.map((ingredient, idx) => (
