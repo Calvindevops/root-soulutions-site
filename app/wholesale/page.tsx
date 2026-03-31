@@ -8,23 +8,40 @@ export default function WholesalePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setSubmitError(null);
+
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    
-    // Simulate API call
-    console.log("Submitting wholesale inquiry:", data);
-    
-    // In a real app we would do:
-    // await fetch('/api/wholesale', { method: 'POST', body: JSON.stringify(data) });
-    
-    setTimeout(() => {
+
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      const { error } = await supabase.from("wholesale_inquiries").insert({
+        business_name: data.businessName as string,
+        contact_name: data.contactName as string,
+        email: data.email as string,
+        phone: (data.phone as string) || null,
+        business_type: (data.businessType as string) || null,
+        location: (data.location as string) || null,
+        message: (data.message as string) || null,
+      });
+
+      if (error) {
+        setSubmitError("Something went wrong. Please try again.");
+        setIsSubmitting(false);
+        return;
+      }
+
       setIsSubmitting(false);
       setIsSuccess(true);
-    }, 1000);
+    } catch {
+      setSubmitError("Something went wrong. Please try again.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -126,8 +143,12 @@ export default function WholesalePage() {
                 <textarea required id="message" name="message" rows={4} className="w-full border-2 border-[#2D5A27]/20 rounded-xl px-4 py-3 focus:border-[#2D5A27] outline-none transition-colors font-[family-name:var(--font-dm-sans)] resize-y"></textarea>
               </div>
 
-              <button 
-                type="submit" 
+              {submitError && (
+                <p className="text-red-600 text-sm text-center font-[family-name:var(--font-dm-sans)]">{submitError}</p>
+              )}
+
+              <button
+                type="submit"
                 disabled={isSubmitting}
                 className="w-full bg-[#e85c2a] text-white rounded-full py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30 disabled:opacity-70"
               >
