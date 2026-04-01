@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Envelope, DownloadSimple, Spinner } from "@phosphor-icons/react";
-import { supabase } from "@/lib/supabase";
 
 interface Subscriber {
   id: string;
   email: string;
-  created_at: string;
+  subscribed_at: string;
 }
 
 export default function AdminSubscribers() {
@@ -16,19 +15,22 @@ export default function AdminSubscribers() {
 
   useEffect(() => {
     async function fetchSubscribers() {
-      const { data } = await supabase
-        .from("subscribers")
-        .select("*")
-        .order("created_at", { ascending: false });
-      setSubscribers(data || []);
-      setLoading(false);
+      try {
+        const res = await fetch("/api/admin/subscribers");
+        const data = await res.json();
+        setSubscribers(data.subscribers || []);
+      } catch {
+        // Silent fail
+      } finally {
+        setLoading(false);
+      }
     }
     fetchSubscribers();
   }, []);
 
   const exportCSV = () => {
     if (subscribers.length === 0) return;
-    const csv = ["email,signed_up", ...subscribers.map(s => `${s.email},${new Date(s.created_at).toLocaleDateString()}`)].join("\n");
+    const csv = ["email,signed_up", ...subscribers.map(s => `${s.email},${new Date(s.subscribed_at).toLocaleDateString()}`)].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -82,7 +84,7 @@ export default function AdminSubscribers() {
                   <td className="px-6 py-4 text-sm text-gray-400">{idx + 1}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">{s.email}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    {new Date(s.subscribed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </td>
                 </tr>
               ))}

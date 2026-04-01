@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Handshake } from "@phosphor-icons/react";
+import { Handshake, CaretDown, CaretUp } from "@phosphor-icons/react";
 import type { WholesaleInquiry } from "@/lib/types";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -14,16 +14,14 @@ const STATUS_COLORS: Record<string, string> = {
 export default function AdminWholesale() {
   const [inquiries, setInquiries] = useState<WholesaleInquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const { supabase } = await import("@/lib/supabase");
-        const { data } = await supabase
-          .from("wholesale_inquiries")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (data) setInquiries(data);
+        const res = await fetch("/api/admin/wholesale");
+        const data = await res.json();
+        setInquiries(data.inquiries || []);
       } catch {
         // Silent fail
       } finally {
@@ -64,46 +62,88 @@ export default function AdminWholesale() {
         <span className="text-sm text-gray-500">{inquiries.length} total</span>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Business</th>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Contact</th>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase hidden md:table-cell">Type</th>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase hidden md:table-cell">Location</th>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase">Status</th>
-              <th className="px-4 py-3 text-xs font-bold text-gray-500 uppercase hidden lg:table-cell">Date</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y">
-            {inquiries.map((inq) => (
-              <tr key={inq.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3">
-                  <div className="font-semibold text-sm text-gray-900">{inq.business_name}</div>
-                  {inq.message && (
-                    <div className="text-xs text-gray-400 mt-0.5 truncate max-w-[200px]">{inq.message}</div>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="text-sm text-gray-900">{inq.contact_name}</div>
-                  <div className="text-xs text-gray-400">{inq.email}</div>
-                  {inq.phone && <div className="text-xs text-gray-400">{inq.phone}</div>}
-                </td>
-                <td className="px-4 py-3 hidden md:table-cell text-sm text-gray-600">{inq.business_type || "—"}</td>
-                <td className="px-4 py-3 hidden md:table-cell text-sm text-gray-600">{inq.location || "—"}</td>
-                <td className="px-4 py-3">
-                  <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold uppercase ${STATUS_COLORS[inq.status] || "bg-gray-100 text-gray-600"}`}>
-                    {inq.status}
-                  </span>
-                </td>
-                <td className="px-4 py-3 hidden lg:table-cell text-xs text-gray-400">
-                  {new Date(inq.created_at).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-4">
+        {inquiries.map((inq) => (
+          <div key={inq.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            {/* Summary Row */}
+            <button
+              onClick={() => setExpanded(expanded === inq.id ? null : inq.id)}
+              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            >
+              <div className="flex items-center gap-4 text-left">
+                <div>
+                  <div className="font-bold text-gray-900">{inq.business_name}</div>
+                  <div className="text-sm text-gray-500">{inq.contact_name} &middot; {inq.email}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className={`px-2.5 py-1 rounded-full text-xs font-bold uppercase ${STATUS_COLORS[inq.status] || "bg-gray-100 text-gray-600"}`}>
+                  {inq.status}
+                </span>
+                <span className="text-xs text-gray-400 hidden md:block">
+                  {new Date(inq.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </span>
+                {expanded === inq.id ? (
+                  <CaretUp size={18} className="text-gray-400" />
+                ) : (
+                  <CaretDown size={18} className="text-gray-400" />
+                )}
+              </div>
+            </button>
+
+            {/* Expanded Details */}
+            {expanded === inq.id && (
+              <div className="px-6 pb-6 border-t border-gray-100 pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Business Name</label>
+                    <p className="text-sm text-gray-900 mt-1">{inq.business_name}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Contact Name</label>
+                    <p className="text-sm text-gray-900 mt-1">{inq.contact_name}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Email</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      <a href={`mailto:${inq.email}`} className="text-blue-600 hover:underline">{inq.email}</a>
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Phone</label>
+                    <p className="text-sm text-gray-900 mt-1">
+                      {inq.phone ? (
+                        <a href={`tel:${inq.phone}`} className="text-blue-600 hover:underline">{inq.phone}</a>
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Business Type</label>
+                    <p className="text-sm text-gray-900 mt-1">{inq.business_type || <span className="text-gray-400">—</span>}</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 uppercase">Location</label>
+                    <p className="text-sm text-gray-900 mt-1">{inq.location || <span className="text-gray-400">—</span>}</p>
+                  </div>
+                </div>
+                {inq.message && (
+                  <div className="mt-4">
+                    <label className="text-xs font-bold text-gray-400 uppercase">Message</label>
+                    <p className="text-sm text-gray-900 mt-1 bg-gray-50 rounded-lg p-3 whitespace-pre-wrap">{inq.message}</p>
+                  </div>
+                )}
+                <div className="mt-4 text-xs text-gray-400">
+                  Submitted {new Date(inq.created_at).toLocaleString("en-US", {
+                    month: "long", day: "numeric", year: "numeric",
+                    hour: "numeric", minute: "2-digit"
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
