@@ -37,6 +37,7 @@ export function WelcomePopup() {
   const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [discountCode, setDiscountCode] = useState("SOUL10");
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -64,6 +65,7 @@ export function WelcomePopup() {
     e.preventDefault();
     if (!email) return;
 
+    // Save subscriber
     try {
       const { supabase } = await import("@/lib/supabase");
       await supabase.from("subscribers").insert({ email });
@@ -71,10 +73,22 @@ export function WelcomePopup() {
       // Silent fail
     }
 
+    // Generate unique discount code
+    try {
+      const res = await fetch("/api/discount", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.code) {
+        setDiscountCode(data.code);
+      }
+    } catch {
+      // Falls back to SOUL10
+    }
+
     setSubmitted(true);
-    setTimeout(() => {
-      handleClose();
-    }, 2000);
   };
 
   return (
@@ -275,12 +289,23 @@ export function WelcomePopup() {
                     >
                       YOU&apos;RE IN.
                     </h2>
-                    <p className="text-white/80 text-lg font-bold font-[family-name:var(--font-dm-sans)] mb-2">
-                      Use code <span className="text-[#F5C542]">SOUL10</span> at checkout for 10% off.
+                    <p className="text-white/80 text-base font-[family-name:var(--font-dm-sans)] mb-4">
+                      Your exclusive 10% off code:
                     </p>
-                    <p className="text-white/50 text-sm font-[family-name:var(--font-dm-sans)]">
-                      Season with SOUL.
+                    <div className="bg-white/10 border-2 border-[#F5C542] rounded-2xl px-8 py-4 inline-block mb-4">
+                      <span className="text-[#F5C542] text-3xl md:text-4xl font-bold tracking-widest font-[family-name:var(--font-bebas)]">
+                        {discountCode}
+                      </span>
+                    </div>
+                    <p className="text-white/50 text-sm font-[family-name:var(--font-dm-sans)] mb-6">
+                      Single use — just for you. Enter at checkout.
                     </p>
+                    <button
+                      onClick={handleClose}
+                      className="bg-white text-[#e85c2a] rounded-full px-8 py-3 btn-text hover:scale-105 transition-all shadow-lg"
+                    >
+                      START SHOPPING
+                    </button>
                   </motion.div>
                 )}
               </div>
