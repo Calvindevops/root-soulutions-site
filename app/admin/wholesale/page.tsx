@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Handshake, CaretDown, CaretUp } from "@phosphor-icons/react";
+import { Handshake, CaretDown, CaretUp, DownloadSimple } from "@phosphor-icons/react";
+import { exportToExcel } from "@/lib/export-excel";
 import type { WholesaleInquiry } from "@/lib/types";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -59,7 +60,30 @@ export default function AdminWholesale() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Wholesale Inquiries</h1>
-        <span className="text-sm text-gray-500">{inquiries.length} total</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500">{inquiries.length} total</span>
+          <button
+            onClick={() => exportToExcel(
+              inquiries.map((i) => ({
+                "Business Name": i.business_name,
+                "Contact Name": i.contact_name,
+                Email: i.email,
+                Phone: i.phone || "",
+                "Business Type": i.business_type || "",
+                Location: i.location || "",
+                Message: i.message || "",
+                Status: i.status,
+                "Date": new Date(i.created_at).toLocaleDateString(),
+              })),
+              "rs-wholesale-inquiries",
+              "Wholesale"
+            )}
+            className="bg-[#2D5A27] text-white rounded-lg px-4 py-2 font-semibold flex items-center gap-2 hover:bg-[#245020]"
+          >
+            <DownloadSimple size={18} weight="bold" />
+            Export Excel
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">

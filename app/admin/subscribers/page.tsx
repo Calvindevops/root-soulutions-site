@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Envelope, DownloadSimple, Spinner } from "@phosphor-icons/react";
+import { exportToExcel } from "@/lib/export-excel";
 
 interface Subscriber {
   id: string;
@@ -28,16 +29,15 @@ export default function AdminSubscribers() {
     fetchSubscribers();
   }, []);
 
-  const exportCSV = () => {
-    if (subscribers.length === 0) return;
-    const csv = ["email,signed_up", ...subscribers.map(s => `${s.email},${new Date(s.subscribed_at).toLocaleDateString()}`)].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `rs-subscribers-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleExport = () => {
+    exportToExcel(
+      subscribers.map((s) => ({
+        Email: s.email,
+        "Signed Up": new Date(s.subscribed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      })),
+      "rs-subscribers",
+      "Subscribers"
+    );
   };
 
   return (
@@ -47,12 +47,12 @@ export default function AdminSubscribers() {
           Subscribers {!loading && <span className="text-gray-400 text-lg">({subscribers.length})</span>}
         </h1>
         <button
-          onClick={exportCSV}
+          onClick={handleExport}
           disabled={subscribers.length === 0}
           className={`rounded-lg px-4 py-2 font-semibold flex items-center gap-2 ${subscribers.length > 0 ? "bg-[#2D5A27] text-white hover:bg-[#245020]" : "bg-gray-100 text-gray-400 cursor-not-allowed"}`}
         >
           <DownloadSimple size={18} weight="bold" />
-          Export CSV
+          Export Excel
         </button>
       </div>
 
