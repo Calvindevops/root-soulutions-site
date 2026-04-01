@@ -2,11 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/lib/cart-context";
 import type { Product } from "@/lib/types";
 
 export function RelatedProductCard({ product }: { product: Product }) {
-  const { addToCart } = useCart();
 
   return (
     <div 
@@ -45,15 +43,12 @@ export function RelatedProductCard({ product }: { product: Product }) {
         <span className="text-white text-xl font-bold">
           ${product.price.toFixed(2)}
         </span>
-        <button 
-          onClick={(e) => {
-            e.preventDefault();
-            addToCart(product);
-          }}
+        <Link
+          href={`/products/${product.handle}`}
           className="w-full bg-white/20 text-white rounded-full px-6 py-2 btn-text text-sm hover:scale-105 hover:brightness-110 transition-all text-center"
         >
-          ADD TO CART
-        </button>
+          SHOP NOW
+        </Link>
       </div>
     </div>
   );

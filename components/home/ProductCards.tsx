@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { useCart } from "@/lib/cart-context";
 import { useProducts } from "@/lib/use-products";
 import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
 
 
 export function ProductCards() {
-  const { addToCart } = useCart();
   const { products, loading } = useProducts();
 
   const lineup = products.filter(p => !p.is_bundle);
@@ -131,12 +130,12 @@ export function ProductCards() {
                     <span className="text-white text-2xl font-bold">
                       ${product.price.toFixed(2)}
                     </span>
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="w-full bg-white/20 hover:bg-white/30 text-white rounded-full px-8 py-3 btn-text transition-colors"
+                    <Link
+                      href={`/products/${product.handle}`}
+                      className="w-full bg-white/20 hover:bg-white/30 text-white rounded-full px-8 py-3 btn-text transition-colors text-center"
                     >
-                      ADD TO CART
-                    </button>
+                      SHOP NOW
+                    </Link>
                   </div>
                 </div>
               </motion.div>

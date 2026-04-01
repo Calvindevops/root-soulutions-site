@@ -15,10 +15,10 @@ export async function POST(request: Request) {
     }
 
     if (!process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
-      // Fallback: redirect to Shopify store directly
-      return NextResponse.json({
-        url: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}`,
-      });
+      return NextResponse.json(
+        { error: "Checkout not configured" },
+        { status: 500 }
+      );
     }
 
     const cart = await createCheckout(
@@ -31,9 +31,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ url: cart.checkoutUrl });
   } catch (err) {
     console.error("Shopify checkout error:", err);
-    // Fallback to Shopify store
-    return NextResponse.json({
-      url: `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}`,
-    });
+    return NextResponse.json(
+      { error: "Failed to create checkout. Please try again." },
+      { status: 502 }
+    );
   }
 }

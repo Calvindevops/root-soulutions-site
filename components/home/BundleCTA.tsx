@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { useCart } from "@/lib/cart-context";
 import { useProducts } from "@/lib/use-products";
 import { slideInRight, fadeInUp, staggerContainer } from "@/lib/animations";
 
 export function BundleCTA() {
-  const { addToCart } = useCart();
   const { products, loading } = useProducts();
 
   const starterKit = products.find(p => p.handle === "soulutions-starter-kit");
@@ -57,12 +56,12 @@ export function BundleCTA() {
             </motion.div>
 
             <motion.div variants={fadeInUp} className="mt-4 w-full md:w-auto">
-              <button
-                onClick={() => addToCart(starterKit)}
-                className="w-full md:w-auto bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+              <Link
+                href="/products/soulutions-starter-kit"
+                className="w-full md:w-auto bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30 inline-block text-center"
               >
-                ADD BUNDLE TO CART
-              </button>
+                SHOP BUNDLE
+              </Link>
             </motion.div>
           </motion.div>
 
