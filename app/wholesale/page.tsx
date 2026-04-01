@@ -19,18 +19,21 @@ export default function WholesalePage() {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const { supabase } = await import("@/lib/supabase");
-      const { error } = await supabase.from("wholesale_inquiries").insert({
-        business_name: data.businessName as string,
-        contact_name: data.contactName as string,
-        email: data.email as string,
-        phone: (data.phone as string) || null,
-        business_type: (data.businessType as string) || null,
-        location: (data.location as string) || null,
-        message: (data.message as string) || null,
+      const res = await fetch("/api/wholesale", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_name: data.businessName as string,
+          contact_name: data.contactName as string,
+          email: data.email as string,
+          phone: (data.phone as string) || undefined,
+          business_type: (data.businessType as string) || undefined,
+          location: (data.location as string) || undefined,
+          message: (data.message as string) || undefined,
+        }),
       });
 
-      if (error) {
+      if (!res.ok) {
         setSubmitError("Something went wrong. Please try again.");
         setIsSubmitting(false);
         return;
