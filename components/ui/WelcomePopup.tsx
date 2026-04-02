@@ -65,10 +65,13 @@ export function WelcomePopup() {
     e.preventDefault();
     if (!email) return;
 
-    // Save subscriber
+    // Save subscriber + notify n8n
     try {
-      const { supabase } = await import("@/lib/supabase");
-      await supabase.from("subscribers").insert({ email });
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
     } catch {
       // Silent fail
     }

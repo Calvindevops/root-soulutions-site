@@ -36,6 +36,22 @@ export async function POST(request: Request) {
     console.error("Supabase wholesale insert error:", err);
   }
 
+  // Notify n8n for auto-sync to Excel/Sheets
+  try {
+    const { notifyN8n } = await import("@/lib/notify-n8n");
+    await notifyN8n("wholesale_inquiry", {
+      business_name: data.business_name,
+      contact_name: data.contact_name,
+      email: data.email,
+      phone: data.phone,
+      business_type: data.business_type,
+      location: data.location,
+      message: data.message,
+    });
+  } catch {
+    // Don't block on n8n
+  }
+
   // Push to Shopify as a tagged customer
   if (adminToken && domain) {
     try {
