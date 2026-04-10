@@ -37,12 +37,23 @@ export default function PrivacyPage() {
             We use cookies to help us remember and process the items in your shopping cart, understand and save your preferences for future visits, and compile aggregate data about site traffic and site interaction so that we can offer better site experiences and tools in the future.
           </p>
 
-          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">4. Sharing Your Personal Information</h2>
+          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">4. SMS / Text Messaging</h2>
           <p>
-            We share your Personal Information with third parties to help us use your Personal Information, as described above. We use Shopify to power our online store. We also use Google Analytics to help us understand how our customers use the Site.
+            If you provide your phone number and consent to receive text messages, we will use it to send you promotional messages, farmers market schedule updates, new product announcements, and order-related notifications from Root Soulutions.
+          </p>
+          <p className="mt-3">
+            Message frequency varies. Message and data rates may apply. You can opt out of SMS messages at any time by replying <strong>STOP</strong> to any message. Reply <strong>HELP</strong> for assistance. Carriers are not liable for delayed or undelivered messages.
+          </p>
+          <p className="mt-3">
+            We use Twilio to deliver text messages on our behalf. Your phone number is shared with Twilio solely for the purpose of message delivery and is not sold or shared with any other third party for marketing purposes.
           </p>
 
-          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">5. Contact Us</h2>
+          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">5. Sharing Your Personal Information</h2>
+          <p>
+            We share your Personal Information with third parties to help us use your Personal Information, as described above. We use Shopify to power our online store, Twilio to deliver SMS messages, and Google Analytics to help us understand how our customers use the Site. We do not sell your personal information to third parties.
+          </p>
+
+          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">6. Contact Us</h2>
           <p>
             For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by email at hello@rootsoulutions.com or by mail using the details provided below:
           </p>

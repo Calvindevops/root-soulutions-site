@@ -274,7 +274,9 @@ export function WelcomePopup() {
                     </button>
 
                     <p className="text-white/20 text-xs text-center mt-6 font-[family-name:var(--font-dm-sans)]">
-                      By signing up, you agree to receive marketing emails. Unsubscribe anytime.
+                      By signing up, you agree to receive marketing emails from Root Soulutions. Unsubscribe anytime. See our{" "}
+                      <a href="/privacy" className="underline">Privacy Policy</a> and{" "}
+                      <a href="/terms" className="underline">Terms</a>.
                     </p>
                   </motion.div>
                 )}

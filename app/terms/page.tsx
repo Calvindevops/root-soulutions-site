@@ -36,7 +36,33 @@ export default function TermsPage() {
             Our return policy lasts 7 days. If 7 days have gone by since your purchase was delivered, unfortunately, we can't offer you a refund or exchange. To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging.
           </p>
 
-          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">6. Contact Information</h2>
+          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">6. SMS Messaging Program Terms</h2>
+          <p>
+            <strong>Program Name:</strong> Root Soulutions SMS Updates
+          </p>
+          <p className="mt-3">
+            <strong>Description:</strong> By opting in, you agree to receive promotional text messages from Root Soulutions (Craft Eatery Food Genius Company L.L.C.), including farmers market schedules, new product launches, special offers, and order notifications.
+          </p>
+          <p className="mt-3">
+            <strong>Message Frequency:</strong> Message frequency varies. You may receive up to 4 messages per month.
+          </p>
+          <p className="mt-3">
+            <strong>Rates:</strong> Message and data rates may apply depending on your mobile carrier and plan.
+          </p>
+          <p className="mt-3">
+            <strong>Opt-Out:</strong> Reply <strong>STOP</strong> to any message to unsubscribe at any time. You will receive a confirmation message and no further messages will be sent.
+          </p>
+          <p className="mt-3">
+            <strong>Help:</strong> Reply <strong>HELP</strong> for help, or contact us at hello@rootsoulutions.com.
+          </p>
+          <p className="mt-3">
+            <strong>Carrier Disclaimer:</strong> Carriers are not liable for delayed or undelivered messages.
+          </p>
+          <p className="mt-3">
+            For more information, see our <a href="/privacy" className="text-[#2D5A27] underline">Privacy Policy</a>.
+          </p>
+
+          <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">7. Contact Information</h2>
           <p>
             Questions about the Terms of Service should be sent to us at hello@rootsoulutions.com.
           </p>
