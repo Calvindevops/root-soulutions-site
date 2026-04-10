@@ -90,7 +90,7 @@
       "typeVersion": 4.2,
       "position": [680, 160],
       "credentials": {
-        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
+        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
       }
     },
     {
@@ -105,7 +105,7 @@
       "typeVersion": 1,
       "position": [900, 160],
       "credentials": {
-        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio SMS" }
+        "twilioApi": { "id": "NFBhWEZ819QtvKit", "name": "Twilio SMS" }
       }
     },
     {
@@ -131,7 +131,7 @@
       "typeVersion": 4.2,
       "position": [1100, 160],
       "credentials": {
-        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
+        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
       }
     },
     {
@@ -157,7 +157,7 @@
       "typeVersion": 4.2,
       "position": [680, 440],
       "credentials": {
-        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
+        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
       }
     },
     {
@@ -172,7 +172,7 @@
       "typeVersion": 1,
       "position": [900, 440],
       "credentials": {
-        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio SMS" }
+        "twilioApi": { "id": "NFBhWEZ819QtvKit", "name": "Twilio SMS" }
       }
     },
     {
@@ -198,7 +198,7 @@
       "typeVersion": 4.2,
       "position": [1100, 440],
       "credentials": {
-        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
+        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
       }
     }
   ],

@@ -28,7 +28,7 @@
       },
       "credentials": {
         "twilioApi": {
-          "id": "d83Oxb1xJ2lWmtZ1",
+          "id": "NFBhWEZ819QtvKit",
           "name": "Twilio SMS"
         }
       }
@@ -68,7 +68,7 @@
       ],
       "credentials": {
         "sendInBlueApi": {
-          "id": "tCBKxhdorIt59QKv",
+          "id": "uS572H5fSNhbwLkv",
           "name": "Brevo account"
         }
       }
@@ -103,7 +103,7 @@
       ],
       "credentials": {
         "supabaseApi": {
-          "id": "mXeE7hNSsbndGCTz",
+          "id": "9P7JEtpZwbJG0Uya",
           "name": "Supabase account"
         }
       }

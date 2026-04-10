@@ -61,7 +61,7 @@
     },
     {
       "parameters": {
-        "workflowId": { "__rl": true, "value": "REPLACE_WITH_WF1_ID", "mode": "id" },
+        "workflowId": { "__rl": true, "value": "DJLnQTsPSoYRaBKK", "mode": "id" },
         "options": {}
       },
       "id": "exec-welcome",
@@ -72,7 +72,7 @@
     },
     {
       "parameters": {
-        "workflowId": { "__rl": true, "value": "REPLACE_WITH_WF4_ID", "mode": "id" },
+        "workflowId": { "__rl": true, "value": "pjwkJSMgi9DdPvs6", "mode": "id" },
         "options": {}
       },
       "id": "exec-wholesale",
