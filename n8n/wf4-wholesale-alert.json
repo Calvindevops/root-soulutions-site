@@ -30,8 +30,8 @@
     },
     {
       "parameters": {
-        "from": "+18623153802",
-        "to": "+18623153802",
+        "from": "+18448202063",
+        "to": "+18448202063",
         "message": "=RS: New wholesale inquiry from {{ $('Execute Workflow Trigger').item.json.body.data.business_name }} in {{ $('Execute Workflow Trigger').item.json.body.data.location || 'unknown location' }}. Check your email."
       },
       "id": "twilio-alert-sms",

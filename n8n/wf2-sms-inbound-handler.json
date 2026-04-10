@@ -89,7 +89,7 @@
     },
     {
       "parameters": {
-        "from": "+18623153802",
+        "from": "+18448202063",
         "to": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
         "message": "Root Soulutions: Subscribed! Expect farmers market updates, new drops & deals. Msg & data rates may apply. Reply STOP to cancel."
       },
@@ -154,7 +154,7 @@
     },
     {
       "parameters": {
-        "from": "+18623153802",
+        "from": "+18448202063",
         "to": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
         "message": "Root Soulutions: Unsubscribed. No more messages. Reply START to resubscribe anytime."
       },

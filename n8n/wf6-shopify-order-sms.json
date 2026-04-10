@@ -105,7 +105,7 @@
     },
     {
       "parameters": {
-        "from": "+18623153802",
+        "from": "+18448202063",
         "to": "={{ $('Set — Extract Order Fields').item.json.orderPhone }}",
         "message": "Root Soulutions: Order confirmed! Your seasonings are on the way. Questions? Reply HELP. lovecrafteatery.com"
       },

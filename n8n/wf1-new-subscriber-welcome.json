@@ -57,7 +57,7 @@
     },
     {
       "parameters": {
-        "from": "+18623153802",
+        "from": "+18448202063",
         "to": "={{ $('Execute Workflow Trigger').item.json.body.data.phone }}",
         "message": "Root Soulutions: You're in the Soulution! Get 10% off your first order: lovecrafteatery.com/shop Use code WELCOME10. Reply STOP to opt out."
       },
