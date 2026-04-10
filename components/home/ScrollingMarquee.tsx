@@ -14,7 +14,7 @@ interface ScrollingMarqueeProps {
   icons?: MarqueeIcon[];
 }
 
-export function ScrollingMarquee({ text, bgColor, textColor, speed = 35, icons }: ScrollingMarqueeProps) {
+export function ScrollingMarquee({ text, bgColor, textColor, speed = 25, icons }: ScrollingMarqueeProps) {
   // Build a single repeating unit with icon separators
   const segments = text.split("•").map((s) => s.trim()).filter(Boolean);
 
