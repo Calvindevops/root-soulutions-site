@@ -64,7 +64,14 @@ export default function TermsPage() {
 
           <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">7. Contact Information</h2>
           <p>
-            Questions about the Terms of Service should be sent to us at hello@rootsoulutions.com.
+            Questions about the Terms of Service should be sent to us at{" "}
+            <a href="mailto:hello@rootsoulutions.com" className="text-[#2D5A27] underline">hello@rootsoulutions.com</a>{" "}
+            or by phone at <a href="tel:8623153802" className="text-[#2D5A27] underline">(862) 315-3802</a>.
+          </p>
+          <p className="mt-4 font-bold">
+            Craft Eatery Food Genius Company L.L.C.<br />
+            1451 S Elm Eugene St, Greensboro, NC 27406<br />
+            (862) 315-3802
           </p>
         </div>
       </section>

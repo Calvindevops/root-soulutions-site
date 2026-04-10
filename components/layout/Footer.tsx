@@ -64,22 +64,26 @@ export function Footer() {
               <li><Link href="/terms" className="font-[family-name:var(--font-dm-sans)] text-sm text-[#F5C542]/70 hover:text-[#F5C542] transition">Terms</Link></li>
               <li><Link href="/privacy" className="font-[family-name:var(--font-dm-sans)] text-sm text-[#F5C542]/70 hover:text-[#F5C542] transition">Privacy</Link></li>
             </ul>
-            <div className="mt-6 flex flex-col gap-1">
-              <a href="mailto:hello@rootsoulutions.com" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
-                hello@rootsoulutions.com
-              </a>
-              <a href="tel:8623153802" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
-                (862) 315-3802
-              </a>
-              <p className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/40 leading-snug mt-1">
-                1451 S Elm Eugene St<br />Greensboro, NC 27406
-              </p>
-            </div>
           </div>
         </div>
 
+        {/* Contact Bar */}
+        <div className="border-t border-white/10 pt-6 mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-center">
+          <a href="mailto:hello@rootsoulutions.com" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
+            hello@rootsoulutions.com
+          </a>
+          <span className="hidden sm:block text-[#F5C542]/20">|</span>
+          <a href="tel:8623153802" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
+            (862) 315-3802
+          </a>
+          <span className="hidden sm:block text-[#F5C542]/20">|</span>
+          <p className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/40">
+            1451 S Elm Eugene St, Greensboro, NC 27406
+          </p>
+        </div>
+
         {/* Parent Brand */}
-        <div className="border-t border-white/10 pt-6 mt-8 flex items-center justify-center gap-3">
+        <div className="border-t border-white/10 pt-6 mt-6 flex items-center justify-center gap-3">
           <Image
             src="/brand/craft-eatery-logo.png"
             alt="Craft Eatery"

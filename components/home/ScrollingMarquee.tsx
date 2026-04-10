@@ -14,7 +14,7 @@ interface ScrollingMarqueeProps {
   icons?: MarqueeIcon[];
 }
 
-export function ScrollingMarquee({ text, bgColor, textColor, speed = 25, icons }: ScrollingMarqueeProps) {
+export function ScrollingMarquee({ text, bgColor, textColor, speed = 35, icons }: ScrollingMarqueeProps) {
   // Build a single repeating unit with icon separators
   const segments = text.split("•").map((s) => s.trim()).filter(Boolean);
 
@@ -47,11 +47,11 @@ export function ScrollingMarquee({ text, bgColor, textColor, speed = 25, icons }
 
   return (
     <div
-      className="py-4 overflow-hidden relative w-full"
+      className="py-4 overflow-hidden relative w-full group"
       style={{ backgroundColor: bgColor }}
     >
       <div
-        className="marquee-track flex whitespace-nowrap"
+        className="marquee-track flex whitespace-nowrap group-hover:[animation-play-state:paused]"
         style={{ animationDuration: `${speed}s` }}
       >
         {renderUnit("a")}
