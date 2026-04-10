@@ -1,70 +1,111 @@
 {
-  "name": "RS — WF4: Wholesale Inquiry Alert",
+  "name": "RS \u2014 WF4: Wholesale Inquiry Alert",
   "nodes": [
     {
-      "parameters": {},
       "id": "trigger",
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {}
     },
     {
+      "id": "twilio-alert-sms",
+      "name": "Twilio \u2014 Alert SMS to Collin",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        460,
+        400
+      ],
       "parameters": {
-        "receipients": "hello@rootsoulutions.com",
-        "sender": { "email": "hello@rootsoulutions.com", "name": "Root Soulutions" },
-        "subject": "=New Wholesale Inquiry — {{ $json.body.data.business_name }}",
-        "emailType": "text",
-        "message": "=New wholesale inquiry received:\n\nBusiness: {{ $json.body.data.business_name }}\nContact: {{ $json.body.data.contact_name }}\nEmail: {{ $json.body.data.email }}\nPhone: {{ $json.body.data.phone || 'Not provided' }}\nBusiness Type: {{ $json.body.data.business_type || 'Not provided' }}\nLocation: {{ $json.body.data.location || 'Not provided' }}\nMessage: {{ $json.body.data.message || 'None' }}\n\nSubmitted: {{ $json.body.timestamp }}\n\nReply directly to {{ $json.body.data.email }} to respond.",
-        "options": {}
+        "from": "+18448202063",
+        "to": "+18623153802",
+        "message": "=RS: New wholesale inquiry from {{ $('Execute Workflow Trigger').item.json.body.data.business_name }}. Check email."
       },
-      "id": "brevo-alert-email",
-      "name": "Brevo — Alert Email to Collin",
-      "type": "n8n-nodes-base.sendInBlue",
-      "typeVersion": 2,
-      "position": [460, 200],
       "credentials": {
-        "sendInBlueApi": { "id": "CvAbuQvIdxfZ8W2M", "name": "Brevo" }
+        "twilioApi": {
+          "id": "d83Oxb1xJ2lWmtZ1",
+          "name": "Twilio SMS"
+        }
       }
     },
     {
       "parameters": {
-        "from": "+18448202063",
-        "to": "+18448202063",
-        "message": "=RS: New wholesale inquiry from {{ $('Execute Workflow Trigger').item.json.body.data.business_name }} in {{ $('Execute Workflow Trigger').item.json.body.data.location || 'unknown location' }}. Check your email."
+        "mode": "runOnceForAllItems",
+        "jsCode": "const items = $input.all();\nreturn items.map(item => {\n  const t = item.json;\n  const d = t.body.data;\n  const html = '<p><strong>New wholesale inquiry:</strong></p><p>Business: ' + (d.business_name||'') +\n    '<br/>Contact: ' + (d.contact_name||'') +\n    '<br/>Email: ' + (d.email||'') +\n    '<br/>Phone: ' + (d.phone||'Not provided') +\n    '<br/>Business Type: ' + (d.business_type||'Not provided') +\n    '<br/>Location: ' + (d.location||'Not provided') +\n    '<br/>Message: ' + (d.message||'None') + '</p>' +\n    '<p>Submitted: ' + (t.body.timestamp||'') + '</p>' +\n    '<p>Reply to <a href=\"mailto:' + d.email + '\">' + d.email + '</a></p>';\n  return {\n    json: {\n      sender: { name: 'Root Soulutions', email: 'hello@rootsoulutions.com' },\n      to: [{ email: 'hello@rootsoulutions.com' }],\n      subject: 'New Wholesale Inquiry - ' + (d.business_name||'Unknown'),\n      htmlContent: html\n    }\n  };\n});"
       },
-      "id": "twilio-alert-sms",
-      "name": "Twilio — Alert SMS to Collin",
-      "type": "n8n-nodes-base.twilio",
-      "typeVersion": 1,
-      "position": [460, 400],
-      "credentials": {
-        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
-      },
-      "notes": "Sending from and to the same toll-free number. Change 'to' to Collin's personal mobile if he has a separate number."
+      "id": "code-build-wholesale",
+      "name": "Code \u2014 Build Wholesale Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        160
+      ]
     },
     {
       "parameters": {
-        "operation": "insert",
-        "tableId": "workflow_log",
-        "fields": {
-          "values": [
-            { "fieldId": "workflow", "fieldValue": "wholesale_alert" },
-            { "fieldId": "action", "fieldValue": "sent" },
-            { "fieldId": "recipient", "fieldValue": "={{ $('Execute Workflow Trigger').item.json.body.data.email }}" },
-            { "fieldId": "subject", "fieldValue": "={{ 'Wholesale inquiry — ' + $('Execute Workflow Trigger').item.json.body.data.business_name }}" },
-            { "fieldId": "status", "fieldValue": "ok" },
-            { "fieldId": "details", "fieldValue": "={{ $('Execute Workflow Trigger').item.json.body.data.business_name + ' in ' + ($('Execute Workflow Trigger').item.json.body.data.location || 'unknown') }}" }
-          ]
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "brevo-alert-email",
+      "name": "HTTP \u2014 Brevo Alert Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        160
+      ],
+      "credentials": {
+        "sendInBlueApi": {
+          "id": "tCBKxhdorIt59QKv",
+          "name": "Brevo account"
         }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://swfviswbxxyodktnbkve.supabase.co/rest/v1/workflow_log",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"workflow\": \"wholesale_alert\", \"action\": \"sent\", \"recipient\": $(\"Execute Workflow Trigger\").item.json.body.data.email, \"subject\": \"Wholesale inquiry - \" + $(\"Execute Workflow Trigger\").item.json.body.data.business_name, \"status\": \"ok\", \"details\": $(\"Execute Workflow Trigger\").item.json.body.data.business_name } }}",
+        "options": {}
       },
       "id": "supabase-log",
-      "name": "Supabase — Log",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [680, 300],
+      "name": "Supabase \u2014 Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        300
+      ],
       "credentials": {
-        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
+        "supabaseApi": {
+          "id": "mXeE7hNSsbndGCTz",
+          "name": "Supabase account"
+        }
       }
     }
   ],
@@ -72,18 +113,56 @@
     "Execute Workflow Trigger": {
       "main": [
         [
-          { "node": "Brevo — Alert Email to Collin", "type": "main", "index": 0 },
-          { "node": "Twilio — Alert SMS to Collin", "type": "main", "index": 0 }
+          {
+            "node": "Code \u2014 Build Wholesale Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twilio \u2014 Alert SMS to Collin",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "Brevo — Alert Email to Collin": {
-      "main": [[{ "node": "Supabase — Log", "type": "main", "index": 0 }]]
+    "Code \u2014 Build Wholesale Email": {
+      "main": [
+        [
+          {
+            "node": "HTTP \u2014 Brevo Alert Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
-    "Twilio — Alert SMS to Collin": {
-      "main": [[{ "node": "Supabase — Log", "type": "main", "index": 0 }]]
+    "HTTP \u2014 Brevo Alert Email": {
+      "main": [
+        [
+          {
+            "node": "Supabase \u2014 Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio \u2014 Alert SMS to Collin": {
+      "main": [
+        [
+          {
+            "node": "Supabase \u2014 Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "settings": { "executionOrder": "v1" },
-  "meta": { "templateId": "rs-wf4-wholesale-alert" }
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null
 }

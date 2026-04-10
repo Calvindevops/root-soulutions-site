@@ -41,7 +41,7 @@
       "typeVersion": 1,
       "position": [680, 200],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
+        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
       }
     },
     {
@@ -129,7 +129,7 @@
       "typeVersion": 1.3,
       "position": [1320, 280],
       "credentials": {
-        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic Claude" }
+        "anthropicApi": { "id": "welIuAElpcGmB7XF", "name": "Anthropic account" }
       }
     },
     {
@@ -154,7 +154,7 @@
       "typeVersion": 1.3,
       "position": [1320, 500],
       "credentials": {
-        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic Claude" }
+        "anthropicApi": { "id": "welIuAElpcGmB7XF", "name": "Anthropic account" }
       }
     },
     {
@@ -179,7 +179,7 @@
       "typeVersion": 1.3,
       "position": [1320, 720],
       "credentials": {
-        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic Claude" }
+        "anthropicApi": { "id": "welIuAElpcGmB7XF", "name": "Anthropic account" }
       }
     },
     {
@@ -204,7 +204,7 @@
       "typeVersion": 1.3,
       "position": [1320, 940],
       "credentials": {
-        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic Claude" }
+        "anthropicApi": { "id": "welIuAElpcGmB7XF", "name": "Anthropic account" }
       }
     },
     {
@@ -229,7 +229,7 @@
       "typeVersion": 1.3,
       "position": [1320, 1160],
       "credentials": {
-        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic Claude" }
+        "anthropicApi": { "id": "welIuAElpcGmB7XF", "name": "Anthropic account" }
       }
     },
     {
@@ -253,7 +253,7 @@
       "typeVersion": 1,
       "position": [1600, 600],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
+        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
       }
     }
   ],
