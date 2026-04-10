@@ -4,8 +4,7 @@ const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
 const adminToken = process.env.SHOPIFY_ADMIN_ACCESS_TOKEN;
 const ADMIN_BASE = `https://${domain}/admin/api/2024-10`;
 
-// Cache the price rule ID so we only create it once
-let cachedPriceRuleId = "";
+const PRICE_RULE_TITLE = "SOUL10_WELCOME_V2";
 
 async function adminFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${ADMIN_BASE}${path}`, {
@@ -20,34 +19,30 @@ async function adminFetch(path: string, options?: RequestInit) {
 }
 
 async function getOrCreatePriceRule(): Promise<string> {
-  if (cachedPriceRuleId !== "") return cachedPriceRuleId;
-
-  // Check if our price rule already exists
+  // Always look up by title — serverless functions can't rely on module-level cache
   const listRes = await adminFetch("/price_rules.json?limit=50");
   if (listRes.ok) {
     const { price_rules } = await listRes.json();
     const existing = price_rules.find(
-      (r: { title: string }) => r.title === "SOUL10_WELCOME"
+      (r: { title: string }) => r.title === PRICE_RULE_TITLE
     );
-    if (existing) {
-      cachedPriceRuleId = existing.id.toString();
-      return cachedPriceRuleId;
-    }
+    if (existing) return existing.id.toString();
   }
 
-  // Create the price rule: 10% off, one use per customer
+  // Create price rule: 10% off, once per customer, unlimited total uses
   const createRes = await adminFetch("/price_rules.json", {
     method: "POST",
     body: JSON.stringify({
       price_rule: {
-        title: "SOUL10_WELCOME",
+        title: PRICE_RULE_TITLE,
         target_type: "line_item",
         target_selection: "all",
         allocation_method: "across",
         value_type: "percentage",
         value: "-10.0",
         customer_selection: "all",
-        usage_limit: 1, // Each unique code can only be used once
+        once_per_customer: true, // One use per customer email
+        usage_limit: null,       // Unlimited total — each code is unique and single-use
         starts_at: new Date().toISOString(),
       },
     }),
@@ -59,8 +54,7 @@ async function getOrCreatePriceRule(): Promise<string> {
   }
 
   const { price_rule } = await createRes.json();
-  cachedPriceRuleId = price_rule.id.toString();
-  return cachedPriceRuleId;
+  return price_rule.id.toString();
 }
 
 function generateUniqueCode(): string {
