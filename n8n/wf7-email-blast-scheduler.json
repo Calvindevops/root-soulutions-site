@@ -3,14 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "0 15 * * 1,3,5"
-            }
-          ]
-        }
+        "rule": {"interval": [{"field": "cronExpression", "expression": "0 15 * * 1,3,5"}]}
       },
       "id": "schedule-trigger",
       "name": "Schedule — Mon/Wed/Fri 10am ET",
@@ -42,14 +35,12 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [680, 300],
-      "credentials": {
-        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
-      }
+      "credentials": {"supabaseApi": {"id": "9P7JEtpZwbJG0Uya", "name": "Supabase account"}}
     },
     {
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const subscribers = $('Supabase — Fetch All Subscribers').first().json;\nconst sevenDaysAgo = new Date($('Code — Get Day').first().json.sevenDaysAgo);\nconst dayLabel = $('Code — Get Day').first().json.dayLabel;\n\nconst list = Array.isArray(subscribers) ? subscribers : [];\nconst segments = { new_subscriber: [], returning: [] };\n\nfor (const sub of list) {\n  if (!sub.email) continue;\n  if (new Date(sub.subscribed_at) >= sevenDaysAgo) {\n    segments.new_subscriber.push(sub);\n  } else {\n    segments.returning.push(sub);\n  }\n}\n\nreturn [{ json: { segments, dayLabel, totalCount: list.length } }];"
+        "jsCode": "const subscribers = $('Supabase — Fetch All Subscribers').first().json;\nconst sevenDaysAgo = new Date($('Code — Get Day').first().json.sevenDaysAgo);\nconst dayLabel = $('Code — Get Day').first().json.dayLabel;\nconst list = Array.isArray(subscribers) ? subscribers : [];\nconst segments = { new_subscriber: [], returning: [] };\nfor (const sub of list) {\n  if (!sub.email) continue;\n  if (new Date(sub.subscribed_at) >= sevenDaysAgo) {\n    segments.new_subscriber.push(sub);\n  } else {\n    segments.returning.push(sub);\n  }\n}\nreturn [{ json: { segments, dayLabel, totalCount: list.length } }];"
       },
       "id": "code-segment",
       "name": "Code — Segment Subscribers",
@@ -60,34 +51,11 @@
     {
       "parameters": {
         "mode": "rules",
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
-                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "monday", "operator": { "type": "string", "operation": "equals" } }],
-                "combinator": "and"
-              },
-              "renameOutput": true, "outputKey": "monday"
-            },
-            {
-              "conditions": {
-                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
-                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "wednesday", "operator": { "type": "string", "operation": "equals" } }],
-                "combinator": "and"
-              },
-              "renameOutput": true, "outputKey": "wednesday"
-            },
-            {
-              "conditions": {
-                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
-                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "friday", "operator": { "type": "string", "operation": "equals" } }],
-                "combinator": "and"
-              },
-              "renameOutput": true, "outputKey": "friday"
-            }
-          ]
-        },
+        "rules": {"values": [
+          {"conditions": {"options": {"caseSensitive": false, "leftValue": "", "typeValidation": "strict"}, "conditions": [{"leftValue": "={{ $json.dayLabel }}", "rightValue": "monday", "operator": {"type": "string", "operation": "equals"}}], "combinator": "and"}, "renameOutput": true, "outputKey": "monday"},
+          {"conditions": {"options": {"caseSensitive": false, "leftValue": "", "typeValidation": "strict"}, "conditions": [{"leftValue": "={{ $json.dayLabel }}", "rightValue": "wednesday", "operator": {"type": "string", "operation": "equals"}}], "combinator": "and"}, "renameOutput": true, "outputKey": "wednesday"},
+          {"conditions": {"options": {"caseSensitive": false, "leftValue": "", "typeValidation": "strict"}, "conditions": [{"leftValue": "={{ $json.dayLabel }}", "rightValue": "friday", "operator": {"type": "string", "operation": "equals"}}], "combinator": "and"}, "renameOutput": true, "outputKey": "friday"}
+        ]},
         "options": {}
       },
       "id": "switch-day",
@@ -105,21 +73,45 @@
       "name": "Claude — Monday Education",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
-      "position": [1320, 160]
+      "position": [1320, 120]
     },
     {
-      "parameters": {
-        "model": "claude-haiku-4-5",
-        "options": { "maxTokens": 600 }
-      },
+      "parameters": {"model": "claude-haiku-4-5-20251001", "options": {"maxTokens": 600}},
       "id": "anthropic-monday-education",
       "name": "Anthropic Model — Education",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
-      "position": [1320, 280],
-      "credentials": {
-        "anthropicApi": { "id": "D9ha3PNrfHmY57iD", "name": "Anthropic account" }
-      }
+      "position": [1320, 240],
+      "credentials": {"anthropicApi": {"id": "D9ha3PNrfHmY57iD", "name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $('Claude — Monday Education').first().json.text || '';\nconst seg = $('Code — Segment Subscribers').first().json;\nconst all = [...seg.segments.new_subscriber, ...seg.segments.returning];\nconst to = all.filter(s => s.email).map(s => ({ email: s.email, name: s.name || 'Friend' }));\nif (!to.length) return [{ json: { skipped: true } }];\nreturn [{ json: {\n  sender: { name: 'Root Soulutions', email: 'alexc19191@gmail.com' },\n  to,\n  subject: 'What Makes Root Soulutions Different 🌿',\n  htmlContent: '<p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">' + body.replace(/\\n/g, '</p><p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">') + '</p><br/><p style=\"font-family:sans-serif;font-size:14px;color:#888;\">— Root Soulutions Team | <a href=\"https://lovecrafteatery.com\">lovecrafteatery.com</a></p>'\n} }];"
+      },
+      "id": "code-brevo-mon-edu",
+      "name": "Code — Build Education Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 120]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "http-brevo-mon-edu",
+      "name": "Brevo — Send Education Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 120],
+      "credentials": {"sendInBlueApi": {"id": "uS572H5fSNhbwLkv", "name": "Brevo account"}}
     },
     {
       "parameters": {
@@ -133,18 +125,42 @@
       "position": [1320, 380]
     },
     {
-      "parameters": {
-        "model": "claude-haiku-4-5",
-        "options": { "maxTokens": 600 }
-      },
+      "parameters": {"model": "claude-haiku-4-5-20251001", "options": {"maxTokens": 600}},
       "id": "anthropic-monday-market",
       "name": "Anthropic Model — Market",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [1320, 500],
-      "credentials": {
-        "anthropicApi": { "id": "D9ha3PNrfHmY57iD", "name": "Anthropic account" }
-      }
+      "credentials": {"anthropicApi": {"id": "D9ha3PNrfHmY57iD", "name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $('Claude — Monday Market').first().json.text || '';\nconst seg = $('Code — Segment Subscribers').first().json;\nconst all = [...seg.segments.new_subscriber, ...seg.segments.returning];\nconst to = all.filter(s => s.email).map(s => ({ email: s.email, name: s.name || 'Friend' }));\nif (!to.length) return [{ json: { skipped: true } }];\nreturn [{ json: {\n  sender: { name: 'Root Soulutions', email: 'alexc19191@gmail.com' },\n  to,\n  subject: 'Find Us at the Market This Week 🛒',\n  htmlContent: '<p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">' + body.replace(/\\n/g, '</p><p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">') + '</p><br/><p style=\"font-family:sans-serif;font-size:14px;color:#888;\">— Root Soulutions Team | <a href=\"https://lovecrafteatery.com\">lovecrafteatery.com</a></p>'\n} }];"
+      },
+      "id": "code-brevo-mon-mkt",
+      "name": "Code — Build Market Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 380]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "http-brevo-mon-mkt",
+      "name": "Brevo — Send Market Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 380],
+      "credentials": {"sendInBlueApi": {"id": "uS572H5fSNhbwLkv", "name": "Brevo account"}}
     },
     {
       "parameters": {
@@ -155,21 +171,45 @@
       "name": "Claude — Wednesday Recipe",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
-      "position": [1320, 600]
+      "position": [1320, 640]
     },
     {
-      "parameters": {
-        "model": "claude-haiku-4-5",
-        "options": { "maxTokens": 700 }
-      },
+      "parameters": {"model": "claude-haiku-4-5-20251001", "options": {"maxTokens": 700}},
       "id": "anthropic-wednesday-recipe",
       "name": "Anthropic Model — Recipe",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
-      "position": [1320, 720],
-      "credentials": {
-        "anthropicApi": { "id": "D9ha3PNrfHmY57iD", "name": "Anthropic account" }
-      }
+      "position": [1320, 760],
+      "credentials": {"anthropicApi": {"id": "D9ha3PNrfHmY57iD", "name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $('Claude — Wednesday Recipe').first().json.text || '';\nconst seg = $('Code — Segment Subscribers').first().json;\nconst all = [...seg.segments.new_subscriber, ...seg.segments.returning];\nconst to = all.filter(s => s.email).map(s => ({ email: s.email, name: s.name || 'Friend' }));\nif (!to.length) return [{ json: { skipped: true } }];\nreturn [{ json: {\n  sender: { name: 'Root Soulutions', email: 'alexc19191@gmail.com' },\n  to,\n  subject: \"Tonight's Recipe from Root Soulutions 🍳\",\n  htmlContent: '<p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">' + body.replace(/\\n/g, '</p><p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">') + '</p><br/><p style=\"font-family:sans-serif;font-size:14px;color:#888;\">— Root Soulutions Team | <a href=\"https://lovecrafteatery.com\">lovecrafteatery.com</a></p>'\n} }];"
+      },
+      "id": "code-brevo-wed-rec",
+      "name": "Code — Build Recipe Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 640]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "http-brevo-wed-rec",
+      "name": "Brevo — Send Recipe Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 640],
+      "credentials": {"sendInBlueApi": {"id": "uS572H5fSNhbwLkv", "name": "Brevo account"}}
     },
     {
       "parameters": {
@@ -180,21 +220,45 @@
       "name": "Claude — Friday Loyal",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
-      "position": [1320, 820]
+      "position": [1320, 900]
     },
     {
-      "parameters": {
-        "model": "claude-haiku-4-5",
-        "options": { "maxTokens": 500 }
-      },
+      "parameters": {"model": "claude-haiku-4-5-20251001", "options": {"maxTokens": 500}},
       "id": "anthropic-friday-loyal",
       "name": "Anthropic Model — Loyal",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
-      "position": [1320, 940],
-      "credentials": {
-        "anthropicApi": { "id": "D9ha3PNrfHmY57iD", "name": "Anthropic account" }
-      }
+      "position": [1320, 1020],
+      "credentials": {"anthropicApi": {"id": "D9ha3PNrfHmY57iD", "name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $('Claude — Friday Loyal').first().json.text || '';\nconst seg = $('Code — Segment Subscribers').first().json;\nconst to = seg.segments.returning.filter(s => s.email).map(s => ({ email: s.email, name: s.name || 'Friend' }));\nif (!to.length) return [{ json: { skipped: true } }];\nreturn [{ json: {\n  sender: { name: 'Root Soulutions', email: 'alexc19191@gmail.com' },\n  to,\n  subject: 'A Special Thank You — 15% Off Just for You',\n  htmlContent: '<p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">' + body.replace(/\\n/g, '</p><p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">') + '</p><br/><p style=\"font-family:sans-serif;font-size:14px;color:#888;\">— Root Soulutions Team | <a href=\"https://lovecrafteatery.com\">lovecrafteatery.com</a></p>'\n} }];"
+      },
+      "id": "code-brevo-fri-loyal",
+      "name": "Code — Build Loyal Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 900]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "http-brevo-fri-loyal",
+      "name": "Brevo — Send Loyal Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 900],
+      "credentials": {"sendInBlueApi": {"id": "uS572H5fSNhbwLkv", "name": "Brevo account"}}
     },
     {
       "parameters": {
@@ -205,21 +269,45 @@
       "name": "Claude — Friday Intro",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
-      "position": [1320, 1040]
+      "position": [1320, 1160]
     },
     {
-      "parameters": {
-        "model": "claude-haiku-4-5",
-        "options": { "maxTokens": 500 }
-      },
+      "parameters": {"model": "claude-haiku-4-5-20251001", "options": {"maxTokens": 500}},
       "id": "anthropic-friday-intro",
       "name": "Anthropic Model — Intro",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
-      "position": [1320, 1160],
-      "credentials": {
-        "anthropicApi": { "id": "D9ha3PNrfHmY57iD", "name": "Anthropic account" }
-      }
+      "position": [1320, 1280],
+      "credentials": {"anthropicApi": {"id": "D9ha3PNrfHmY57iD", "name": "Anthropic account"}}
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const body = $('Claude — Friday Intro').first().json.text || '';\nconst seg = $('Code — Segment Subscribers').first().json;\nconst to = seg.segments.new_subscriber.filter(s => s.email).map(s => ({ email: s.email, name: s.name || 'Friend' }));\nif (!to.length) return [{ json: { skipped: true } }];\nreturn [{ json: {\n  sender: { name: 'Root Soulutions', email: 'alexc19191@gmail.com' },\n  to,\n  subject: 'Welcome Gift: 10% Off Your First Order (Code: WELCOME10)',\n  htmlContent: '<p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">' + body.replace(/\\n/g, '</p><p style=\"font-family:sans-serif;font-size:16px;line-height:1.6;color:#333;\">') + '</p><br/><p style=\"font-family:sans-serif;font-size:14px;color:#888;\">— Root Soulutions Team | <a href=\"https://lovecrafteatery.com\">lovecrafteatery.com</a></p>'\n} }];"
+      },
+      "id": "code-brevo-fri-intro",
+      "name": "Code — Build Intro Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 1160]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.brevo.com/v3/smtp/email",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "sendInBlueApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "http-brevo-fri-intro",
+      "name": "Brevo — Send Intro Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 1160],
+      "credentials": {"sendInBlueApi": {"id": "uS572H5fSNhbwLkv", "name": "Brevo account"}}
     },
     {
       "parameters": {
@@ -228,11 +316,7 @@
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            { "name": "Prefer", "value": "return=minimal" }
-          ]
-        },
+        "headerParameters": {"parameters": [{"name": "Prefer", "value": "return=minimal"}]},
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ { \"workflow\": \"email_blast\", \"action\": \"sent\", \"recipient\": \"batch\", \"subject\": $('Code — Segment Subscribers').first().json.dayLabel + ' email blast', \"status\": \"ok\", \"details\": String($('Code — Segment Subscribers').first().json.totalCount) + ' subscribers processed' } }}",
@@ -242,58 +326,35 @@
       "name": "Supabase — Log Blast",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1600, 600],
-      "credentials": {
-        "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
-      }
+      "position": [2000, 640],
+      "credentials": {"supabaseApi": {"id": "9P7JEtpZwbJG0Uya", "name": "Supabase account"}}
     }
   ],
   "connections": {
-    "Schedule — Mon/Wed/Fri 10am ET": {
-      "main": [[{ "node": "Code — Get Day", "type": "main", "index": 0 }]]
-    },
-    "Code — Get Day": {
-      "main": [[{ "node": "Supabase — Fetch All Subscribers", "type": "main", "index": 0 }]]
-    },
-    "Supabase — Fetch All Subscribers": {
-      "main": [[{ "node": "Code — Segment Subscribers", "type": "main", "index": 0 }]]
-    },
-    "Code — Segment Subscribers": {
-      "main": [[{ "node": "Switch — Day of Week", "type": "main", "index": 0 }]]
-    },
-    "Switch — Day of Week": {
-      "main": [
-        [
-          { "node": "Claude — Monday Education", "type": "main", "index": 0 },
-          { "node": "Claude — Monday Market", "type": "main", "index": 0 }
-        ],
-        [{ "node": "Claude — Wednesday Recipe", "type": "main", "index": 0 }],
-        [
-          { "node": "Claude — Friday Loyal", "type": "main", "index": 0 },
-          { "node": "Claude — Friday Intro", "type": "main", "index": 0 }
-        ]
-      ]
-    },
-    "Claude — Monday Education": {
-      "ai_languageModel": [[{ "node": "Anthropic Model — Education", "type": "ai_languageModel", "index": 0 }]],
-      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
-    },
-    "Claude — Monday Market": {
-      "ai_languageModel": [[{ "node": "Anthropic Model — Market", "type": "ai_languageModel", "index": 0 }]],
-      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
-    },
-    "Claude — Wednesday Recipe": {
-      "ai_languageModel": [[{ "node": "Anthropic Model — Recipe", "type": "ai_languageModel", "index": 0 }]],
-      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
-    },
-    "Claude — Friday Loyal": {
-      "ai_languageModel": [[{ "node": "Anthropic Model — Loyal", "type": "ai_languageModel", "index": 0 }]],
-      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
-    },
-    "Claude — Friday Intro": {
-      "ai_languageModel": [[{ "node": "Anthropic Model — Intro", "type": "ai_languageModel", "index": 0 }]],
-      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
-    }
+    "Schedule — Mon/Wed/Fri 10am ET": {"main": [[{"node": "Code — Get Day", "type": "main", "index": 0}]]},
+    "Code — Get Day": {"main": [[{"node": "Supabase — Fetch All Subscribers", "type": "main", "index": 0}]]},
+    "Supabase — Fetch All Subscribers": {"main": [[{"node": "Code — Segment Subscribers", "type": "main", "index": 0}]]},
+    "Code — Segment Subscribers": {"main": [[{"node": "Switch — Day of Week", "type": "main", "index": 0}]]},
+    "Switch — Day of Week": {"main": [
+      [{"node": "Claude — Monday Education", "type": "main", "index": 0}, {"node": "Claude — Monday Market", "type": "main", "index": 0}],
+      [{"node": "Claude — Wednesday Recipe", "type": "main", "index": 0}],
+      [{"node": "Claude — Friday Loyal", "type": "main", "index": 0}, {"node": "Claude — Friday Intro", "type": "main", "index": 0}]
+    ]},
+    "Claude — Monday Education": {"ai_languageModel": [[{"node": "Anthropic Model — Education", "type": "ai_languageModel", "index": 0}]], "main": [[{"node": "Code — Build Education Email", "type": "main", "index": 0}]]},
+    "Code — Build Education Email": {"main": [[{"node": "Brevo — Send Education Email", "type": "main", "index": 0}]]},
+    "Brevo — Send Education Email": {"main": [[{"node": "Supabase — Log Blast", "type": "main", "index": 0}]]},
+    "Claude — Monday Market": {"ai_languageModel": [[{"node": "Anthropic Model — Market", "type": "ai_languageModel", "index": 0}]], "main": [[{"node": "Code — Build Market Email", "type": "main", "index": 0}]]},
+    "Code — Build Market Email": {"main": [[{"node": "Brevo — Send Market Email", "type": "main", "index": 0}]]},
+    "Brevo — Send Market Email": {"main": [[{"node": "Supabase — Log Blast", "type": "main", "index": 0}]]},
+    "Claude — Wednesday Recipe": {"ai_languageModel": [[{"node": "Anthropic Model — Recipe", "type": "ai_languageModel", "index": 0}]], "main": [[{"node": "Code — Build Recipe Email", "type": "main", "index": 0}]]},
+    "Code — Build Recipe Email": {"main": [[{"node": "Brevo — Send Recipe Email", "type": "main", "index": 0}]]},
+    "Brevo — Send Recipe Email": {"main": [[{"node": "Supabase — Log Blast", "type": "main", "index": 0}]]},
+    "Claude — Friday Loyal": {"ai_languageModel": [[{"node": "Anthropic Model — Loyal", "type": "ai_languageModel", "index": 0}]], "main": [[{"node": "Code — Build Loyal Email", "type": "main", "index": 0}]]},
+    "Code — Build Loyal Email": {"main": [[{"node": "Brevo — Send Loyal Email", "type": "main", "index": 0}]]},
+    "Brevo — Send Loyal Email": {"main": [[{"node": "Supabase — Log Blast", "type": "main", "index": 0}]]},
+    "Claude — Friday Intro": {"ai_languageModel": [[{"node": "Anthropic Model — Intro", "type": "ai_languageModel", "index": 0}]], "main": [[{"node": "Code — Build Intro Email", "type": "main", "index": 0}]]},
+    "Code — Build Intro Email": {"main": [[{"node": "Brevo — Send Intro Email", "type": "main", "index": 0}]]},
+    "Brevo — Send Intro Email": {"main": [[{"node": "Supabase — Log Blast", "type": "main", "index": 0}]]}
   },
-  "settings": { "executionOrder": "v1" }
+  "settings": {"executionOrder": "v1"}
 }
