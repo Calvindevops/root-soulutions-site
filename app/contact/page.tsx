@@ -50,7 +50,8 @@ export default function ContactPage() {
               <span className="font-bold">Wholesale:</span> wholesale@rootsoulutions.com
             </p>
             <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/80 text-lg">
-              Jersey City, NJ
+              1451 S Elm Eugene St, Greensboro, NC 27406<br />
+              (862) 315-3802
             </p>
           </div>
 

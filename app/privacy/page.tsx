@@ -59,7 +59,8 @@ export default function PrivacyPage() {
           </p>
           <p className="mt-4 font-bold">
             Craft Eatery Food Genius Company L.L.C.<br />
-            Jersey City, NJ
+            1451 S Elm Eugene St, Greensboro, NC 27406<br />
+            (862) 315-3802
           </p>
         </div>
       </section>
