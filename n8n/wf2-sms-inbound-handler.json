@@ -12,8 +12,7 @@
       "name": "Webhook — Twilio Inbound SMS",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300],
-      "notes": "IMPORTANT: Set this URL in Twilio Console → Phone Numbers → (862) 315-3802 → Messaging → A message comes in → Webhook. Twilio sends application/x-www-form-urlencoded. Fields: Body (message text), From (sender E.164), To (your number)."
+      "position": [240, 300]
     },
     {
       "parameters": {
@@ -60,32 +59,23 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "={{ $env.SUPABASE_URL }}/rest/v1/subscribers",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
-            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
-            { "name": "Content-Type", "value": "application/json" },
-            { "name": "Prefer", "value": "resolution=merge-duplicates" }
+        "operation": "upsert",
+        "tableId": "subscribers",
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "phone", "fieldValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
+            { "fieldId": "sms_consent", "fieldValue": true }
           ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            { "name": "phone", "value": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
-            { "name": "sms_consent", "value": "=true" }
-          ]
-        },
-        "options": {}
+        }
       },
       "id": "supabase-optin",
-      "name": "Supabase — Opt-in (upsert phone)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [680, 200],
-      "notes": "Upserts on phone column. SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in n8n environment variables (Settings → Environment Variables)."
+      "name": "Supabase — Opt-in",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 160],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
+      }
     },
     {
       "parameters": {
@@ -97,17 +87,17 @@
       "name": "Twilio — Reply START",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [900, 200],
+      "position": [900, 160],
       "credentials": {
-        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio SMS" }
       }
     },
     {
       "parameters": {
         "operation": "insert",
         "tableId": "workflow_log",
-        "fields": {
-          "values": [
+        "fieldsUi": {
+          "fieldValues": [
             { "fieldId": "workflow", "fieldValue": "sms_optin" },
             { "fieldId": "action", "fieldValue": "subscribed" },
             { "fieldId": "recipient", "fieldValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
@@ -121,36 +111,38 @@
       "name": "Log — Opt-in",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1100, 200],
+      "position": [1100, 160],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
       }
     },
     {
       "parameters": {
-        "method": "PATCH",
-        "url": "={{ $env.SUPABASE_URL }}/rest/v1/subscribers?phone=eq.{{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
-            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
-            { "name": "Content-Type", "value": "application/json" }
+        "operation": "update",
+        "tableId": "subscribers",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone",
+              "condition": "eq",
+              "keyValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}"
+            }
           ]
         },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            { "name": "sms_consent", "value": "=false" }
+        "fieldsUi": {
+          "fieldValues": [
+            { "fieldId": "sms_consent", "fieldValue": false }
           ]
-        },
-        "options": {}
+        }
       },
       "id": "supabase-optout",
-      "name": "Supabase — Opt-out (sms_consent=false)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [680, 400]
+      "name": "Supabase — Opt-out",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 440],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
+      }
     },
     {
       "parameters": {
@@ -162,17 +154,17 @@
       "name": "Twilio — Reply STOP",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
-      "position": [900, 400],
+      "position": [900, 440],
       "credentials": {
-        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio SMS" }
       }
     },
     {
       "parameters": {
         "operation": "insert",
         "tableId": "workflow_log",
-        "fields": {
-          "values": [
+        "fieldsUi": {
+          "fieldValues": [
             { "fieldId": "workflow", "fieldValue": "sms_optout" },
             { "fieldId": "action", "fieldValue": "unsubscribed" },
             { "fieldId": "recipient", "fieldValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
@@ -186,9 +178,9 @@
       "name": "Log — Opt-out",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1100, 400],
+      "position": [1100, 440],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase Service Role" }
       }
     }
   ],
@@ -198,17 +190,17 @@
     },
     "Switch — START or STOP": {
       "main": [
-        [{ "node": "Supabase — Opt-out (sms_consent=false)", "type": "main", "index": 0 }],
-        [{ "node": "Supabase — Opt-in (upsert phone)", "type": "main", "index": 0 }]
+        [{ "node": "Supabase — Opt-out", "type": "main", "index": 0 }],
+        [{ "node": "Supabase — Opt-in", "type": "main", "index": 0 }]
       ]
     },
-    "Supabase — Opt-in (upsert phone)": {
+    "Supabase — Opt-in": {
       "main": [[{ "node": "Twilio — Reply START", "type": "main", "index": 0 }]]
     },
     "Twilio — Reply START": {
       "main": [[{ "node": "Log — Opt-in", "type": "main", "index": 0 }]]
     },
-    "Supabase — Opt-out (sms_consent=false)": {
+    "Supabase — Opt-out": {
       "main": [[{ "node": "Twilio — Reply STOP", "type": "main", "index": 0 }]]
     },
     "Twilio — Reply STOP": {
