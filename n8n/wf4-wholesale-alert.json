@@ -11,13 +11,12 @@
     },
     {
       "parameters": {
-        "sendTo": "hello@rootsoulutions.com",
+        "receipients": "hello@rootsoulutions.com",
+        "sender": { "email": "hello@rootsoulutions.com", "name": "Root Soulutions" },
         "subject": "=New Wholesale Inquiry — {{ $json.body.data.business_name }}",
         "emailType": "text",
-        "message": "=New wholesale inquiry received:\n\nBusiness: {{ $json.body.data.business_name }}\nContact: {{ $json.body.data.contact_name }}\nEmail: {{ $json.body.data.email }}\nPhone: {{ $json.body.data.phone || 'Not provided' }}\nBusiness Type: {{ $json.body.data.business_type || 'Not provided' }}\nLocation: {{ $json.body.data.location || 'Not provided' }}\nMessage: {{ $json.body.data.message || 'None' }}\n\nSubmitted: {{ $json.body.timestamp }}\n\n---\nReply directly to {{ $json.body.data.email }} to respond.",
-        "options": {
-          "replyTo": "={{ $json.body.data.email }}"
-        }
+        "message": "=New wholesale inquiry received:\n\nBusiness: {{ $json.body.data.business_name }}\nContact: {{ $json.body.data.contact_name }}\nEmail: {{ $json.body.data.email }}\nPhone: {{ $json.body.data.phone || 'Not provided' }}\nBusiness Type: {{ $json.body.data.business_type || 'Not provided' }}\nLocation: {{ $json.body.data.location || 'Not provided' }}\nMessage: {{ $json.body.data.message || 'None' }}\n\nSubmitted: {{ $json.body.timestamp }}\n\nReply directly to {{ $json.body.data.email }} to respond.",
+        "options": {}
       },
       "id": "brevo-alert-email",
       "name": "Brevo — Alert Email to Collin",
@@ -65,7 +64,7 @@
       "typeVersion": 1,
       "position": [680, 300],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
       }
     }
   ],

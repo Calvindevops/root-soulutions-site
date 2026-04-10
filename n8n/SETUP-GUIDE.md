@@ -1,5 +1,53 @@
 # Root Soulutions — n8n Setup Guide
-Last updated: 2026-04-09
+Last updated: 2026-04-10
+
+## Deployment Status (2026-04-10)
+
+| Workflow | n8n ID | Status |
+|----------|--------|--------|
+| RS — WF1: New Subscriber Welcome | `qgjfXCOwHk3oes45` | ✓ ACTIVE |
+| RS — WF2+3: SMS Inbound Handler | `634ZEX1oPHzrltl3` | ✓ ACTIVE |
+| RS — WF4: Wholesale Inquiry Alert | `PUuAVRxIHjt3g9pq` | ✓ ACTIVE |
+| RS — WF5: Farmers Market SMS Blast | `bIveWmQRxiSqg4F3` | ✓ ACTIVE |
+| RS — WF6: Shopify Order Thank You SMS | `JmRFVb96NaPuUzfS` | ○ INACTIVE (needs Shopify cred) |
+| RS — WF7: Email Blast Scheduler | `UbG6m964Tozwz6F4` | ✓ ACTIVE |
+| RS — Event Router | `cW2X6Pvoof48MNum` | ✓ ACTIVE |
+| RS — MASTER COMMAND CENTER | `8U5XKttZMQooqqAa` | ✓ ACTIVE |
+| RS — AI Market Reminder SMS | `CRzLXKw3O8V2AcXc` | ✓ ACTIVE |
+| RS — AI SMS Campaigns | `Jjq2jtIMtYDsblrR` | ✓ ACTIVE |
+| RS — AI Social Content | `HjQEdIbd32XVQBsI` | ✓ ACTIVE |
+| RS — AI Email Responder | `Ksuj2DrllyIxRT5p` | ✓ ACTIVE |
+| RS — Daily Health Check | `aHcz73BJXhuFTSGX` | ✓ ACTIVE |
+
+**12/13 active.** WF6 pending Shopify credential.
+
+### Pending Actions
+1. **Wire WF2 webhook in Twilio**: `https://n8n-io-production-9f8e.up.railway.app/webhook/rs-sms-inbound` → (862) 315-3802 → Messaging → A message comes in → Webhook → POST
+2. **Add Shopify credential** in n8n, then activate WF6
+3. **Update Router webhook URL** in Vercel env var `N8N_WEBHOOK_URL`
+
+### Key Credential IDs (correct)
+| Credential | ID |
+|---|---|
+| Supabase | `mXeE7hNSsbndGCTz` |
+| Anthropic | `welIuAElpcGmB7XF` |
+| Brevo (sendInBlueApi) | `CvAbuQvIdxfZ8W2M` |
+| Twilio | `d83Oxb1xJ2lWmtZ1` |
+
+### n8n sendInBlue Node Fix (IMPORTANT)
+In n8n 2.14.x, the Brevo/sendInBlue v2 node has a typo in its required parameter name.
+The field must be spelled `receipients` (not `recipients`). Combined with a `sender` object:
+```json
+{
+  "receipients": "email@address.com",
+  "sender": { "email": "hello@rootsoulutions.com", "name": "Root Soulutions" },
+  "subject": "...",
+  "emailType": "html",
+  "htmlContent": "..."
+}
+```
+
+---
 
 ## Step 1: SQL Migration (run FIRST in Supabase SQL Editor)
 
@@ -46,10 +94,10 @@ CREATE POLICY "Admin read workflow_log" ON workflow_log FOR SELECT USING (auth.r
 3. Copy **Auth Token** (click eye icon)
 4. n8n Cloud → Settings → Credentials → find Twilio (d83Oxb1xJ2lWmtZ1) → fill both fields → Save
 
-### Anthropic (ROTATE before building Master)
+### Anthropic (already rotated)
 1. console.anthropic.com → API Keys → Create new key
-2. n8n Cloud → Credentials → Anthropic (5nGgwoStoJFhw8xi) → update key → Save
-3. Return to console.anthropic.com → delete the old exposed key
+2. n8n Cloud → Credentials → Anthropic (`welIuAElpcGmB7XF`) → update key → Save
+3. Old key `5nGgwoStoJFhw8xi` was rotated 2026-04-10 — all workflows updated to new cred
 
 ### Shopify (for WF6 Order SMS)
 1. Shopify Partners → Apps → or store admin → Settings → Apps → Develop apps

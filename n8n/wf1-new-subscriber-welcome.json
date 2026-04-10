@@ -11,13 +11,12 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $json.body.data.email }}",
+        "receipients": "={{ $json.body.data.email }}",
+        "sender": { "email": "hello@rootsoulutions.com", "name": "Root Soulutions" },
         "subject": "Welcome to the Soulution 🌿",
         "emailType": "html",
-        "message": "<!DOCTYPE html><html><body style=\"font-family:sans-serif;background:#1a1a1a;color:#fff;padding:0;margin:0\"><div style=\"max-width:600px;margin:0 auto;padding:40px 32px\"><img src=\"https://lovecrafteatery.com/logo.png\" alt=\"Root Soulutions\" style=\"height:48px;margin-bottom:32px\" /><h1 style=\"color:#F5A623;font-size:32px;margin:0 0 16px\">Welcome to the Soulution 🌿</h1><p style=\"color:#ccc;font-size:16px;line-height:1.6\">You're officially part of the Root Soulutions family. We make bold, low-sodium, whole-food spice blends — no chemicals, no fillers, just real flavor crafted for people who care about what goes in their food.</p><h2 style=\"color:#F5A623;font-size:20px;margin:32px 0 8px\">Your Welcome Discount</h2><p style=\"color:#ccc;font-size:16px\">Use code <strong style=\"color:#fff;font-size:18px;letter-spacing:2px\">WELCOME10</strong> at checkout to save 10% on your first order.</p><a href=\"https://lovecrafteatery.com/shop\" style=\"display:inline-block;background:#e85c2a;color:#fff;font-weight:700;font-size:16px;padding:16px 32px;border-radius:50px;text-decoration:none;margin:24px 0\">Shop Now →</a><p style=\"color:#888;font-size:13px;margin-top:40px;border-top:1px solid #333;padding-top:20px\">Root Soulutions · 1451 S Elm Eugene St, Greensboro, NC 27406<br/>You received this because you subscribed at lovecrafteatery.com.<br/>Reply to this email to unsubscribe.</p></div></body></html>",
-        "options": {
-          "replyTo": "hello@rootsoulutions.com"
-        }
+        "htmlContent": "<!DOCTYPE html><html><body style=\"font-family:sans-serif;background:#1a1a1a;color:#fff;padding:0;margin:0\"><div style=\"max-width:600px;margin:0 auto;padding:40px 32px\"><h1 style=\"color:#F5A623;font-size:32px;margin:0 0 16px\">Welcome to the Soulution 🌿</h1><p style=\"color:#ccc;font-size:16px;line-height:1.6\">You're officially part of the Root Soulutions family. We make bold, low-sodium, whole-food spice blends — no chemicals, no fillers, just real flavor crafted for people who care about what goes in their food.</p><h2 style=\"color:#F5A623;font-size:20px;margin:32px 0 8px\">Your Welcome Discount</h2><p style=\"color:#ccc;font-size:16px\">Use code <strong style=\"color:#fff;font-size:18px;letter-spacing:2px\">WELCOME10</strong> at checkout to save 10% on your first order.</p><a href=\"https://lovecrafteatery.com/shop\" style=\"display:inline-block;background:#e85c2a;color:#fff;font-weight:700;font-size:16px;padding:16px 32px;border-radius:50px;text-decoration:none;margin:24px 0\">Shop Now →</a><p style=\"color:#888;font-size:13px;margin-top:40px;border-top:1px solid #333;padding-top:20px\">Root Soulutions · 1451 S Elm Eugene St, Greensboro, NC 27406<br/>Reply to this email to unsubscribe.</p></div></body></html>",
+        "options": {}
       },
       "id": "brevo-welcome-email",
       "name": "Brevo — Welcome Email",
@@ -91,7 +90,7 @@
       "typeVersion": 1,
       "position": [900, 300],
       "credentials": {
-        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+        "supabaseApi": { "id": "mXeE7hNSsbndGCTz", "name": "Supabase account" }
       }
     }
   ],
