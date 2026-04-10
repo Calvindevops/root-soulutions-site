@@ -44,7 +44,7 @@ body {
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: scrolling-items 25s linear infinite;
+  animation: scrolling-items 35s linear infinite;
 }
 .marquee-track:hover {
   animation-play-state: paused;
