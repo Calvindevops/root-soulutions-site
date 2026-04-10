@@ -78,13 +78,18 @@ export function NewsletterSignup() {
                 </button>
               </div>
 
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Phone number (optional — for SMS updates)"
-                className="w-full px-6 py-4 rounded-full border border-white/20 bg-white/5 text-white placeholder-white/30 focus:outline-none focus:border-[#F5C542] font-[family-name:var(--font-dm-sans)]"
-              />
+              <div className="flex flex-col items-center gap-1">
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Phone number"
+                  className="w-full px-6 py-4 rounded-full border border-white/20 bg-white/5 text-white placeholder-white/30 focus:outline-none focus:border-[#F5C542] font-[family-name:var(--font-dm-sans)]"
+                />
+                <span className="text-white/30 text-xs font-[family-name:var(--font-dm-sans)]">
+                  Optional — for SMS updates
+                </span>
+              </div>
 
               {phone && (
                 <label className="flex items-start gap-3 cursor-pointer mt-1">
