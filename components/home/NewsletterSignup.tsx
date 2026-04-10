@@ -91,22 +91,20 @@ export function NewsletterSignup() {
                 </span>
               </div>
 
-              {phone && (
-                <label className="flex items-start gap-3 cursor-pointer mt-1">
-                  <input
-                    type="checkbox"
-                    checked={smsConsent}
-                    onChange={(e) => setSmsConsent(e.target.checked)}
-                    className="mt-1 w-4 h-4 accent-[#e85c2a] shrink-0"
-                  />
-                  <span className="text-white/40 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed">
-                    I agree to receive promotional text messages from Root Soulutions, including farmers market updates, new blends, and special offers. Message frequency varies. Msg &amp; data rates may apply. Reply <strong className="text-white/60">STOP</strong> to opt out, <strong className="text-white/60">HELP</strong> for help. See our{" "}
-                    <a href="/privacy" className="underline text-white/60 hover:text-white">Privacy Policy</a>{" "}
-                    and{" "}
-                    <a href="/terms" className="underline text-white/60 hover:text-white">Terms</a>.
-                  </span>
-                </label>
-              )}
+              <label className="flex items-start gap-3 cursor-pointer mt-1">
+                <input
+                  type="checkbox"
+                  checked={smsConsent}
+                  onChange={(e) => setSmsConsent(e.target.checked)}
+                  className="mt-1 w-4 h-4 accent-[#e85c2a] shrink-0"
+                />
+                <span className="text-white/40 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed">
+                  I agree to receive promotional text messages from Root Soulutions, including farmers market updates, new blends, and special offers. Message frequency varies. Msg &amp; data rates may apply. Reply <strong className="text-white/60">STOP</strong> to opt out, <strong className="text-white/60">HELP</strong> for help. See our{" "}
+                  <a href="/privacy" className="underline text-white/60 hover:text-white">Privacy Policy</a>{" "}
+                  and{" "}
+                  <a href="/terms" className="underline text-white/60 hover:text-white">Terms</a>.
+                </span>
+              </label>
             </form>
           )}
         </motion.div>
