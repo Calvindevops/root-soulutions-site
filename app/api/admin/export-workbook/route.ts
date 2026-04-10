@@ -6,10 +6,11 @@ export async function GET() {
   const supabase = createServerClient();
 
   // Fetch all data in parallel
-  const [subscribersRes, wholesaleRes, messagesRes] = await Promise.all([
+  const [subscribersRes, wholesaleRes, messagesRes, logsRes] = await Promise.all([
     supabase.from("subscribers").select("*").order("subscribed_at", { ascending: false }),
     supabase.from("wholesale_inquiries").select("*").order("created_at", { ascending: false }),
     supabase.from("contact_messages").select("*").order("created_at", { ascending: false }),
+    supabase.from("workflow_log").select("*").order("logged_at", { ascending: false }).limit(500),
   ]);
 
   const wb = XLSX.utils.book_new();
@@ -52,12 +53,27 @@ export async function GET() {
   msgWs["!cols"] = [{ wch: 20 }, { wch: 30 }, { wch: 15 }, { wch: 50 }, { wch: 6 }, { wch: 12 }];
   XLSX.utils.book_append_sheet(wb, msgWs, "Messages");
 
-  // Sheet 4: Summary
+  // Sheet 4: Automation Log
+  const logs = (logsRes.data || []).map((l) => ({
+    "Date / Time": new Date(l.logged_at).toLocaleString(),
+    Workflow: l.workflow,
+    Action: l.action,
+    Recipient: l.recipient || "",
+    Subject: l.subject || "",
+    Status: l.status,
+    Details: l.details || "",
+  }));
+  const logWs = XLSX.utils.json_to_sheet(logs.length > 0 ? logs : [{ "Date / Time": "", Workflow: "", Action: "", Recipient: "", Subject: "", Status: "", Details: "" }]);
+  logWs["!cols"] = [{ wch: 20 }, { wch: 18 }, { wch: 10 }, { wch: 30 }, { wch: 40 }, { wch: 8 }, { wch: 40 }];
+  XLSX.utils.book_append_sheet(wb, logWs, "Automation Log");
+
+  // Sheet 5: Summary
   const summary = [
     { Metric: "Total Subscribers", Value: subscribersRes.data?.length || 0 },
     { Metric: "Total Wholesale Inquiries", Value: wholesaleRes.data?.length || 0 },
     { Metric: "Total Contact Messages", Value: messagesRes.data?.length || 0 },
     { Metric: "New Wholesale (Pending)", Value: (wholesaleRes.data || []).filter((w) => w.status === "new").length },
+    { Metric: "Automation Actions Logged", Value: logsRes.data?.length || 0 },
     { Metric: "Report Generated", Value: new Date().toLocaleString() },
   ];
   const sumWs = XLSX.utils.json_to_sheet(summary);

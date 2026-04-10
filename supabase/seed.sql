@@ -118,3 +118,19 @@ create policy "Admin read messages" on contact_messages for all using (auth.role
 -- Service role can insert orders (from Shopify webhook)
 create policy "Service role insert orders" on orders for insert with check (true);
 create policy "Service role manage customers" on customers for all using (true);
+
+-- Automation / n8n workflow log
+create table if not exists workflow_log (
+  id uuid primary key default gen_random_uuid(),
+  logged_at timestamptz default now(),
+  workflow text not null,       -- 'email_blast' | 'social' | 'sms' | 'health' | 'wholesale_alert' | 'welcome'
+  action text not null,         -- 'sent' | 'skipped' | 'error'
+  recipient text,               -- email or phone targeted
+  subject text,                 -- email subject or SMS preview
+  status text default 'ok',     -- 'ok' | 'error'
+  details text                  -- error message or extra context
+);
+
+alter table workflow_log enable row level security;
+create policy "Service role insert workflow_log" on workflow_log for insert with check (true);
+create policy "Admin read workflow_log" on workflow_log for select using (auth.role() = 'authenticated');
