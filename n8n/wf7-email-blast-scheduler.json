@@ -31,39 +31,25 @@
     },
     {
       "parameters": {
-        "operation": "getAll",
-        "tableId": "subscribers",
-        "returnAll": true
+        "method": "GET",
+        "url": "https://swfviswbxxyodktnbkve.supabase.co/rest/v1/subscribers?select=*",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
       },
       "id": "fetch-subscribers",
       "name": "Supabase — Fetch All Subscribers",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [680, 200],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300],
       "credentials": {
         "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
       }
     },
     {
       "parameters": {
-        "resource": "customer",
-        "operation": "getAll",
-        "returnAll": true,
-        "options": {}
-      },
-      "id": "fetch-shopify-customers",
-      "name": "Shopify — Fetch Customers",
-      "type": "n8n-nodes-base.shopify",
-      "typeVersion": 1,
-      "position": [680, 400],
-      "credentials": {
-        "shopifyApi": { "id": "REPLACE_WITH_SHOPIFY_CRED_ID", "name": "Shopify — Root Soulutions" }
-      }
-    },
-    {
-      "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "const subscribers = $('Supabase — Fetch All Subscribers').all().map(i => i.json);\nconst shopifyCustomers = $('Shopify — Fetch Customers').all().map(i => i.json);\nconst customerEmails = new Set(shopifyCustomers.map(c => c.email?.toLowerCase()).filter(Boolean));\nconst sevenDaysAgo = new Date($('Code — Get Day').first().json.sevenDaysAgo);\n\nconst segments = { new_subscriber: [], returning: [], customer: [] };\nfor (const sub of subscribers) {\n  if (!sub.email) continue;\n  const email = sub.email.toLowerCase();\n  if (customerEmails.has(email)) {\n    segments.customer.push(sub);\n  } else if (new Date(sub.subscribed_at) >= sevenDaysAgo) {\n    segments.new_subscriber.push(sub);\n  } else {\n    segments.returning.push(sub);\n  }\n}\n\nreturn [{ json: { segments, dayLabel: $('Code — Get Day').first().json.dayLabel, totalCount: subscribers.length } }];"
+        "jsCode": "const subscribers = $('Supabase — Fetch All Subscribers').first().json;\nconst sevenDaysAgo = new Date($('Code — Get Day').first().json.sevenDaysAgo);\nconst dayLabel = $('Code — Get Day').first().json.dayLabel;\n\nconst list = Array.isArray(subscribers) ? subscribers : [];\nconst segments = { new_subscriber: [], returning: [] };\n\nfor (const sub of list) {\n  if (!sub.email) continue;\n  if (new Date(sub.subscribed_at) >= sevenDaysAgo) {\n    segments.new_subscriber.push(sub);\n  } else {\n    segments.returning.push(sub);\n  }\n}\n\nreturn [{ json: { segments, dayLabel, totalCount: list.length } }];"
       },
       "id": "code-segment",
       "name": "Code — Segment Subscribers",
@@ -78,6 +64,7 @@
           "values": [
             {
               "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
                 "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "monday", "operator": { "type": "string", "operation": "equals" } }],
                 "combinator": "and"
               },
@@ -85,6 +72,7 @@
             },
             {
               "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
                 "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "wednesday", "operator": { "type": "string", "operation": "equals" } }],
                 "combinator": "and"
               },
@@ -92,6 +80,7 @@
             },
             {
               "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
                 "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "friday", "operator": { "type": "string", "operation": "equals" } }],
                 "combinator": "and"
               },
@@ -185,7 +174,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "Write a brief exclusive deal email body for returning Root Soulutions customers. Thank them for their support. Offer 15% off with code LOYAL15. Emphasize it's exclusive to repeat customers. Warm, grateful tone. CTA to shop at lovecrafteatery.com/shop. 150 words max. Email body only, no subject line. Plain text."
+        "text": "Write a brief exclusive deal email body for loyal Root Soulutions subscribers (subscribed 7+ days). Thank them for their continued support. Offer 15% off with code LOYAL15. Warm, grateful tone. CTA to shop at lovecrafteatery.com/shop. 150 words max. Email body only, no subject line. Plain text."
       },
       "id": "claude-friday-loyal",
       "name": "Claude — Friday Loyal",
@@ -210,7 +199,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "Write a first-purchase invitation email body for people who haven't ordered from Root Soulutions yet. Highlight: no chemicals, low sodium, whole-food spice blends. Offer 10% off with code WELCOME10. CTA to shop at lovecrafteatery.com/shop. Friendly, inviting tone. 150 words max. Email body only, no subject line. Plain text."
+        "text": "Write a first-purchase invitation email body for new Root Soulutions subscribers. Highlight: no chemicals, low sodium, whole-food spice blends. Offer 10% off with code WELCOME10. CTA to shop at lovecrafteatery.com/shop. Friendly, inviting tone. 150 words max. Email body only, no subject line. Plain text."
       },
       "id": "claude-friday-intro",
       "name": "Claude — Friday Intro",
@@ -234,23 +223,25 @@
     },
     {
       "parameters": {
-        "operation": "insert",
-        "tableId": "workflow_log",
-        "fieldsUi": {
-          "fieldValues": [
-            { "fieldId": "workflow", "fieldValue": "email_blast" },
-            { "fieldId": "action", "fieldValue": "sent" },
-            { "fieldId": "recipient", "fieldValue": "batch" },
-            { "fieldId": "subject", "fieldValue": "={{ $('Switch — Day of Week').item.json.dayLabel + ' email blast' }}" },
-            { "fieldId": "status", "fieldValue": "ok" },
-            { "fieldId": "details", "fieldValue": "={{ $('Code — Segment Subscribers').item.json.totalCount + ' subscribers processed' }}" }
+        "method": "POST",
+        "url": "https://swfviswbxxyodktnbkve.supabase.co/rest/v1/workflow_log",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Prefer", "value": "return=minimal" }
           ]
-        }
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"workflow\": \"email_blast\", \"action\": \"sent\", \"recipient\": \"batch\", \"subject\": $('Code — Segment Subscribers').first().json.dayLabel + ' email blast', \"status\": \"ok\", \"details\": String($('Code — Segment Subscribers').first().json.totalCount) + ' subscribers processed' } }}",
+        "options": {}
       },
       "id": "supabase-log",
       "name": "Supabase — Log Blast",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [1600, 600],
       "credentials": {
         "supabaseApi": { "id": "9P7JEtpZwbJG0Uya", "name": "Supabase account" }
@@ -262,15 +253,9 @@
       "main": [[{ "node": "Code — Get Day", "type": "main", "index": 0 }]]
     },
     "Code — Get Day": {
-      "main": [[
-        { "node": "Supabase — Fetch All Subscribers", "type": "main", "index": 0 },
-        { "node": "Shopify — Fetch Customers", "type": "main", "index": 0 }
-      ]]
+      "main": [[{ "node": "Supabase — Fetch All Subscribers", "type": "main", "index": 0 }]]
     },
     "Supabase — Fetch All Subscribers": {
-      "main": [[{ "node": "Code — Segment Subscribers", "type": "main", "index": 0 }]]
-    },
-    "Shopify — Fetch Customers": {
       "main": [[{ "node": "Code — Segment Subscribers", "type": "main", "index": 0 }]]
     },
     "Code — Segment Subscribers": {
@@ -310,6 +295,5 @@
       "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
     }
   },
-  "settings": { "executionOrder": "v1" },
-  "meta": { "templateId": "rs-wf7-email-blast" }
+  "settings": { "executionOrder": "v1" }
 }
