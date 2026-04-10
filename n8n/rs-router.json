@@ -1,0 +1,99 @@
+{
+  "name": "RS — Event Router",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rs-events",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-router",
+      "name": "Webhook — RS Events",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "new_subscriber",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "new_subscriber"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event }}",
+                    "rightValue": "wholesale_inquiry",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "wholesale_inquiry"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-event",
+      "name": "Switch — Event Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": { "__rl": true, "value": "REPLACE_WITH_WF1_ID", "mode": "id" },
+        "options": {}
+      },
+      "id": "exec-welcome",
+      "name": "Execute — RS Welcome",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 2,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "workflowId": { "__rl": true, "value": "REPLACE_WITH_WF4_ID", "mode": "id" },
+        "options": {}
+      },
+      "id": "exec-wholesale",
+      "name": "Execute — RS Wholesale Alert",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 2,
+      "position": [680, 400]
+    }
+  ],
+  "connections": {
+    "Webhook — RS Events": {
+      "main": [[{ "node": "Switch — Event Type", "type": "main", "index": 0 }]]
+    },
+    "Switch — Event Type": {
+      "main": [
+        [{ "node": "Execute — RS Welcome", "type": "main", "index": 0 }],
+        [{ "node": "Execute — RS Wholesale Alert", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "meta": { "templateId": "rs-router" }
+}

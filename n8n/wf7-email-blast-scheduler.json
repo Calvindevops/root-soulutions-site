@@ -1,0 +1,324 @@
+{
+  "name": "RS — WF7: Email Blast Scheduler (Mon/Wed/Fri)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 15 * * 1,3,5"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule — Mon/Wed/Fri 10am ET",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300],
+      "notes": "Cron: 0 15 * * 1,3,5 = 15:00 UTC = 10am ET (EST). During EDT (summer) change to 0 14 * * 1,3,5 for 10am EDT."
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const now = new Date();\nconst day = now.getDay(); // 0=Sun, 1=Mon, 3=Wed, 5=Fri\nconst dayMap = { 1: 'monday', 3: 'wednesday', 5: 'friday' };\nconst dayLabel = dayMap[day] || 'monday';\nconst sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();\nreturn [{ json: { dayLabel, runAt: now.toISOString(), sevenDaysAgo } }];"
+      },
+      "id": "code-day",
+      "name": "Code — Get Day + Threshold",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "subscribers",
+        "returnAll": true
+      },
+      "id": "fetch-subscribers",
+      "name": "Supabase — Fetch All Subscribers",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 200],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://ahgadf-je.myshopify.com/admin/api/2024-10/customers.json?limit=250&fields=email",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "X-Shopify-Access-Token", "value": "={{ $env.SHOPIFY_ADMIN_ACCESS_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-shopify-customers",
+      "name": "HTTP — Fetch Shopify Customers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400],
+      "notes": "Set SHOPIFY_ADMIN_ACCESS_TOKEN in n8n Settings → Environment Variables."
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const subscribers = $('Supabase — Fetch All Subscribers').all().map(i => i.json);\nconst shopifyCustomers = $('HTTP — Fetch Shopify Customers').first()?.json?.customers || [];\nconst customerEmails = new Set(shopifyCustomers.map(c => c.email?.toLowerCase()).filter(Boolean));\nconst sevenDaysAgo = new Date($('Code — Get Day + Threshold').first().json.sevenDaysAgo);\n\nconst segments = { new_subscriber: [], returning: [], customer: [] };\n\nfor (const sub of subscribers) {\n  if (!sub.email) continue;\n  const email = sub.email.toLowerCase();\n  if (customerEmails.has(email)) {\n    segments.customer.push(sub);\n  } else if (new Date(sub.subscribed_at) >= sevenDaysAgo) {\n    segments.new_subscriber.push(sub);\n  } else {\n    segments.returning.push(sub);\n  }\n}\n\nconst dayLabel = $('Code — Get Day + Threshold').first().json.dayLabel;\nreturn [{ json: { segments, dayLabel, totalCount: subscribers.length } }];"
+      },
+      "id": "code-segment",
+      "name": "Code — Segment Subscribers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "monday", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true, "outputKey": "monday"
+            },
+            {
+              "conditions": {
+                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "wednesday", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true, "outputKey": "wednesday"
+            },
+            {
+              "conditions": {
+                "conditions": [{ "leftValue": "={{ $json.dayLabel }}", "rightValue": "friday", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true, "outputKey": "friday"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-day",
+      "name": "Switch — Day of Week",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1100, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApi.apiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 600,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Write a short, warm email body for Root Soulutions (lovecrafteatery.com), a brand making bold, low-sodium, whole-food spice blends (Simple SZN, Smokey Cajun SZN, Garlicky SZN). Topic: Product Education — explain what makes our blends different (whole-food ingredients, no chemicals, low sodium). Include one key ingredient benefit and a CTA to shop. 200 words max. Email body only, no subject line. No markdown.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-monday-education",
+      "name": "Claude — Monday Product Education Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 160],
+      "credentials": {
+        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApi.apiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 600,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Write a warm, community-focused email body for Root Soulutions (lovecrafteatery.com) about their farmers market presence. Mention they are at local markets in the Greensboro NC area, share Collin's passion for the community, and include a CTA to check lovecrafteatery.com/markets for the schedule. 200 words max. Email body only, no subject line. No markdown.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-monday-market",
+      "name": "Claude — Monday Farmers Market Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 280],
+      "credentials": {
+        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApi.apiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 700,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Write a fun, practical recipe email body for Root Soulutions (lovecrafteatery.com). Feature one simple dish using Smokey Cajun SZN or Garlicky SZN blend. Include: dish name, 3-4 simple ingredients, 2-3 cooking steps (use the blend as the main seasoning), and a CTA to shop at lovecrafteatery.com/shop. Keep it casual and delicious. 250 words max. Email body only, no subject line. No markdown.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-wednesday-recipe",
+      "name": "Claude — Wednesday Recipe Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 400],
+      "credentials": {
+        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApi.apiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 500,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Write a brief exclusive deal email body for returning Root Soulutions customers. Thank them for their support. Offer 15% off with code LOYAL15. Emphasize it's exclusive to repeat customers. Warm, grateful tone. CTA to shop at lovecrafteatery.com/shop. 150 words max. Email body only, no subject line. No markdown.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-friday-loyal",
+      "name": "Claude — Friday Loyal Customer Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 520],
+      "credentials": {
+        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApi.apiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 500,\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Write a first-purchase invitation email body for people who haven't ordered from Root Soulutions yet. Highlight: no chemicals, low sodium, whole-food spice blends. Offer 10% off with code WELCOME10. CTA to shop at lovecrafteatery.com/shop. Friendly, inviting tone. 150 words max. Email body only, no subject line. No markdown.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-friday-intro",
+      "name": "Claude — Friday Intro Offer Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1320, 640],
+      "credentials": {
+        "anthropicApi": { "id": "5nGgwoStoJFhw8xi", "name": "Anthropic" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "email_blast" },
+            { "fieldId": "action", "fieldValue": "sent" },
+            { "fieldId": "recipient", "fieldValue": "batch" },
+            { "fieldId": "subject", "fieldValue": "={{ $('Switch — Day of Week').item.json.dayLabel + ' email blast' }}" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "={{ $('Code — Segment Subscribers').item.json.totalCount + ' total subscribers processed' }}" }
+          ]
+        }
+      },
+      "id": "supabase-log",
+      "name": "Supabase — Log Blast",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1600, 400],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule — Mon/Wed/Fri 10am ET": {
+      "main": [[{ "node": "Code — Get Day + Threshold", "type": "main", "index": 0 }]]
+    },
+    "Code — Get Day + Threshold": {
+      "main": [
+        [
+          { "node": "Supabase — Fetch All Subscribers", "type": "main", "index": 0 },
+          { "node": "HTTP — Fetch Shopify Customers", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Supabase — Fetch All Subscribers": {
+      "main": [[{ "node": "Code — Segment Subscribers", "type": "main", "index": 0 }]]
+    },
+    "HTTP — Fetch Shopify Customers": {
+      "main": [[{ "node": "Code — Segment Subscribers", "type": "main", "index": 0 }]]
+    },
+    "Code — Segment Subscribers": {
+      "main": [[{ "node": "Switch — Day of Week", "type": "main", "index": 0 }]]
+    },
+    "Switch — Day of Week": {
+      "main": [
+        [
+          { "node": "Claude — Monday Product Education Email", "type": "main", "index": 0 },
+          { "node": "Claude — Monday Farmers Market Email", "type": "main", "index": 0 }
+        ],
+        [{ "node": "Claude — Wednesday Recipe Email", "type": "main", "index": 0 }],
+        [
+          { "node": "Claude — Friday Loyal Customer Email", "type": "main", "index": 0 },
+          { "node": "Claude — Friday Intro Offer Email", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Claude — Monday Product Education Email": {
+      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
+    },
+    "Claude — Monday Farmers Market Email": {
+      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
+    },
+    "Claude — Wednesday Recipe Email": {
+      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
+    },
+    "Claude — Friday Loyal Customer Email": {
+      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
+    },
+    "Claude — Friday Intro Offer Email": {
+      "main": [[{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": {
+    "templateId": "rs-wf7-email-blast",
+    "notes": "IMPORTANT: Brevo free tier = 300 emails/day. Upgrade to Starter before enabling this workflow. The Claude nodes generate email content — wire a SplitInBatches(10) + Brevo send + Wait(1s) loop after each Claude node to actually send to the segment."
+  }
+}

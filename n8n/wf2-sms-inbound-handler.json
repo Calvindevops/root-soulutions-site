@@ -1,0 +1,220 @@
+{
+  "name": "RS — WF2+3: SMS Inbound Handler (START + STOP)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rs-sms-inbound",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "twilio-inbound",
+      "name": "Webhook — Twilio Inbound SMS",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "notes": "IMPORTANT: Set this URL in Twilio Console → Phone Numbers → (862) 315-3802 → Messaging → A message comes in → Webhook. Twilio sends application/x-www-form-urlencoded. Fields: Body (message text), From (sender E.164), To (your number)."
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.Body.toUpperCase().trim() }}",
+                    "rightValue": "STOP",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "stop"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ /^(START|SUBSCRIBE|JOIN)$/i.test($json.body.Body.trim()) }}",
+                    "rightValue": true,
+                    "operator": { "type": "boolean", "operation": "true" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-keyword",
+      "name": "Switch — START or STOP",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/subscribers",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Prefer", "value": "resolution=merge-duplicates" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "phone", "value": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
+            { "name": "sms_consent", "value": "=true" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-optin",
+      "name": "Supabase — Opt-in (upsert phone)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 200],
+      "notes": "Upserts on phone column. SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in n8n environment variables (Settings → Environment Variables)."
+    },
+    {
+      "parameters": {
+        "from": "+18623153802",
+        "to": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
+        "message": "Root Soulutions: Subscribed! Expect farmers market updates, new drops & deals. Msg & data rates may apply. Reply STOP to cancel."
+      },
+      "id": "twilio-optin-reply",
+      "name": "Twilio — Reply START",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "sms_optin" },
+            { "fieldId": "action", "fieldValue": "subscribed" },
+            { "fieldId": "recipient", "fieldValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
+            { "fieldId": "subject", "fieldValue": "SMS opt-in" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "={{ 'Keyword: ' + $('Webhook — Twilio Inbound SMS').item.json.body.Body }}" }
+          ]
+        }
+      },
+      "id": "log-optin",
+      "name": "Log — Opt-in",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 200],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/subscribers?phone=eq.{{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "sms_consent", "value": "=false" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-optout",
+      "name": "Supabase — Opt-out (sms_consent=false)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "from": "+18623153802",
+        "to": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}",
+        "message": "Root Soulutions: Unsubscribed. No more messages. Reply START to resubscribe anytime."
+      },
+      "id": "twilio-optout-reply",
+      "name": "Twilio — Reply STOP",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "credentials": {
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "sms_optout" },
+            { "fieldId": "action", "fieldValue": "unsubscribed" },
+            { "fieldId": "recipient", "fieldValue": "={{ $('Webhook — Twilio Inbound SMS').item.json.body.From }}" },
+            { "fieldId": "subject", "fieldValue": "SMS opt-out" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "STOP received" }
+          ]
+        }
+      },
+      "id": "log-optout",
+      "name": "Log — Opt-out",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 400],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook — Twilio Inbound SMS": {
+      "main": [[{ "node": "Switch — START or STOP", "type": "main", "index": 0 }]]
+    },
+    "Switch — START or STOP": {
+      "main": [
+        [{ "node": "Supabase — Opt-out (sms_consent=false)", "type": "main", "index": 0 }],
+        [{ "node": "Supabase — Opt-in (upsert phone)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Supabase — Opt-in (upsert phone)": {
+      "main": [[{ "node": "Twilio — Reply START", "type": "main", "index": 0 }]]
+    },
+    "Twilio — Reply START": {
+      "main": [[{ "node": "Log — Opt-in", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Opt-out (sms_consent=false)": {
+      "main": [[{ "node": "Twilio — Reply STOP", "type": "main", "index": 0 }]]
+    },
+    "Twilio — Reply STOP": {
+      "main": [[{ "node": "Log — Opt-out", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateId": "rs-wf2-sms-inbound" }
+}

@@ -1,0 +1,174 @@
+{
+  "name": "RS — WF6: Shopify Order Thank You SMS",
+  "nodes": [
+    {
+      "parameters": {
+        "topic": "orders/create"
+      },
+      "id": "shopify-trigger",
+      "name": "Shopify — Order Created",
+      "type": "n8n-nodes-base.shopifyTrigger",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "shopify-orders-create",
+      "credentials": {
+        "shopifyApi": { "id": "REPLACE_WITH_SHOPIFY_CRED_ID", "name": "Shopify — Root Soulutions" }
+      },
+      "notes": "Add Shopify credential first: store domain ahgadf-je.myshopify.com + Admin API token from Shopify Partners → Apps → API credentials."
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "fields": {
+          "values": [
+            {
+              "name": "orderPhone",
+              "value": "={{ $json.customer?.phone || $json.billing_address?.phone || $json.shipping_address?.phone || null }}"
+            },
+            {
+              "name": "customerEmail",
+              "value": "={{ $json.customer?.email || $json.email }}"
+            },
+            {
+              "name": "orderNumber",
+              "value": "={{ $json.order_number }}"
+            }
+          ]
+        }
+      },
+      "id": "set-order-fields",
+      "name": "Set — Extract Order Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.orderPhone }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-has-phone",
+      "name": "IF — Has Phone?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "subscribers",
+        "filters": {
+          "conditions": [
+            { "keyName": "phone", "condition": "eq", "keyValue": "={{ $('Set — Extract Order Fields').item.json.orderPhone }}" },
+            { "keyName": "sms_consent", "condition": "eq", "keyValue": "true" }
+          ]
+        }
+      },
+      "id": "supabase-check-consent",
+      "name": "Supabase — Check SMS Consent",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "isNotEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-subscriber-found",
+      "name": "IF — Subscriber Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1100, 200]
+    },
+    {
+      "parameters": {
+        "from": "+18623153802",
+        "to": "={{ $('Set — Extract Order Fields').item.json.orderPhone }}",
+        "message": "Root Soulutions: Order confirmed! Your seasonings are on the way. Questions? Reply HELP. lovecrafteatery.com"
+      },
+      "id": "twilio-order-sms",
+      "name": "Twilio — Order Thank You SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1300, 160],
+      "credentials": {
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "order_thankyou" },
+            { "fieldId": "action", "fieldValue": "={{ $('IF — Subscriber Found?').item.json.id ? 'sent' : 'skipped_no_consent' }}" },
+            { "fieldId": "recipient", "fieldValue": "={{ $('Set — Extract Order Fields').item.json.orderPhone || $('Set — Extract Order Fields').item.json.customerEmail }}" },
+            { "fieldId": "subject", "fieldValue": "Order thank you SMS" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "={{ 'Order #' + $('Set — Extract Order Fields').item.json.orderNumber }}" }
+          ]
+        }
+      },
+      "id": "supabase-log",
+      "name": "Supabase — Log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1500, 300],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Shopify — Order Created": {
+      "main": [[{ "node": "Set — Extract Order Fields", "type": "main", "index": 0 }]]
+    },
+    "Set — Extract Order Fields": {
+      "main": [[{ "node": "IF — Has Phone?", "type": "main", "index": 0 }]]
+    },
+    "IF — Has Phone?": {
+      "main": [
+        [{ "node": "Supabase — Check SMS Consent", "type": "main", "index": 0 }],
+        [{ "node": "Supabase — Log", "type": "main", "index": 0 }]
+      ]
+    },
+    "Supabase — Check SMS Consent": {
+      "main": [[{ "node": "IF — Subscriber Found?", "type": "main", "index": 0 }]]
+    },
+    "IF — Subscriber Found?": {
+      "main": [
+        [{ "node": "Twilio — Order Thank You SMS", "type": "main", "index": 0 }],
+        [{ "node": "Supabase — Log", "type": "main", "index": 0 }]
+      ]
+    },
+    "Twilio — Order Thank You SMS": {
+      "main": [[{ "node": "Supabase — Log", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateId": "rs-wf6-order-sms" }
+}

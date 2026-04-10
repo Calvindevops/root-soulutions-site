@@ -1,0 +1,90 @@
+{
+  "name": "RS — WF4: Wholesale Inquiry Alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "hello@rootsoulutions.com",
+        "subject": "=New Wholesale Inquiry — {{ $json.body.data.business_name }}",
+        "emailType": "text",
+        "message": "=New wholesale inquiry received:\n\nBusiness: {{ $json.body.data.business_name }}\nContact: {{ $json.body.data.contact_name }}\nEmail: {{ $json.body.data.email }}\nPhone: {{ $json.body.data.phone || 'Not provided' }}\nBusiness Type: {{ $json.body.data.business_type || 'Not provided' }}\nLocation: {{ $json.body.data.location || 'Not provided' }}\nMessage: {{ $json.body.data.message || 'None' }}\n\nSubmitted: {{ $json.body.timestamp }}\n\n---\nReply directly to {{ $json.body.data.email }} to respond.",
+        "options": {
+          "replyTo": "={{ $json.body.data.email }}"
+        }
+      },
+      "id": "brevo-alert-email",
+      "name": "Brevo — Alert Email to Collin",
+      "type": "n8n-nodes-base.sendInBlue",
+      "typeVersion": 2,
+      "position": [460, 200],
+      "credentials": {
+        "sendInBlueApi": { "id": "CvAbuQvIdxfZ8W2M", "name": "Brevo" }
+      }
+    },
+    {
+      "parameters": {
+        "from": "+18623153802",
+        "to": "+18623153802",
+        "message": "=RS: New wholesale inquiry from {{ $('Execute Workflow Trigger').item.json.body.data.business_name }} in {{ $('Execute Workflow Trigger').item.json.body.data.location || 'unknown location' }}. Check your email."
+      },
+      "id": "twilio-alert-sms",
+      "name": "Twilio — Alert SMS to Collin",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [460, 400],
+      "credentials": {
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+      },
+      "notes": "Sending from and to the same toll-free number. Change 'to' to Collin's personal mobile if he has a separate number."
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "wholesale_alert" },
+            { "fieldId": "action", "fieldValue": "sent" },
+            { "fieldId": "recipient", "fieldValue": "={{ $('Execute Workflow Trigger').item.json.body.data.email }}" },
+            { "fieldId": "subject", "fieldValue": "={{ 'Wholesale inquiry — ' + $('Execute Workflow Trigger').item.json.body.data.business_name }}" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "={{ $('Execute Workflow Trigger').item.json.body.data.business_name + ' in ' + ($('Execute Workflow Trigger').item.json.body.data.location || 'unknown') }}" }
+          ]
+        }
+      },
+      "id": "supabase-log",
+      "name": "Supabase — Log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          { "node": "Brevo — Alert Email to Collin", "type": "main", "index": 0 },
+          { "node": "Twilio — Alert SMS to Collin", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Brevo — Alert Email to Collin": {
+      "main": [[{ "node": "Supabase — Log", "type": "main", "index": 0 }]]
+    },
+    "Twilio — Alert SMS to Collin": {
+      "main": [[{ "node": "Supabase — Log", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateId": "rs-wf4-wholesale-alert" }
+}

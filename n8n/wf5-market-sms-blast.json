@@ -1,0 +1,153 @@
+{
+  "name": "RS — WF5: Farmers Market SMS Blast",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "rs-market-blast",
+        "formTitle": "Farmers Market SMS Blast",
+        "formDescription": "Send an SMS to all opted-in Root Soulutions subscribers about an upcoming market.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "market_name",
+              "fieldType": "text",
+              "requiredField": true,
+              "placeholder": "e.g. Branch Brook Park Farmers Market"
+            },
+            {
+              "fieldLabel": "date",
+              "fieldType": "text",
+              "requiredField": true,
+              "placeholder": "e.g. Saturday April 12"
+            },
+            {
+              "fieldLabel": "time",
+              "fieldType": "text",
+              "requiredField": true,
+              "placeholder": "e.g. 9am – 1pm"
+            },
+            {
+              "fieldLabel": "location",
+              "fieldType": "text",
+              "requiredField": false,
+              "placeholder": "e.g. Branch Brook Park, Newark NJ"
+            }
+          ]
+        },
+        "responseMode": "onSubmission"
+      },
+      "id": "form-trigger",
+      "name": "Form — Market Blast Input",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "subscribers",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "sms_consent",
+              "condition": "eq",
+              "keyValue": "true"
+            }
+          ]
+        }
+      },
+      "id": "fetch-sms-subscribers",
+      "name": "Supabase — Fetch SMS Subscribers",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "id": "split-batches",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "from": "+18623153802",
+        "to": "={{ $json.phone }}",
+        "message": "=Root Soulutions: We'll be at {{ $('Form — Market Blast Input').item.json.market_name }} this {{ $('Form — Market Blast Input').item.json.date }} {{ $('Form — Market Blast Input').item.json.time }}! Come grab your blends. lovecrafteatery.com/markets Reply STOP to opt out."
+      },
+      "id": "twilio-blast-sms",
+      "name": "Twilio — Send Market SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [900, 200],
+      "credentials": {
+        "twilioApi": { "id": "d83Oxb1xJ2lWmtZ1", "name": "Twilio" }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "seconds"
+      },
+      "id": "wait-1s",
+      "name": "Wait — 1 Second",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "workflow_log",
+        "fields": {
+          "values": [
+            { "fieldId": "workflow", "fieldValue": "market_blast" },
+            { "fieldId": "action", "fieldValue": "sent" },
+            { "fieldId": "recipient", "fieldValue": "all sms subscribers" },
+            { "fieldId": "subject", "fieldValue": "={{ 'Market blast: ' + $('Form — Market Blast Input').item.json.market_name }}" },
+            { "fieldId": "status", "fieldValue": "ok" },
+            { "fieldId": "details", "fieldValue": "={{ $('Form — Market Blast Input').item.json.market_name + ' — ' + $('Form — Market Blast Input').item.json.date }}" }
+          ]
+        }
+      },
+      "id": "supabase-log",
+      "name": "Supabase — Log Blast",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "credentials": {
+        "supabaseApi": { "id": "gZoYZmg3201Iw4qB", "name": "Supabase" }
+      }
+    }
+  ],
+  "connections": {
+    "Form — Market Blast Input": {
+      "main": [[{ "node": "Supabase — Fetch SMS Subscribers", "type": "main", "index": 0 }]]
+    },
+    "Supabase — Fetch SMS Subscribers": {
+      "main": [[{ "node": "Split In Batches", "type": "main", "index": 0 }]]
+    },
+    "Split In Batches": {
+      "main": [
+        [{ "node": "Twilio — Send Market SMS", "type": "main", "index": 0 }],
+        [{ "node": "Supabase — Log Blast", "type": "main", "index": 0 }]
+      ]
+    },
+    "Twilio — Send Market SMS": {
+      "main": [[{ "node": "Wait — 1 Second", "type": "main", "index": 0 }]]
+    },
+    "Wait — 1 Second": {
+      "main": [[{ "node": "Split In Batches", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "meta": { "templateId": "rs-wf5-market-blast" }
+}

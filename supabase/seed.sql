@@ -54,9 +54,14 @@ create table if not exists customers (
 -- Newsletter subscribers
 create table if not exists subscribers (
   id uuid primary key default gen_random_uuid(),
-  email text unique not null,
+  email text unique,
+  phone text,
+  sms_consent boolean default false,
   subscribed_at timestamptz default now()
 );
+
+create index if not exists subscribers_phone_idx on subscribers (phone)
+  where phone is not null;
 
 -- Wholesale inquiries
 create table if not exists wholesale_inquiries (
@@ -134,3 +139,6 @@ create table if not exists workflow_log (
 alter table workflow_log enable row level security;
 create policy "Service role insert workflow_log" on workflow_log for insert with check (true);
 create policy "Admin read workflow_log" on workflow_log for select using (auth.role() = 'authenticated');
+
+-- n8n service role can update sms_consent (opt-in / opt-out handler)
+create policy "Service role update subscribers" on subscribers for update using (true);
