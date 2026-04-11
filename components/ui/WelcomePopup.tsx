@@ -64,7 +64,7 @@ export function WelcomePopup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email && !phone) return;
 
     // Save subscriber + notify n8n
     try {
@@ -72,7 +72,7 @@ export function WelcomePopup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email,
+          ...(email ? { email } : {}),
           ...(phone ? { phone, sms_consent: true } : {}),
         }),
       });
@@ -258,8 +258,7 @@ export function WelcomePopup() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com"
-                        required
+                        placeholder="your@email.com (optional)"
                         className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
                       />
                       <input
