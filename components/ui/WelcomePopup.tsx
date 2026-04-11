@@ -64,7 +64,7 @@ export function WelcomePopup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email && !phone) return;
+    if (!email || !phone) return;
 
     // Save subscriber + notify n8n
     try {
@@ -258,14 +258,16 @@ export function WelcomePopup() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com (optional)"
+                        placeholder="your@email.com"
+                        required
                         className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
                       />
                       <input
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Phone number (optional — for SMS deals)"
+                        placeholder="Phone number"
+                        required
                         className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
                       />
                       <button
