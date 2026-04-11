@@ -5,9 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Minus, Plus, Trash } from "@phosphor-icons/react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function CartDrawer() {
-  const { isOpen, closeCart, items, subtotal, updateQuantity, removeFromCart, checkout } = useCart();
+  const router = useRouter();
+  const { isOpen, closeCart, items, subtotal, updateQuantity, removeFromCart } = useCart();
   const progressToFreeShipping = Math.min((subtotal / 50) * 100, 100);
   const amountToFreeShipping = Math.max(50 - subtotal, 0);
 
@@ -126,7 +128,7 @@ export function CartDrawer() {
                   </motion.div>
                 )}
                 <button
-                  onClick={checkout}
+                  onClick={() => { closeCart(); router.push("/checkout"); }}
                   className="w-full bg-[#e85c2a] text-white rounded-full py-4 font-[family-name:var(--font-bebas)] text-xl tracking-wider hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
                 >
                   CHECKOUT
