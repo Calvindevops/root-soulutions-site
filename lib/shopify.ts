@@ -33,13 +33,13 @@ export async function createCheckout(
   items: { variantId: string; quantity: number }[]
 ) {
   const query = `
-    mutation cartCreate($input: CartInput!) {
-      cartCreate(input: $input) {
-        cart {
+    mutation checkoutCreate($input: CheckoutCreateInput!) {
+      checkoutCreate(input: $input) {
+        checkout {
           id
-          checkoutUrl
+          webUrl
         }
-        userErrors {
+        checkoutUserErrors {
           field
           message
         }
@@ -49,25 +49,25 @@ export async function createCheckout(
 
   const variables = {
     input: {
-      lines: items.map((item) => ({
-        merchandiseId: item.variantId,
+      lineItems: items.map((item) => ({
+        variantId: item.variantId,
         quantity: item.quantity,
       })),
     },
   };
 
   const data = await shopifyFetch<{
-    cartCreate: {
-      cart: { id: string; checkoutUrl: string } | null;
-      userErrors: { field: string[]; message: string }[];
+    checkoutCreate: {
+      checkout: { id: string; webUrl: string } | null;
+      checkoutUserErrors: { field: string[]; message: string }[];
     };
   }>({ query, variables });
 
-  if (data.cartCreate.userErrors.length > 0) {
-    throw new Error(data.cartCreate.userErrors[0].message);
+  if (data.checkoutCreate.checkoutUserErrors.length > 0) {
+    throw new Error(data.checkoutCreate.checkoutUserErrors[0].message);
   }
 
-  return data.cartCreate.cart!;
+  return { checkoutUrl: data.checkoutCreate.checkout!.webUrl };
 }
 
 // Fetch all products from Shopify (for when Collin adds them)
