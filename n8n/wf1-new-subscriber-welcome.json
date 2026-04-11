@@ -1,37 +1,30 @@
 {
-  "name": "RS \u2014 WF1: New Subscriber Welcome",
+  "name": "RS — WF1: New Subscriber Welcome",
   "nodes": [
     {
+      "parameters": {},
       "id": "trigger",
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        240,
-        300
-      ],
-      "parameters": {}
+        32,
+        224
+      ]
     },
     {
-      "id": "if-sms-eligible",
-      "name": "IF \u2014 SMS Eligible?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        460,
-        400
-      ],
       "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
               "id": "sms-consent",
-              "leftValue": "={{ $('Execute Workflow Trigger').item.json.body.data.sms_consent }}",
+              "leftValue": "={{ $('Execute Workflow Trigger').item.json.data.sms_consent }}",
               "rightValue": true,
               "operator": {
                 "type": "boolean",
@@ -40,7 +33,7 @@
             },
             {
               "id": "has-phone",
-              "leftValue": "={{ $('Execute Workflow Trigger').item.json.body.data.phone }}",
+              "leftValue": "={{ $('Execute Workflow Trigger').item.json.data.phone }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -49,43 +42,53 @@
             }
           ],
           "combinator": "and"
-        }
-      }
+        },
+        "options": {}
+      },
+      "id": "if-sms-eligible",
+      "name": "IF — SMS Eligible?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        352,
+        560
+      ]
     },
     {
+      "parameters": {
+        "from": "+18448202063",
+        "to": "={{ $('Execute Workflow Trigger').item.json.data.phone }}",
+        "message": "Root Soulutions: You're in the Soulution! Get 10% off your first order: lovecrafteatery.com/shop Use code WELCOME10. Reply STOP to opt out.",
+        "options": {}
+      },
       "id": "twilio-welcome-sms",
-      "name": "Twilio \u2014 Welcome SMS",
+      "name": "Twilio — Welcome SMS",
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        680,
-        320
+        592,
+        208
       ],
-      "parameters": {
-        "from": "+18448202063",
-        "to": "={{ $('Execute Workflow Trigger').item.json.body.data.phone }}",
-        "message": "Root Soulutions: You're in the Soulution! Get 10% off your first order: lovecrafteatery.com/shop Use code WELCOME10. Reply STOP to opt out."
-      },
       "credentials": {
         "twilioApi": {
           "id": "NFBhWEZ819QtvKit",
-          "name": "Twilio SMS"
+          "name": "Twilio account"
         }
       }
     },
     {
       "parameters": {
-        "mode": "runOnceForAllItems",
-        "jsCode": "const items = $input.all();\nreturn items.map(item => {\n  const data = item.json.body.data;\n  return {\n    json: {\n      sender: { name: 'Root Soulutions', email: 'hello@rootsoulutions.com' },\n      to: [{ email: data.email }],\n      subject: 'Welcome to the Soulution',\n      htmlContent: \"<!DOCTYPE html><html><body style=\\\"font-family:sans-serif;background:#1a1a1a;color:#fff;padding:0;margin:0\\\"><div style=\\\"max-width:600px;margin:0 auto;padding:40px 32px\\\"><h1 style=\\\"color:#F5A623;font-size:32px;margin:0 0 16px\\\">Welcome to the Soulution</h1><p style=\\\"color:#ccc;font-size:16px;line-height:1.6\\\">You are officially part of the Root Soulutions family. We make bold, low-sodium, whole-food spice blends - no chemicals, no fillers, just real flavor crafted for people who care about what goes in their food.</p><h2 style=\\\"color:#F5A623;font-size:20px;margin:32px 0 8px\\\">Your Welcome Discount</h2><p style=\\\"color:#ccc;font-size:16px\\\">Use code <strong style=\\\"color:#fff;font-size:18px;letter-spacing:2px\\\">WELCOME10</strong> at checkout to save 10% on your first order.</p><a href=\\\"https://lovecrafteatery.com/shop\\\" style=\\\"display:inline-block;background:#e85c2a;color:#fff;font-weight:700;font-size:16px;padding:16px 32px;border-radius:50px;text-decoration:none;margin:24px 0\\\">Shop Now</a><p style=\\\"color:#888;font-size:13px;margin-top:40px;border-top:1px solid #333;padding-top:20px\\\">Root Soulutions - 1451 S Elm Eugene St, Greensboro, NC 27406<br/>Reply to this email to unsubscribe.</p></div></body></html>\"\n    }\n  };\n});"
+        "jsCode": "const items = $input.all();\nreturn items.map(item => {\n  const data = item.json.data;\n  return {\n    json: {\n      sender: { name: 'Root Soulutions', email: 'contact@lovecrafteatery.com' },\n      to: [{ email: data.email }],\n      subject: 'Welcome to the Soulution',\n      htmlContent: \"<!DOCTYPE html><html><body style=\\\"font-family:sans-serif;background:#1a1a1a;color:#fff;padding:0;margin:0\\\"><div style=\\\"max-width:600px;margin:0 auto;padding:40px 32px\\\"><h1 style=\\\"color:#F5A623;font-size:32px;margin:0 0 16px\\\">Welcome to the Soulution</h1><p style=\\\"color:#ccc;font-size:16px;line-height:1.6\\\">You are officially part of the Root Soulutions family. We make bold, low-sodium, whole-food spice blends - no chemicals, no fillers, just real flavor crafted for people who care about what goes in their food.</p><h2 style=\\\"color:#F5A623;font-size:20px;margin:32px 0 8px\\\">Your Welcome Discount</h2><p style=\\\"color:#ccc;font-size:16px\\\">Use code <strong style=\\\"color:#fff;font-size:18px;letter-spacing:2px\\\">WELCOME10</strong> at checkout to save 10% on your first order.</p><a href=\\\"https://lovecrafteatery.com/shop\\\" style=\\\"display:inline-block;background:#e85c2a;color:#fff;font-weight:700;font-size:16px;padding:16px 32px;border-radius:50px;text-decoration:none;margin:24px 0\\\">Shop Now</a><p style=\\\"color:#888;font-size:13px;margin-top:40px;border-top:1px solid #333;padding-top:20px\\\">Root Soulutions - 1451 S Elm Eugene St, Greensboro, NC 27406<br/>Reply to this email to unsubscribe.</p></div></body></html>\"\n    }\n  };\n});"
       },
       "id": "code-build-welcome",
-      "name": "Code \u2014 Build Welcome Email",
+      "name": "Code — Build Welcome Email",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        460,
-        200
-      ]
+        304,
+        144
+      ],
+      "alwaysOutputData": false
     },
     {
       "parameters": {
@@ -99,12 +102,12 @@
         "options": {}
       },
       "id": "brevo-welcome-email",
-      "name": "HTTP \u2014 Brevo Welcome Email",
+      "name": "HTTP — Brevo Welcome Email",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        680,
-        200
+        720,
+        -48
       ],
       "credentials": {
         "sendInBlueApi": {
@@ -130,16 +133,16 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { \"workflow\": \"welcome\", \"action\": \"sent\", \"recipient\": $(\"Execute Workflow Trigger\").item.json.body.data.email, \"subject\": \"Welcome to the Soulution\", \"status\": \"ok\", \"details\": $(\"Execute Workflow Trigger\").item.json.body.data.sms_consent ? \"email+sms sent\" : \"email only\" } }}",
+        "jsonBody": "={{ { \"workflow\": \"welcome\", \"action\": \"sent\", \"recipient\": $(\"Execute Workflow Trigger\").item.json.data.email, \"subject\": \"Welcome to the Soulution\", \"status\": \"ok\", \"details\": $(\"Execute Workflow Trigger\").item.json.data.sms_consent ? \"email+sms sent\" : \"email only\" } }}",
         "options": {}
       },
       "id": "supabase-log",
-      "name": "Supabase \u2014 Log",
+      "name": "Supabase — Log",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        900,
-        300
+        1184,
+        288
       ],
       "credentials": {
         "supabaseApi": {
@@ -154,63 +157,63 @@
       "main": [
         [
           {
-            "node": "Code \u2014 Build Welcome Email",
+            "node": "Code — Build Welcome Email",
             "type": "main",
             "index": 0
           },
           {
-            "node": "IF \u2014 SMS Eligible?",
+            "node": "IF — SMS Eligible?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code \u2014 Build Welcome Email": {
+    "Code — Build Welcome Email": {
       "main": [
         [
           {
-            "node": "HTTP \u2014 Brevo Welcome Email",
+            "node": "HTTP — Brevo Welcome Email",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP \u2014 Brevo Welcome Email": {
+    "HTTP — Brevo Welcome Email": {
       "main": [
         [
           {
-            "node": "Supabase \u2014 Log",
+            "node": "Supabase — Log",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF \u2014 SMS Eligible?": {
+    "IF — SMS Eligible?": {
       "main": [
         [
           {
-            "node": "Twilio \u2014 Welcome SMS",
+            "node": "Twilio — Welcome SMS",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Supabase \u2014 Log",
+            "node": "Supabase — Log",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Twilio \u2014 Welcome SMS": {
+    "Twilio — Welcome SMS": {
       "main": [
         [
           {
-            "node": "Supabase \u2014 Log",
+            "node": "Supabase — Log",
             "type": "main",
             "index": 0
           }
