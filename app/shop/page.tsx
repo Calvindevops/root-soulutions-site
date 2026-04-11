@@ -118,12 +118,12 @@ export default function ShopPage() {
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-white text-4xl font-bold">${starterKit.price.toFixed(2)}</span>
                 </div>
-                <Link
-                  href={`/products/${starterKit.handle}`}
-                  className="w-full md:w-auto bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg mt-2 inline-block text-center"
+                <button
+                  onClick={() => addToCart(starterKit, 1)}
+                  className="w-full md:w-auto bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg mt-2"
                 >
-                  SHOP BUNDLE
-                </Link>
+                  ADD TO CART
+                </button>
               </motion.div>
 
               {/* Right Image */}
@@ -295,12 +295,12 @@ export default function ShopPage() {
                     <span className="text-white text-2xl font-bold">
                       ${product.price.toFixed(2)}
                     </span>
-                    <Link
-                      href={`/products/${product.handle}`}
-                      className="w-full bg-white/20 text-white rounded-full px-8 py-3 btn-text hover:scale-105 hover:brightness-110 transition-all text-center"
+                    <button
+                      onClick={() => addToCart(product, 1)}
+                      className="w-full bg-white/20 text-white rounded-full px-8 py-3 btn-text hover:scale-105 hover:brightness-110 transition-all"
                     >
-                      SHOP NOW
-                    </Link>
+                      ADD TO CART
+                    </button>
                   </div>
                 </motion.div>
               ))}
