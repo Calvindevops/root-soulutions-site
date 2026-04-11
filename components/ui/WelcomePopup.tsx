@@ -36,6 +36,7 @@ export function WelcomePopup() {
   const [step, setStep] = useState<"quiz" | "capture">("quiz");
   const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [discountCode, setDiscountCode] = useState("SOUL10");
   const [isMobile, setIsMobile] = useState(false);
@@ -70,7 +71,10 @@ export function WelcomePopup() {
       await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          ...(phone ? { phone, sms_consent: true } : {}),
+        }),
       });
     } catch {
       // Silent fail
@@ -249,13 +253,20 @@ export function WelcomePopup() {
                       Enter your email to unlock 10% off your next order.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-[400px] mx-auto">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[400px] mx-auto">
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your@email.com"
                         required
+                        className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
+                      />
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="Phone number (optional — for SMS deals)"
                         className="w-full px-6 py-4 rounded-full bg-white/10 border-2 border-white/15 text-white text-lg placeholder:text-white/30 focus:border-[#F5C542] focus:outline-none font-[family-name:var(--font-dm-sans)]"
                       />
                       <button
@@ -274,7 +285,7 @@ export function WelcomePopup() {
                     </button>
 
                     <p className="text-white/20 text-xs text-center mt-6 font-[family-name:var(--font-dm-sans)]">
-                      By signing up, you agree to receive marketing emails from Root Soulutions. Unsubscribe anytime. See our{" "}
+                      By signing up you agree to receive marketing emails from Root Soulutions. By adding your phone number you consent to SMS messages. Msg &amp; data rates may apply. Reply <strong className="text-white/40">STOP</strong> to opt out. See our{" "}
                       <a href="/privacy" className="underline">Privacy Policy</a> and{" "}
                       <a href="/terms" className="underline">Terms</a>.
                     </p>
