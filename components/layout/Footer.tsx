@@ -69,12 +69,12 @@ export function Footer() {
 
         {/* Contact Bar */}
         <div className="border-t border-white/10 pt-6 mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-center">
-          <a href="mailto:hello@rootsoulutions.com" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
-            hello@rootsoulutions.com
+          <a href="mailto:contact@lovecrafteatery.com" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
+            contact@lovecrafteatery.com
           </a>
           <span className="hidden sm:block text-[#F5C542]/20">|</span>
-          <a href="tel:8623153802" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
-            (862) 315-3802
+          <a href="tel:18448202063" className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/50 hover:text-[#F5C542] transition">
+            1-844-820-2063
           </a>
           <span className="hidden sm:block text-[#F5C542]/20">|</span>
           <p className="font-[family-name:var(--font-dm-sans)] text-xs text-[#F5C542]/40">

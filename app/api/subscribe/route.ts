@@ -9,25 +9,35 @@ export async function POST(request: Request) {
     sms_consent?: boolean;
   };
 
-  if (!email) {
-    return NextResponse.json({ error: "Email required" }, { status: 400 });
+  if (!email && !phone) {
+    return NextResponse.json({ error: "Email or phone required" }, { status: 400 });
   }
 
   const supabase = createServerClient();
-  const { error } = await supabase.from("subscribers").insert({
-    email,
-    ...(phone && sms_consent ? { phone, sms_consent: true } : {}),
-  });
 
-  if (error && !error.message.includes("duplicate")) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (email) {
+    const { error } = await supabase.from("subscribers").insert({
+      email,
+      ...(phone && sms_consent ? { phone, sms_consent: true } : {}),
+    });
+    if (error && !error.message.includes("duplicate")) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+  } else if (phone) {
+    // SMS-only: upsert by phone — no email column required
+    const { error } = await supabase
+      .from("subscribers")
+      .upsert({ phone, sms_consent: true }, { onConflict: "phone" });
+    if (error && !error.message.includes("duplicate")) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 
   // Notify n8n — includes phone + sms_consent so SMS welcome fires
   await notifyN8n("new_subscriber", {
-    email,
+    email: email || null,
     phone: phone || null,
-    sms_consent: sms_consent || false,
+    sms_consent: sms_consent || !!phone,
   });
 
   return NextResponse.json({ success: true });

@@ -7,31 +7,37 @@ import { fadeInUp } from "@/lib/animations";
 export function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [smsConsent, setSmsConsent] = useState(false);
-  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [emailStatus, setEmailStatus] = useState<"idle" | "loading" | "success">("idle");
+  const [smsStatus, setSmsStatus] = useState<"idle" | "loading" | "success">("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-
-    setStatus("loading");
-
+    setEmailStatus("loading");
     try {
-      const { supabase } = await import("@/lib/supabase");
-      await supabase.from("subscribers").insert({
-        email,
-        ...(phone && smsConsent ? { phone, sms_consent: true } : {}),
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
-      setStatus("success");
-      setEmail("");
-      setPhone("");
-      setSmsConsent(false);
-    } catch {
-      setStatus("success");
-      setEmail("");
-      setPhone("");
-      setSmsConsent(false);
-    }
+    } catch { /* silent */ }
+    setEmailStatus("success");
+    setEmail("");
+  };
+
+  const handleSmsSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phone) return;
+    setSmsStatus("loading");
+    try {
+      await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, sms_consent: true }),
+      });
+    } catch { /* silent */ }
+    setSmsStatus("success");
+    setPhone("");
   };
 
   return (
@@ -54,13 +60,14 @@ export function NewsletterSignup() {
             Exclusive recipes, market updates, and early access to new blends.
           </p>
 
-          {status === "success" ? (
-            <div className="bg-[#2D5A27] text-white px-6 py-4 rounded-full font-bold text-center w-full font-[family-name:var(--font-dm-sans)]">
-              You&apos;re in! Welcome to the Soulution.
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
-              <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-4 w-full">
+            {/* Email */}
+            {emailStatus === "success" ? (
+              <div className="bg-[#2D5A27] text-white px-6 py-4 rounded-full font-bold text-center font-[family-name:var(--font-dm-sans)]">
+                You&apos;re in! Welcome to the Soulution.
+              </div>
+            ) : (
+              <form onSubmit={handleEmailSubmit} className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
                   value={email}
@@ -71,42 +78,46 @@ export function NewsletterSignup() {
                 />
                 <button
                   type="submit"
-                  disabled={status === "loading"}
+                  disabled={emailStatus === "loading"}
                   className="bg-[#e85c2a] text-white rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30 disabled:opacity-70 whitespace-nowrap"
                 >
-                  {status === "loading" ? "..." : "SUBSCRIBE"}
+                  {emailStatus === "loading" ? "..." : "SUBSCRIBE"}
                 </button>
-              </div>
+              </form>
+            )}
 
-              <div className="flex flex-col items-center gap-1">
+            {/* SMS */}
+            {smsStatus === "success" ? (
+              <div className="bg-[#2D5A27] text-white px-6 py-4 rounded-full font-bold text-center font-[family-name:var(--font-dm-sans)]">
+                Signed up for SMS updates!
+              </div>
+            ) : (
+              <form onSubmit={handleSmsSubmit} className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Phone number"
-                  className="w-full px-6 py-4 rounded-full border border-white/20 bg-white/5 text-white placeholder-white/30 focus:outline-none focus:border-[#F5C542] font-[family-name:var(--font-dm-sans)]"
+                  required
+                  className="flex-1 px-6 py-4 rounded-full border border-white/20 bg-white/5 text-white placeholder-white/30 focus:outline-none focus:border-[#F5C542] font-[family-name:var(--font-dm-sans)]"
                 />
-                <span className="text-white/30 text-xs font-[family-name:var(--font-dm-sans)]">
-                  Optional — for SMS updates
-                </span>
-              </div>
+                <button
+                  type="submit"
+                  disabled={smsStatus === "loading"}
+                  className="bg-[#2D5A27] text-white rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#2D5A27]/30 disabled:opacity-70 whitespace-nowrap"
+                >
+                  {smsStatus === "loading" ? "..." : "SUBSCRIBE"}
+                </button>
+              </form>
+            )}
 
-              <label className="flex items-start gap-3 cursor-pointer mt-1">
-                <input
-                  type="checkbox"
-                  checked={smsConsent}
-                  onChange={(e) => setSmsConsent(e.target.checked)}
-                  className="mt-1 w-4 h-4 accent-[#e85c2a] shrink-0"
-                />
-                <span className="text-white/40 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed">
-                  I agree to receive promotional text messages from Root Soulutions, including farmers market updates, new blends, and special offers. Message frequency varies. Msg &amp; data rates may apply. Reply <strong className="text-white/60">STOP</strong> to opt out, <strong className="text-white/60">HELP</strong> for help. See our{" "}
-                  <a href="/privacy" className="underline text-white/60 hover:text-white">Privacy Policy</a>{" "}
-                  and{" "}
-                  <a href="/terms" className="underline text-white/60 hover:text-white">Terms</a>.
-                </span>
-              </label>
-            </form>
-          )}
+            <p className="text-white/30 text-xs font-[family-name:var(--font-dm-sans)] leading-relaxed text-center">
+              By subscribing via SMS you agree to receive promotional text messages from Root Soulutions. Msg &amp; data rates may apply. Reply <strong className="text-white/50">STOP</strong> to opt out. See our{" "}
+              <a href="/privacy" className="underline text-white/50 hover:text-white">Privacy Policy</a>{" "}
+              and{" "}
+              <a href="/terms" className="underline text-white/50 hover:text-white">Terms</a>.
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>
