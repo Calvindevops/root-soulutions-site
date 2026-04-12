@@ -33,30 +33,30 @@ export default function FoundationPage() {
     <main className="w-full">
 
       {/* ── 1. Header Hero ── */}
-      <section className="relative bg-[#2D5A27] px-6 pt-10 pb-12 overflow-hidden">
-        <Image
-          src="/brand/chili-pepper.png"
-          alt=""
-          width={50}
-          height={50}
-          className="absolute top-4 left-[8%] opacity-15 rotate-12 hidden md:block"
-        />
-        <Image
-          src="/brand/beetroot-small.png"
-          alt=""
-          width={40}
-          height={40}
-          className="absolute bottom-4 right-[10%] opacity-15 -rotate-6 hidden md:block"
-        />
+      <section className="relative w-full overflow-hidden bg-[#1A1A1A]">
+        {/* Hero image */}
+        <div className="relative w-full aspect-[16/7]">
+          <Image
+            src="/brand/rooting-for-you-hero.png"
+            alt="Two hands forming a heart shape with the Root Soulutions logo — Rooting For You Foundation"
+            fill
+            className="object-cover object-center"
+            priority
+            sizes="100vw"
+          />
+          {/* Overlay gradient for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
+        </div>
+        {/* Text overlay at bottom */}
         <motion.div
           variants={fadeIn}
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
-          className="text-center"
+          className="absolute bottom-0 left-0 right-0 text-center pb-8 md:pb-12 px-6"
         >
-          <h1 className="heading-hero text-white">ROOTING FOR YOU</h1>
-          <p className="heading-sub text-white/70 italic mt-4">
+          <h1 className="heading-hero text-white drop-shadow-lg">ROOTING FOR YOU</h1>
+          <p className="heading-sub text-white/80 italic mt-3 drop-shadow">
             Whole Food. Whole Ingredients. Whole Life. Whole Community.
           </p>
         </motion.div>
