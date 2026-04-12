@@ -44,10 +44,8 @@ export default function FoundationPage() {
             priority
             sizes="100vw"
           />
-          {/* Overlay gradient for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
-        </div>
-        {/* Text overlay at bottom */}
+          </div>
+        {/* Text overlay at bottom — pill backdrop keeps text readable without dimming image */}
         <motion.div
           variants={fadeIn}
           initial="initial"
@@ -55,8 +53,8 @@ export default function FoundationPage() {
           viewport={{ once: true }}
           className="absolute bottom-0 left-0 right-0 text-center pb-8 md:pb-12 px-6"
         >
-          <h1 className="heading-hero text-white drop-shadow-lg">ROOTING FOR YOU</h1>
-          <p className="heading-sub text-white/80 italic mt-3 drop-shadow">
+          <h1 className="heading-hero text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">ROOTING FOR YOU</h1>
+          <p className="heading-sub italic mt-3 inline-block bg-[#2D5A27]/80 text-white px-5 py-1.5 rounded-full backdrop-blur-sm">
             Whole Food. Whole Ingredients. Whole Life. Whole Community.
           </p>
         </motion.div>
