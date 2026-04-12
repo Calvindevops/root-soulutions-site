@@ -57,6 +57,7 @@ export function Navbar() {
         <div className="hidden md:flex flex-1 gap-6 items-center justify-end">
           <Link href="/recipes" className="text-white uppercase font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider hover:opacity-80 transition">RECIPES</Link>
           <Link href="/wholesale" className="text-white uppercase font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider hover:opacity-80 transition">WHOLESALE</Link>
+          <Link href="/foundation" className="text-[#F5C542] uppercase font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider hover:opacity-80 transition">ROOTING FOR YOU</Link>
           <button onClick={openCart} className="rounded-full border border-white px-4 py-1.5 text-white flex items-center gap-2 hover:bg-white hover:text-[#2D5A27] transition">
             <span className="font-[family-name:var(--font-dm-sans)] font-bold text-[14px] tracking-wider">CART ({itemCount})</span>
           </button>

@@ -19,6 +19,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     { label: "WHOLESALE", href: "/wholesale" },
     { label: "CONTACT", href: "/contact" },
     { label: "FAQ", href: "/faq" },
+    { label: "ROOTING FOR YOU", href: "/foundation" },
   ];
 
   return (
