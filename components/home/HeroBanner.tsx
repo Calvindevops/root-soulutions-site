@@ -12,10 +12,6 @@ export function HeroBanner() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/brand/hero-picnic.jpg')" }}
       />
-      {/* Dark gradient overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20" />
-      {/* Subtle green tint overlay */}
-      <div className="absolute inset-0 bg-[#2D5A27]/30 mix-blend-multiply" />
 
       {/* Content */}
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 w-full py-24">
@@ -31,13 +27,13 @@ export function HeroBanner() {
         >
           <div className="flex flex-col">
             <motion.h1
-              className="heading-hero text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+              className="heading-hero text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
               variants={fadeInUp}
             >
               SEASON
             </motion.h1>
             <motion.h1
-              className="heading-hero text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+              className="heading-hero text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
               variants={fadeInUp}
             >
               WITH SOUL
@@ -45,7 +41,7 @@ export function HeroBanner() {
           </div>
 
           <motion.p
-            className="text-lg md:text-xl text-white/90 max-w-xl font-[family-name:var(--font-dm-sans)] drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            className="text-lg md:text-xl text-white max-w-xl font-[family-name:var(--font-dm-sans)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
             variants={fadeInUp}
           >
             Whole-food, low-sodium seasoning blends crafted from pure herbs and
