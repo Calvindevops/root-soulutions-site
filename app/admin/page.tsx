@@ -14,6 +14,7 @@ interface DashboardStats {
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({ subscribers: 0, wholesale: 0, wholesaleNew: 0, messages: 0 });
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadStats() {
@@ -24,14 +25,19 @@ export default function AdminDashboard() {
         ]);
         const subData = await subRes.json();
         const whData = await whRes.json();
+        if (subData.error || whData.error) {
+          throw new Error(subData.error || whData.error);
+        }
         setStats({
           subscribers: subData.subscribers?.length || 0,
           wholesale: whData.inquiries?.length || 0,
           wholesaleNew: (whData.inquiries || []).filter((i: { status: string }) => i.status === "new").length,
           messages: 0,
         });
-      } catch {
-        // Silent
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unknown error";
+        console.error("Admin dashboard load failed:", msg);
+        setLoadError(msg);
       } finally {
         setLoading(false);
       }
@@ -65,6 +71,12 @@ export default function AdminDashboard() {
           Export Business Workbook
         </button>
       </div>
+
+      {loadError && (
+        <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 text-sm">
+          <strong>Dashboard load failed:</strong> {loadError}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
