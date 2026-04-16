@@ -44,10 +44,10 @@ export default function ContactPage() {
           {/* Contact Info */}
           <div className="text-center mb-12">
             <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/80 text-lg mb-2">
-              <span className="font-bold">General Inquiries:</span> hello@rootsoulutions.com
+              <span className="font-bold">General Inquiries:</span> contact@lovecrafteatery.com
             </p>
             <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/80 text-lg mb-2">
-              <span className="font-bold">Wholesale:</span> wholesale@rootsoulutions.com
+              <span className="font-bold">Wholesale:</span> contact@lovecrafteatery.com
             </p>
             <p className="font-[family-name:var(--font-dm-sans)] text-[#1A1A1A]/80 text-lg">
               1451 S Elm Eugene St, Greensboro, NC 27406<br />

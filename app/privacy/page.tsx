@@ -55,7 +55,7 @@ export default function PrivacyPage() {
 
           <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">6. Contact Us</h2>
           <p>
-            For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by email at hello@rootsoulutions.com or by mail using the details provided below:
+            For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by email at contact@lovecrafteatery.com or by mail using the details provided below:
           </p>
           <p className="mt-4 font-bold">
             Craft Eatery Food Genius Company L.L.C.<br />

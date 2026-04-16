@@ -53,7 +53,7 @@ export default function TermsPage() {
             <strong>Opt-Out:</strong> Reply <strong>STOP</strong> to any message to unsubscribe at any time. You will receive a confirmation message and no further messages will be sent.
           </p>
           <p className="mt-3">
-            <strong>Help:</strong> Reply <strong>HELP</strong> for help, or contact us at hello@rootsoulutions.com.
+            <strong>Help:</strong> Reply <strong>HELP</strong> for help, or contact us at contact@lovecrafteatery.com.
           </p>
           <p className="mt-3">
             <strong>Carrier Disclaimer:</strong> Carriers are not liable for delayed or undelivered messages.
@@ -65,7 +65,7 @@ export default function TermsPage() {
           <h2 className="heading-sub text-[#2D5A27] mt-10 mb-4">7. Contact Information</h2>
           <p>
             Questions about the Terms of Service should be sent to us at{" "}
-            <a href="mailto:hello@rootsoulutions.com" className="text-[#2D5A27] underline">hello@rootsoulutions.com</a>{" "}
+            <a href="mailto:contact@lovecrafteatery.com" className="text-[#2D5A27] underline">contact@lovecrafteatery.com</a>{" "}
             or by phone at <a href="tel:8623153802" className="text-[#2D5A27] underline">(862) 315-3802</a>.
           </p>
           <p className="mt-4 font-bold">
