@@ -4,14 +4,17 @@ import { Leaf } from "@phosphor-icons/react/dist/ssr";
 export function AnnouncementBar() {
   const messages = [
     <span key="1">
+      <Link href="/shop" className="hover:underline">🎉 15% OFF YOUR FIRST ORDER — CODE <strong className="tracking-widest">SOUL15</strong></Link>
+    </span>,
+    <span key="2">FREE SHIPPING ON ORDERS $50+</span>,
+    <span key="3">
       <Link href="/shop" className="hover:underline">WHOLE-FOOD SEASONINGS CRAFTED WITH SOUL</Link>
     </span>,
-    <span key="2">LOW SODIUM. CHEMICAL-FREE. SMALL-BATCH.</span>,
-    <span key="3">
+    <span key="4">LOW SODIUM. CHEMICAL-FREE. SMALL-BATCH.</span>,
+    <span key="5">
       <Link href="/markets" className="hover:underline">FIND US AT YOUR LOCAL FARMERS MARKET</Link>
     </span>,
-    <span key="4">CHEF CURATED AND FOUNDED</span>,
-    <span key="5">REAL FOOD. REAL INGREDIENTS. REALLLLGOOD TASTE 😋</span>,
+    <span key="6">CHEF CURATED AND FOUNDED</span>,
   ];
 
   return (

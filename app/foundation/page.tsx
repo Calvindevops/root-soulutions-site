@@ -1,9 +1,8 @@
-import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import * as motion from "framer-motion/client";
 import { fadeIn, fadeInUp, staggerContainer } from "@/lib/animations";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
+import { FoundationHero } from "@/components/foundation/FoundationHero";
 
 const pillars = [
   {
@@ -31,37 +30,10 @@ const impactBadges = [
 export default function FoundationPage() {
   return (
     <main className="w-full">
-
-      {/* ── 1. Header Hero ── */}
-      <section className="relative w-full overflow-hidden bg-[#1A1A1A]">
-        {/* Hero image */}
-        <div className="relative w-full aspect-[16/7]">
-          <Image
-            src="/brand/rooting-for-you-hero.png"
-            alt="Two hands forming a heart shape with the Root Soulutions logo — Rooting For You Foundation"
-            fill
-            className="object-cover object-center"
-            priority
-            sizes="100vw"
-          />
-          </div>
-        {/* Text overlay at bottom — pill backdrop keeps text readable without dimming image */}
-        <motion.div
-          variants={fadeIn}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          className="absolute bottom-0 left-0 right-0 text-center pb-8 md:pb-12 px-6"
-        >
-          <h1 className="heading-hero text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">ROOTING FOR YOU</h1>
-          <p className="heading-sub italic mt-3 inline-block bg-[#2D5A27]/80 text-white px-5 py-1.5 rounded-full backdrop-blur-sm">
-            Whole Food. Whole Ingredients. Whole Life. Whole Community.
-          </p>
-        </motion.div>
-      </section>
+      <FoundationHero />
 
       {/* ── 2. Mission Statement ── */}
-      <section className="bg-[#FFF8F0] py-20 px-6">
+      <section id="story" className="bg-[#FFF8F0] py-20 px-6">
         <div className="max-w-[800px] mx-auto text-center">
           <motion.h2
             variants={fadeInUp}
@@ -103,7 +75,7 @@ export default function FoundationPage() {
       />
 
       {/* ── 4. Three Pillars Overview ── */}
-      <section className="bg-[#6B3FA0] py-24 px-6">
+      <section id="investing" className="bg-[#6B3FA0] py-24 px-6">
         <div className="max-w-[1100px] mx-auto">
           <motion.h2
             variants={fadeIn}
@@ -138,7 +110,7 @@ export default function FoundationPage() {
       </section>
 
       {/* ── 5. Pillar 1 — Headliner Lunches ── */}
-      <section className="bg-[#1A1A1A] py-20 px-6">
+      <section id="building" className="bg-[#1A1A1A] py-20 px-6">
         <div className="max-w-[900px] mx-auto md:grid md:grid-cols-2 gap-12 items-start">
           <motion.div
             variants={fadeInUp}
@@ -233,7 +205,7 @@ export default function FoundationPage() {
       />
 
       {/* ── 8. Pillar 3 — Community Uplift ── */}
-      <section className="bg-[#6B3FA0] py-20 px-6">
+      <section id="advisory" className="bg-[#6B3FA0] py-20 px-6">
         <div className="max-w-[900px] mx-auto md:grid md:grid-cols-2 gap-12 items-start">
           <motion.div
             variants={fadeInUp}

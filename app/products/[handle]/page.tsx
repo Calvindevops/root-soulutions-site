@@ -6,6 +6,7 @@ import { ProductDetailClient } from "@/components/product/ProductDetailClient";
 import { ProductImageCarousel } from "@/components/product/ProductImageCarousel";
 import { RelatedProductCard } from "@/components/product/RelatedProductCard";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
+import { ProductReassembly } from "@/components/product/ProductReassembly";
 
 // Revalidate every 60 seconds so Shopify images stay fresh
 export const revalidate = 60;
@@ -75,6 +76,9 @@ export default async function ProductPage({ params }: { params: Promise<{ handle
           </div>
         </div>
       </section>
+
+      {/* Scroll-3D reassembly — per-product */}
+      <ProductReassembly handle={handle} title={product.title} />
 
       {/* Ingredients Visual Grid */}
       {product.ingredients && product.ingredients.length > 0 && (

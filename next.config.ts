@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["dev.norevel.com"],
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       {

@@ -1,4 +1,4 @@
-import { HeroBanner } from "@/components/home/HeroBanner";
+import { HeroReassembly } from "@/components/home/HeroReassembly";
 import { ValueBadges } from "@/components/home/ValueBadges";
 import { SocialProofStrip } from "@/components/home/SocialProofStrip";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
@@ -19,8 +19,8 @@ const ingredientIcons = [
 export default function HomePage() {
   return (
     <>
-      {/* 1. HERO — dark */}
-      <HeroBanner />
+      {/* 1. HERO — scroll-3D-reassembly (V4 24s reel scrubbed in reverse) */}
+      <HeroReassembly />
       <SectionDivider topColor="#1A1A1A" bottomColor="#2D5A27" variant="leaf-wave" />
 
       {/* 2. STARTER KIT — green */}

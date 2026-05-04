@@ -8,8 +8,8 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <main className="w-full">
-      {/* Header — compact */}
-      <section className="relative bg-[#2D5A27] px-6 pt-10 pb-8 overflow-hidden">
+      {/* Header — matches /wholesale + /recipes spacing; logo in nav reads "Root Soulutions / STORY" */}
+      <section className="relative bg-[#2D5A27] pt-32 pb-20 px-6 text-center overflow-hidden">
         <Image src="/brand/chili-pepper.png" alt="" width={50} height={50} className="absolute top-4 left-[8%] opacity-15 rotate-12 hidden md:block" />
         <Image src="/brand/beetroot-small.png" alt="" width={40} height={40} className="absolute bottom-4 right-[10%] opacity-15 -rotate-6 hidden md:block" />
         <motion.div
@@ -17,9 +17,8 @@ export default function AboutPage() {
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: true }}
-          className="text-center"
         >
-          <h1 className="heading-hero text-white">OUR STORY</h1>
+          <h1 className="heading-hero text-white">STORY</h1>
         </motion.div>
       </section>
 
@@ -36,7 +35,7 @@ export default function AboutPage() {
           >
             <div className="w-full max-w-[380px] aspect-[3/4] mx-auto rounded-[2rem] overflow-hidden -rotate-2 shadow-2xl relative">
               <Image
-                src="/brand/founder-collin.png"
+                src="/brand/founder-collin.webp"
                 alt="Collin Alexander, founder of Root Soulutions"
                 fill
                 className="object-cover"

@@ -6,31 +6,69 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
 import { useProducts } from "@/lib/use-products";
-import { cardHover, fadeInUp, staggerContainer } from "@/lib/animations";
+import { fadeInUp } from "@/lib/animations";
 import { ScrollingMarquee } from "@/components/home/ScrollingMarquee";
+import { ScrollProductFeature } from "@/components/shop/ScrollProductFeature";
+import type { Product } from "@/lib/types";
 
+const VIDEO_SLUG_BY_HANDLE: Record<string, string> = {
+  "low-sodium-smokey-cajun-szn": "smokey-cajun-reassembly",
+  "low-sodium-simple-szn-complete-seasoning": "simple-szn-reassembly",
+  "low-sodium-garlicky-szn-blend": "garlicky-szn-reassembly",
+};
 
-function SkeletonCard() {
+const ILLUSTRATION_BY_HANDLE: Record<string, string> = {
+  "low-sodium-smokey-cajun-szn": "/brand/chili-pepper.png",
+  "low-sodium-simple-szn-complete-seasoning": "/brand/onion-turmeric-illustration.png",
+  "low-sodium-garlicky-szn-blend": "/brand/garlic-illustration.png",
+};
+
+function LineupSkeleton() {
   return (
-    <div className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col bg-white/5 animate-pulse">
-      <div className="w-[200px] h-[200px] rounded-full bg-white/10 mx-auto mb-8" />
-      <div className="h-6 bg-white/10 rounded w-2/3 mx-auto mb-2" />
-      <div className="h-4 bg-white/10 rounded w-1/2 mx-auto mb-6" />
-      <div className="mt-auto flex flex-col items-center gap-4">
-        <div className="h-8 bg-white/10 rounded w-20" />
-        <div className="h-12 bg-white/10 rounded-full w-full" />
+    <section className="bg-black min-h-screen flex items-center justify-center px-6 py-20">
+      <div className="rounded-[2rem] w-full max-w-sm min-h-[520px] bg-white/[0.04] animate-pulse p-8 flex flex-col items-center gap-5">
+        <div className="w-[200px] h-[200px] rounded-full bg-white/10" />
+        <div className="h-3 w-32 rounded bg-white/10" />
+        <div className="h-7 w-48 rounded bg-white/10" />
+        <div className="h-3 w-40 rounded bg-white/10" />
+        <div className="mt-auto flex flex-col items-center w-full gap-3 pt-4">
+          <div className="h-12 w-28 rounded bg-white/10" />
+          <div className="h-3 w-24 rounded bg-white/10" />
+          <div className="h-12 w-full rounded-full bg-white/10" />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
+
+const isBirdseye = (url: string) => {
+  const lower = url.toLowerCase();
+  return lower.includes("birdseye") || lower.includes("birds_eye");
+};
+
+const getDefaultIndex = (images: string[]) => {
+  const hasBE = images.some(isBirdseye);
+  if (hasBE) {
+    for (let i = images.length - 1; i >= 0; i--) {
+      if (!isBirdseye(images[i])) return i;
+    }
+  }
+  return images.length > 1 ? 1 : 0;
+};
+
+const getBirdseyeIndex = (images: string[]) => {
+  const idx = images.findIndex(isBirdseye);
+  if (idx >= 0) return idx;
+  return images.length - 1;
+};
 
 export default function ShopPage() {
   const { addToCart } = useCart();
   const { products, loading } = useProducts();
 
   const [imageIndex, setImageIndex] = useState<Record<string, number>>({});
+  const [justAddedHandle, setJustAddedHandle] = useState<string | null>(null);
 
-  // Default to exploded seasoning image
   useEffect(() => {
     if (products.length === 0) return;
     const indices: Record<string, number> = {};
@@ -40,37 +78,12 @@ export default function ShopPage() {
     setImageIndex(indices);
   }, [products]);
 
-  const isBirdseye = (url: string) => {
-    const lower = url.toLowerCase();
-    return lower.includes("birdseye") || lower.includes("birds_eye");
-  };
-
-  // Default = exploded seasoning shot
-  // With birdseye: last non-birdseye (the generated exploded)
-  // Without birdseye: index 1 (second image = exploded)
-  const getDefaultIndex = (images: string[]) => {
-    const hasBE = images.some(isBirdseye);
-    if (hasBE) {
-      for (let i = images.length - 1; i >= 0; i--) {
-        if (!isBirdseye(images[i])) return i;
-      }
-    }
-    return images.length > 1 ? 1 : 0;
-  };
-
-  // Birdseye/alternate = overhead shot, or last image if no birdseye exists
-  const getBirdseyeIndex = (images: string[]) => {
-    const idx = images.findIndex(isBirdseye);
-    if (idx >= 0) return idx;
-    // No birdseye — use last image (e.g. instagram portrait for Simple SZN)
-    return images.length - 1;
-  };
-
-  const cycleImage = (handle: string, totalImages: number) => {
-    setImageIndex((prev) => ({
-      ...prev,
-      [handle]: ((prev[handle] ?? 0) + 1) % totalImages,
-    }));
+  const handlePreOrder = (product: Product) => {
+    addToCart(product, 1, { preorder: true, preorder_ships: "Q4 2026" });
+    setJustAddedHandle(product.handle);
+    window.setTimeout(() => {
+      setJustAddedHandle((prev) => (prev === product.handle ? null : prev));
+    }, 1500);
   };
 
   const lineup = products.filter(p => !p.is_bundle);
@@ -78,76 +91,81 @@ export default function ShopPage() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      {/* Hero Header */}
-      <section className="relative bg-[#1A1A1A] py-24 text-center overflow-hidden">
-        <Image src="/brand/chili-pepper.png" alt="" width={80} height={80} className="absolute top-8 left-[10%] opacity-15 rotate-12 hidden md:block" />
-        <Image src="/brand/garlic-illustration.png" alt="" width={70} height={70} className="absolute bottom-8 right-[12%] opacity-15 -rotate-12 hidden md:block" />
+      {/* Hero — picnic motion video of the 3 bottles, starter-kit copy overlaid */}
+      <section className="relative bg-[#1A1A1A] min-h-screen overflow-hidden">
+        <video
+          className="absolute inset-0 h-full w-full object-cover brightness-95"
+          style={{ objectPosition: "center 35%" }}
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/brand/hero-picnic.jpg"
+          aria-label="Smokey Cajun, Simple SZN, and Garlicky SZN seasonings on a picnic blanket"
+        >
+          <source src="/videos/shop-hero-picnic.webm" type="video/webm" />
+          <source src="/videos/shop-hero-picnic.mp4" type="video/mp4" />
+        </video>
+        {/* Vertical fade — strong top + bottom blacks for nav clear and clean section transition */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/15 to-black/85" />
+        {/* Left-side gradient — guarantees text legibility over bottles */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <h1 className="heading-hero text-white mb-4">SHOP ALL BLENDS</h1>
-          <p className="text-white/60 text-lg font-[family-name:var(--font-dm-sans)]">Whole-food flavor. Crafted with SOUL.</p>
-        </motion.div>
-      </section>
-
-      {/* Starter Kit Feature — Orange */}
-      {loading ? (
-        <section className="bg-[#e85c2a] py-20">
-          <div className="max-w-[1400px] mx-auto px-6 animate-pulse">
-            <div className="h-10 bg-white/20 rounded w-1/2 mb-4" />
-            <div className="h-6 bg-white/20 rounded w-2/3" />
-          </div>
-        </section>
-      ) : starterKit ? (
-        <section className="bg-[#e85c2a] py-20 relative overflow-hidden">
-          <Image src="/brand/onion-turmeric-illustration.png" alt="" width={120} height={120} className="absolute top-8 right-[5%] opacity-15 rotate-6 hidden md:block" />
-
-          <div className="max-w-[1400px] mx-auto px-6">
-            <div className="md:grid md:grid-cols-2 gap-12 items-center">
-              {/* Left Content */}
-              <motion.div
-                className="flex flex-col items-start gap-6 z-10"
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 className="heading-section text-white">THE SOULUTION STARTER KIT</h2>
-                <p className="text-white/80 text-lg font-[family-name:var(--font-dm-sans)]">
-                  Get all three Root Soulutions blends in one bundle. The complete toolkit for seasoning your whole kitchen with SOUL.
-                </p>
-                <div className="flex items-center gap-4 mt-2">
-                  <span className="text-white text-4xl font-bold">${starterKit.price.toFixed(2)}</span>
-                </div>
-                <button
-                  onClick={() => addToCart(starterKit, 1)}
-                  className="w-full md:w-auto bg-white text-[#e85c2a] rounded-full px-12 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg mt-2"
+        <div className="relative z-10 min-h-screen flex flex-col items-start justify-start">
+          <div className="max-w-[1400px] mx-auto px-6 w-full pt-36 md:pt-40 pb-32">
+            <motion.div
+              className="max-w-2xl flex flex-col items-start gap-8"
+              initial="initial"
+              animate="whileInView"
+              variants={{
+                initial: {},
+                whileInView: { transition: { staggerChildren: 0.2 } },
+              }}
+            >
+              <div className="flex flex-col">
+                <motion.h1
+                  className="heading-hero text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+                  variants={fadeInUp}
                 >
-                  ADD TO CART
-                </button>
-              </motion.div>
+                  THE SOULUTION
+                </motion.h1>
+                <motion.h1
+                  className="heading-hero text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]"
+                  variants={fadeInUp}
+                >
+                  STARTER KIT
+                </motion.h1>
+              </div>
 
-              {/* Right Image */}
-              <motion.div
-                className="w-full flex justify-center mt-12 md:mt-0"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
+              <motion.p
+                className="text-lg md:text-xl text-white max-w-xl font-[family-name:var(--font-dm-sans)] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+                variants={fadeInUp}
               >
-                <div className="w-full max-w-[500px] aspect-square rounded-[2rem] relative overflow-hidden shadow-2xl">
-                  <Image
-                    src={starterKit.images[0] || "/products/lineup-all-3-bottles-graffiti-1.png"}
-                    alt="All 3 Root Soulutions seasoning bottles"
-                    fill
-                    className="object-contain p-4"
-                    sizes="(max-width: 768px) 100vw, 500px"
-                  />
-                </div>
-              </motion.div>
-            </div>
+                Get all three Root Soulutions blends in one bundle. The complete toolkit for seasoning your whole kitchen with SOUL.
+              </motion.p>
+
+              {loading ? (
+                <motion.div variants={fadeInUp} className="flex items-center gap-6">
+                  <div className="h-10 w-24 rounded bg-white/20 animate-pulse" />
+                  <div className="h-12 w-44 rounded-full bg-white/20 animate-pulse" />
+                </motion.div>
+              ) : starterKit ? (
+                <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-6">
+                  <span className="text-white text-4xl font-bold drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                    ${starterKit.price.toFixed(2)}
+                  </span>
+                  <button
+                    onClick={() => addToCart(starterKit, 1)}
+                    className="bg-[#e85c2a] text-white rounded-full px-12 py-4 btn-text inline-block hover:scale-105 hover:brightness-110 transition-all shadow-lg shadow-[#e85c2a]/30"
+                  >
+                    ADD TO CART
+                  </button>
+                </motion.div>
+              ) : null}
+            </motion.div>
           </div>
-        </section>
-      ) : null}
+        </div>
+      </section>
 
       {/* Eco-Friendly Sustainability Message */}
       <section className="bg-[#2D5A27] py-16 md:py-20 relative overflow-hidden">
@@ -199,115 +217,181 @@ export default function ShopPage() {
         textColor="#F5C542"
       />
 
-      {/* Individual Blends — Dark */}
-      <section className="bg-[#1A1A1A] py-20 relative overflow-hidden">
-        <Image src="/brand/beetroot-small.png" alt="" width={60} height={60} className="absolute bottom-12 left-[5%] opacity-10 -rotate-12 hidden md:block" />
+      {/* THE LINEUP — section heading */}
+      <section className="bg-black py-16 text-center">
+        <motion.h2
+          className="heading-section text-[#F5C542]"
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
+          THE LINEUP
+        </motion.h2>
+        <p className="text-white/60 mt-2 font-[family-name:var(--font-dm-sans)]">
+          Three blends. Each its own story. Scroll to meet them.
+        </p>
+      </section>
 
-        <div className="max-w-[1400px] mx-auto px-6">
-          <motion.h2
-            className="heading-section text-[#F5C542] text-center mb-16"
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-          >
-            THE LINEUP
-          </motion.h2>
-
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </div>
-          ) : (
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8"
-              initial="initial"
-              whileInView="whileInView"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={staggerContainer}
+      {/* Per-product pinned scroll features — jar video on alternating sides */}
+      {loading ? (
+        <>
+          <LineupSkeleton />
+          <LineupSkeleton />
+          <LineupSkeleton />
+        </>
+      ) : (
+        lineup.map((product, i) => {
+          const slug = VIDEO_SLUG_BY_HANDLE[product.handle];
+          if (!slug) return null;
+          const isPopular = product.handle === "low-sodium-garlicky-szn-blend";
+          const justAdded = justAddedHandle === product.handle;
+          const illustration = ILLUSTRATION_BY_HANDLE[product.handle];
+          return (
+            <ScrollProductFeature
+              key={product.id}
+              videoSrc={`/videos/${slug}.mp4`}
+              side={i % 2 === 0 ? "left" : "right"}
+              className="bg-black"
+              videoClassName="scale-105"
+              reverse
             >
-              {lineup.map((product) => (
-                <motion.div
-                  key={product.id}
-                  className="rounded-[2rem] overflow-hidden p-8 min-h-[400px] flex flex-col relative"
-                  style={{
-                    background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
-                    ...(product.handle === "low-sodium-garlicky-szn-blend" ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
-                  }}
-                  variants={fadeInUp}
-                  whileHover={cardHover.whileHover}
-                  transition={cardHover.transition}
-                >
-                  {/* Most Popular badge */}
-                  {product.handle === "low-sodium-garlicky-szn-blend" && (
-                    <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-xs font-bold tracking-wider">
-                      MOST POPULAR
-                    </div>
-                  )}
+              <motion.div
+                className="rounded-[2rem] overflow-hidden p-8 w-full max-w-sm min-h-[520px] flex flex-col relative shadow-2xl will-change-transform"
+                style={{
+                  background: `linear-gradient(135deg, ${product.gradient_from}, ${product.gradient_to})`,
+                  ...(isPopular ? { border: "3px solid rgba(255,255,255,0.25)" } : {}),
+                }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -6, scale: 1.01 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {/* Decorative brand illustration with subtle parallax */}
+                {illustration && (
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    initial={{ y: 16, opacity: 0 }}
+                    whileInView={{ y: -10, opacity: 0.12 }}
+                    viewport={{ amount: 0.3 }}
+                    transition={{ duration: 1.4, ease: "easeOut" }}
+                  >
+                    <Image
+                      src={illustration}
+                      alt=""
+                      width={400}
+                      height={400}
+                      className="absolute -bottom-12 -right-12 w-[70%] h-auto rotate-12"
+                    />
+                  </motion.div>
+                )}
 
-                  <Link href={`/products/${product.handle}`} className="flex-1 flex flex-col items-center">
-                    <div
-                      className="w-[200px] h-[200px] rounded-full border-4 overflow-hidden relative mb-8"
-                      style={{ borderColor: product.accent_color }}
-                      onMouseEnter={() => {
-                        if (product.images.length > 1) {
-                          setImageIndex((prev) => ({
-                            ...prev,
-                            [product.handle]: getBirdseyeIndex(product.images),
-                          }));
-                        }
-                      }}
-                      onMouseLeave={() => {
+                {isPopular && (
+                  <div className="absolute top-4 right-4 z-10 bg-[#F5C542] text-[#1A1A1A] rounded-full px-3 py-1 text-[10px] font-bold tracking-[0.18em] shadow-md">
+                    MOST POPULAR
+                  </div>
+                )}
+
+                <Link
+                  href={`/products/${product.handle}`}
+                  className="flex-1 flex flex-col items-center relative z-10 rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+                  aria-label={`View details for ${product.title}`}
+                >
+                  <div
+                    className="w-[200px] h-[200px] rounded-full overflow-hidden relative mb-6 ring-2 ring-white/15 shadow-2xl"
+                    onMouseEnter={() => {
+                      if (product.images.length > 1) {
                         setImageIndex((prev) => ({
                           ...prev,
-                          [product.handle]: getDefaultIndex(product.images),
+                          [product.handle]: getBirdseyeIndex(product.images),
                         }));
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setImageIndex((prev) => ({
+                        ...prev,
+                        [product.handle]: getDefaultIndex(product.images),
+                      }));
+                    }}
+                  >
+                    {(() => {
+                      const currentIdx = imageIndex[product.handle] ?? getDefaultIndex(product.images);
+                      const currentUrl = product.images[currentIdx] ?? product.images[0];
+                      const isPortrait =
+                        currentUrl.toLowerCase().includes("portrait") ||
+                        currentUrl.toLowerCase().includes("instagram");
+                      return (
+                        <Image
+                          src={currentUrl}
+                          alt={product.title}
+                          fill
+                          className={`object-cover transition-all duration-300 ${isPortrait ? "scale-150" : ""}`}
+                          style={isPortrait ? { objectPosition: "center 40%" } : undefined}
+                          sizes="200px"
+                        />
+                      );
+                    })()}
+                    {/* Accent dot — subtle brand-color glow */}
+                    <div
+                      aria-hidden
+                      className="absolute top-2 right-2 w-3 h-3 rounded-full ring-2 ring-black/30"
+                      style={{
+                        backgroundColor: product.accent_color,
+                        boxShadow: `0 0 14px ${product.accent_color}`,
                       }}
-                    >
-                      {(() => {
-                        const currentIdx = imageIndex[product.handle] ?? getDefaultIndex(product.images);
-                        const currentUrl = product.images[currentIdx] ?? product.images[0];
-                        const isPortrait = currentUrl.toLowerCase().includes("portrait") || currentUrl.toLowerCase().includes("instagram");
-                        return (
-                          <Image
-                            src={currentUrl}
-                            alt={product.title}
-                            fill
-                            className={`object-cover transition-all duration-300 ${isPortrait ? "scale-150" : ""}`}
-                            style={isPortrait ? { objectPosition: "center 40%" } : undefined}
-                            sizes="200px"
-                          />
-                        );
-                      })()}
-                    </div>
+                    />
+                  </div>
 
-                    <h3 className="heading-card mb-2 text-center" style={{ color: product.accent_color }}>
-                      {product.title}
-                    </h3>
-                    <p className="text-white/70 text-sm text-center mb-6">
-                      {product.subtitle}
-                    </p>
-                  </Link>
+                  {/* Eyebrow — subtitle in accent color, all-caps tracking */}
+                  <p
+                    className="text-[11px] font-bold uppercase tracking-[0.3em] text-center mb-2"
+                    style={{ color: product.accent_color }}
+                  >
+                    {product.subtitle}
+                  </p>
 
-                  <div className="mt-auto flex flex-col items-center w-full gap-4 relative z-10">
-                    <span className="text-white text-2xl font-bold">
+                  {/* Title — white anchor, accent now lives in eyebrow + dot */}
+                  <h3 className="heading-card text-center text-white mb-4">
+                    {product.title}
+                  </h3>
+                </Link>
+
+                {/* Trust signals */}
+                <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.18em] text-white/60 mb-5 relative z-10">
+                  <span>Low Sodium</span>
+                  <span aria-hidden>·</span>
+                  <span>Non-GMO</span>
+                  <span aria-hidden>·</span>
+                  <span>Small Batch</span>
+                </div>
+
+                <div className="mt-auto flex flex-col items-center w-full gap-4 relative z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-white text-5xl font-bold tracking-tight leading-none">
                       ${product.price.toFixed(2)}
                     </span>
-                    <button
-                      onClick={() => addToCart(product, 1)}
-                      className="w-full bg-white/20 text-white rounded-full px-8 py-3 btn-text hover:scale-105 hover:brightness-110 transition-all"
-                    >
-                      ADD TO CART
-                    </button>
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-white/50">
+                      USD · 3.2 oz
+                    </span>
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </div>
-      </section>
+                  <button
+                    onClick={() => handlePreOrder(product)}
+                    aria-label={`Pre-order ${product.title}`}
+                    className={`w-full rounded-full px-8 py-3 btn-text transition-all shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                      justAdded
+                        ? "bg-emerald-500 text-white shadow-emerald-500/30"
+                        : "bg-[#e85c2a] text-white shadow-[#e85c2a]/30 hover:scale-[1.03] hover:brightness-110 active:scale-[0.99]"
+                    }`}
+                  >
+                    {justAdded ? "✓ ADDED" : "PRE-ORDER"}
+                  </button>
+                </div>
+              </motion.div>
+            </ScrollProductFeature>
+          );
+        })
+      )}
 
       <ScrollingMarquee
         text="YOU WILL FIND YOURSELF PUTTING THIS ON EVERYTHING"

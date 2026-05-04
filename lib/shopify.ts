@@ -30,7 +30,11 @@ export async function shopifyFetch<T>({
 
 // Create a Shopify checkout from cart items
 export async function createCheckout(
-  items: { variantId: string; quantity: number }[]
+  items: {
+    variantId: string;
+    quantity: number;
+    attributes?: { key: string; value: string }[];
+  }[]
 ) {
   const query = `
     mutation cartCreate($input: CartInput!) {
@@ -52,6 +56,9 @@ export async function createCheckout(
       lines: items.map((item) => ({
         merchandiseId: item.variantId,
         quantity: item.quantity,
+        ...(item.attributes && item.attributes.length > 0
+          ? { attributes: item.attributes }
+          : {}),
       })),
     },
   };

@@ -73,36 +73,48 @@ export function CartDrawer() {
                   </div>
 
                   {/* Items */}
-                  <div className="flex flex-col gap-6 mt-4">
+                  <ul className="flex flex-col mt-4 divide-y divide-white/10">
                     {items.map((item) => (
-                      <div key={item.product.id} className="flex gap-4 items-center">
-                        <div className="w-20 h-20 bg-black/20 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2">
+                      <li key={item.product.id} className="flex gap-4 items-center py-4 first:pt-0 last:pb-0">
+                        <div className="w-24 h-24 bg-black/30 rounded-2xl overflow-hidden flex-shrink-0 flex items-center justify-center p-2 ring-1 ring-white/10">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={item.product.images[0]} alt={item.product.title} className="w-full h-full object-contain" />
                         </div>
                         <div className="flex-1 flex flex-col gap-1">
-                          <div className="flex justify-between items-start">
-                            <h3 className="font-[family-name:var(--font-dm-sans)] font-bold">{item.product.title}</h3>
-                            <button onClick={() => removeFromCart(item.product.id)} className="text-white/50 hover:text-white transition flex items-center justify-center min-w-[44px] min-h-[44px]">
-                              <Trash size={22} weight="regular" />
+                          <div className="flex justify-between items-start gap-2">
+                            <h3 className="font-[family-name:var(--font-dm-sans)] font-bold leading-snug">{item.product.title}</h3>
+                            <button
+                              onClick={() => removeFromCart(item.product.id)}
+                              aria-label={`Remove ${item.product.title}`}
+                              className="text-white/50 hover:text-white transition flex items-center justify-center min-w-[44px] min-h-[44px] -mr-2 outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full"
+                            >
+                              <Trash size={20} weight="regular" />
                             </button>
                           </div>
                           <p className="font-[family-name:var(--font-dm-sans)] text-white/80">${item.product.price.toFixed(2)}</p>
                           <div className="flex items-center gap-4 mt-2">
-                            <div className="flex items-center gap-3 border border-white/20 rounded-full px-4 py-2">
-                              <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="hover:opacity-80 flex items-center justify-center min-w-[44px] min-h-[44px] -my-2 -ml-2">
-                                <Minus size={18} weight="regular" />
+                            <div className="flex items-center gap-3 border border-white/15 rounded-full px-4 py-1.5">
+                              <button
+                                onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                                aria-label="Decrease quantity"
+                                className="hover:opacity-80 flex items-center justify-center min-w-[36px] min-h-[36px] -my-1 -ml-1 outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full"
+                              >
+                                <Minus size={16} weight="regular" />
                               </button>
-                              <span className="font-[family-name:var(--font-dm-sans)] text-sm w-4 text-center">{item.quantity}</span>
-                              <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="hover:opacity-80 flex items-center justify-center min-w-[44px] min-h-[44px] -my-2 -mr-2">
-                                <Plus size={18} weight="regular" />
+                              <span className="font-[family-name:var(--font-dm-sans)] text-sm w-4 text-center tabular-nums">{item.quantity}</span>
+                              <button
+                                onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                                aria-label="Increase quantity"
+                                className="hover:opacity-80 flex items-center justify-center min-w-[36px] min-h-[36px] -my-1 -mr-1 outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-full"
+                              >
+                                <Plus size={16} weight="regular" />
                               </button>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </>
               )}
             </div>

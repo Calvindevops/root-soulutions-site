@@ -6,6 +6,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@phosphor-icons/react";
 
 const COOKIE_NAME = "rs-welcome-seen";
+const SCROLL_TRIGGER_PCT = 0.5; // fire at 50% scrolled
+const TIME_TRIGGER_MS = 30_000; // fire after 30s engagement
+const SHORT_DISMISS_DAYS = 7; // re-show in a week if user closed without submitting
+const LONG_DISMISS_DAYS = 30; // hide for a month after submit
 
 const flavors = [
   {
@@ -38,7 +42,7 @@ export function WelcomePopup() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [discountCode, setDiscountCode] = useState("SOUL10");
+  const [discountCode, setDiscountCode] = useState("SOUL15");
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -47,14 +51,42 @@ export function WelcomePopup() {
 
     const mobile = window.innerWidth < 768;
     setIsMobile(mobile);
-    const delay = mobile ? 4000 : 1500;
-    const timer = setTimeout(() => setIsOpen(true), delay);
-    return () => clearTimeout(timer);
+
+    let triggered = false;
+    const fire = () => {
+      if (triggered) return;
+      triggered = true;
+      setIsOpen(true);
+    };
+
+    // 1) Time-based: fires at 30s of engagement
+    const timer = window.setTimeout(fire, TIME_TRIGGER_MS);
+
+    // 2) Scroll-based: fires at 50% scroll depth
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      if (window.scrollY / max >= SCROLL_TRIGGER_PCT) fire();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // 3) Exit intent (desktop only — cursor leaves viewport top edge)
+    const onMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0) fire();
+    };
+    if (!mobile) document.addEventListener("mouseleave", onMouseLeave);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+      if (!mobile) document.removeEventListener("mouseleave", onMouseLeave);
+    };
   }, []);
 
   const handleClose = () => {
     setIsOpen(false);
-    document.cookie = `${COOKIE_NAME}=true; max-age=${30 * 24 * 60 * 60}; path=/`;
+    // Short cookie when user closes without submitting — re-show in a week
+    document.cookie = `${COOKIE_NAME}=dismissed; max-age=${SHORT_DISMISS_DAYS * 24 * 60 * 60}; path=/`;
   };
 
   const handleFlavorSelect = (flavorId: string) => {
@@ -95,6 +127,8 @@ export function WelcomePopup() {
       // Falls back to SOUL10
     }
 
+    // Long cookie after a successful submit — hide for a month
+    document.cookie = `${COOKIE_NAME}=converted; max-age=${LONG_DISMISS_DAYS * 24 * 60 * 60}; path=/`;
     setSubmitted(true);
   };
 
@@ -178,7 +212,7 @@ export function WelcomePopup() {
               />
               <div className="flex items-center justify-center gap-3">
                 <span className="text-[#F5C542] text-sm md:text-base font-bold tracking-wider uppercase font-[family-name:var(--font-dm-sans)]">
-                  10% OFF YOUR NEXT ORDER
+                  15% OFF YOUR FIRST ORDER
                 </span>
               </div>
             </div>
@@ -195,7 +229,7 @@ export function WelcomePopup() {
                       WHAT FLAVORS ARE YOU INTO?
                     </h2>
                     <p className="text-white/80 text-center text-sm md:text-base mb-8 md:mb-10 font-[family-name:var(--font-dm-sans)]">
-                      Pick your vibe and get 10% off your next order.
+                      Pick your vibe and we'll send 15% off your first order.
                     </p>
 
                     <div className="flex flex-col gap-3 md:gap-4">
@@ -250,7 +284,7 @@ export function WelcomePopup() {
                       GREAT TASTE.
                     </h2>
                     <p className="text-white/80 text-center text-sm md:text-base mb-8 md:mb-10 font-[family-name:var(--font-dm-sans)]">
-                      Enter your email to unlock 10% off your next order.
+                      Enter your email to unlock 15% off your first order.
                     </p>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-[400px] mx-auto">
@@ -272,7 +306,7 @@ export function WelcomePopup() {
                         type="submit"
                         className="w-full bg-white text-[#e85c2a] rounded-full px-8 py-4 btn-text hover:scale-105 hover:brightness-110 transition-all shadow-lg"
                       >
-                        GET 10% OFF
+                        GET 15% OFF
                       </button>
                     </form>
 
@@ -305,7 +339,7 @@ export function WelcomePopup() {
                       YOU&apos;RE IN.
                     </h2>
                     <p className="text-white/80 text-base font-[family-name:var(--font-dm-sans)] mb-4">
-                      Your exclusive 10% off code:
+                      Your exclusive 15% off code:
                     </p>
                     <div className="bg-white/10 border-2 border-[#F5C542] rounded-2xl px-8 py-4 inline-block mb-4">
                       <span className="text-[#F5C542] text-3xl md:text-4xl font-bold tracking-widest font-[family-name:var(--font-bebas)]">

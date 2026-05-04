@@ -45,3 +45,8 @@ stripe
 
 # Supabase temp
 supabase/.temp/
+
+# Local scratch / tooling
+.tmp/
+.claude/
+.mcp.json

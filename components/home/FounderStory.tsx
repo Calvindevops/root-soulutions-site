@@ -19,7 +19,7 @@ export function FounderStory() {
             variants={slideInLeft}
           >
             <Image
-              src="/brand/founder-collin.png"
+              src="/brand/founder-collin.webp"
               alt="Collin Alexander, founder of Root Soulutions"
               fill
               className="object-cover"

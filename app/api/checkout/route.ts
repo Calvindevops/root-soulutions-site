@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import { createCheckout } from "@/lib/shopify";
 
+interface CheckoutAttribute {
+  key: string;
+  value: string;
+}
+
 interface CheckoutItem {
   variant_id: string;
   quantity: number;
+  attributes?: CheckoutAttribute[];
 }
 
 export async function POST(request: Request) {
@@ -25,6 +31,7 @@ export async function POST(request: Request) {
       items.map((item) => ({
         variantId: item.variant_id,
         quantity: item.quantity,
+        attributes: item.attributes,
       }))
     );
 

@@ -24,6 +24,14 @@ export default function CheckoutPage() {
           items: items.map((item) => ({
             variant_id: item.product.shopify_variant_id ?? item.product.id,
             quantity: item.quantity,
+            attributes: item.preorder
+              ? [
+                  {
+                    key: "_preorder",
+                    value: item.preorder_ships ?? "yes",
+                  },
+                ]
+              : undefined,
           })),
         }),
       });

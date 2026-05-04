@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans, Bebas_Neue } from "next/font/google";
 import { CartProvider } from "@/lib/cart-context";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/layout/CartDrawer";
 import { WelcomePopup } from "@/components/ui/WelcomePopup";
+import { SiteChrome } from "@/components/layout/SiteChrome";
+import SmoothScroll from "@/lib/SmoothScroll";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -59,14 +58,18 @@ export default function RootLayout({
       lang="en"
       className={`${playfair.variable} ${dmSans.variable} ${bebas.variable} antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="min-h-screen flex flex-col">
         <CartProvider>
-          <AnnouncementBar />
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
+          <SmoothScroll />
+          <SiteChrome>{children}</SiteChrome>
           <CartDrawer />
           <WelcomePopup />
         </CartProvider>

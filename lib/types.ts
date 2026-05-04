@@ -29,6 +29,8 @@ export interface Product {
 export interface CartItem {
   product: Product;
   quantity: number;
+  preorder?: boolean;
+  preorder_ships?: string;
 }
 
 export interface CartState {

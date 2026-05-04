@@ -76,7 +76,7 @@ export function BundleCTA() {
           >
             <div className="w-full max-w-[500px] aspect-square rounded-[2rem] relative overflow-hidden shadow-2xl">
               <Image
-                src={starterKit.images[0] || "/products/lineup-all-3-bottles-graffiti-1.png"}
+                src={starterKit.images[0] || "/products/lineup-all-3-bottles-graffiti-1.webp"}
                 alt="Soulutions Starter Kit — all 3 seasoning blends"
                 fill
                 className="object-contain p-4"

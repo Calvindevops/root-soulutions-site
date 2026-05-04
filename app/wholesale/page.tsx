@@ -50,7 +50,7 @@ export default function WholesalePage() {
   return (
     <main className="w-full">
       {/* Header */}
-      <section className="relative bg-[#2D5A27] py-20 px-6 text-center overflow-hidden">
+      <section className="relative bg-[#2D5A27] pt-32 pb-20 px-6 text-center overflow-hidden">
         <Image src="/brand/onion-turmeric-illustration.png" alt="" width={90} height={90} className="absolute top-6 left-[8%] opacity-15 rotate-6 hidden md:block" />
         <Image src="/brand/chili-pepper.png" alt="" width={60} height={60} className="absolute bottom-6 right-[10%] opacity-15 -rotate-12 hidden md:block" />
         <motion.div
@@ -58,7 +58,7 @@ export default function WholesalePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="heading-hero text-white">WHOLESALE INQUIRIES</h1>
+          <h1 className="heading-hero text-white drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)]">WHOLESALE INQUIRIES</h1>
         </motion.div>
       </section>
 

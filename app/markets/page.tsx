@@ -33,7 +33,7 @@ export default function MarketsPage() {
   return (
     <main className="w-full">
       {/* Header */}
-      <section className="relative bg-[#2D5A27] py-20 px-6 text-center overflow-hidden">
+      <section className="relative bg-[#2D5A27] pt-32 pb-20 px-6 text-center overflow-hidden">
         <Image src="/brand/chili-pepper.png" alt="" width={70} height={70} className="absolute top-8 left-[8%] opacity-15 rotate-12 hidden md:block" />
         <Image src="/brand/garlic-illustration.png" alt="" width={60} height={60} className="absolute bottom-8 right-[10%] opacity-15 -rotate-6 hidden md:block" />
         <motion.div
@@ -41,7 +41,7 @@ export default function MarketsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="heading-hero text-white mb-4">FIND US AT THE MARKET</h1>
+          <h1 className="heading-hero text-white mb-4 drop-shadow-[0_3px_14px_rgba(0,0,0,0.55)]">FIND US AT THE MARKET</h1>
           <p className="font-[family-name:var(--font-dm-sans)] text-white/70 text-lg">
             Fresh seasonings. Real conversations. See you there.
           </p>
